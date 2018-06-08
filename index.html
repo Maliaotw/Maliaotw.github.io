@@ -1532,6 +1532,171 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/04. 瀏覽器自動化(4) Selenium + Beautiful Soup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noyoung Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/04. 瀏覽器自動化(4) Selenium + Beautiful Soup/" itemprop="url">瀏覽器自動化(4) Selenium + Beautiful Soup</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T23:26:30+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Selenium/" itemprop="url" rel="index">
+                    <span itemprop="name">Selenium</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>安裝模塊</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">selenium</span><br><span class="line">requests</span><br><span class="line">beautifulsoup4</span><br></pre></td></tr></table></figure>
+<ol>
+<li>selenium<br>主要用於登入或js互動，剩餘的在使用bs4進行爬取。</li>
+</ol>
+<ol start="2">
+<li>requests<br>能模擬http請求，如:get、post、put、delete，通常是爬取分頁或a標籤時用到。</li>
+</ol>
+<p><a href="http://docs.python-requests.org/zh_CN/latest/user/quickstart.html" target="_blank" rel="noopener">官方文檔</a></p>
+<p>如何使用</p>
+<p>模擬請求</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r = requests.get(&apos;https://api.github.com/events&apos;)</span><br></pre></td></tr></table></figure>
+<p>查看請求狀態</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r.status_code</span><br><span class="line">輸出:</span><br><span class="line">&gt;&gt;&gt; 200</span><br></pre></td></tr></table></figure>
+<p>取得請求html內容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r.text</span><br><span class="line">輸出:</span><br><span class="line">&gt;&gt;&gt; &apos;&lt;!doctype html&gt;&lt;html itemscope=&quot;&quot; itemtype=&quot;http://schema.org/WebPage&quot; lang=&quot;zh-TW&quot;&gt;&lt;head&gt;&lt;meta content=&quot;text/html; charset=UTF-8&quot; http-equiv=&quot;Content-Type&quot;&gt;&lt;meta content=&quot;/images/branding/googleg/1x/googleg_standard_color_128dp.png&quot; ...&lt;/html&gt;&apos;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>Beautiful Soup<br>Beautiful Soup能解析html，能快速尋找標籤內容，也可以透過CSS選擇器快速尋找帶有標籤屬性的內容。</li>
+</ol>
+<p><a href="http://beautifulsoup.readthedocs.io/zh_CN/latest/" target="_blank" rel="noopener">官方文檔</a></p>
+<p>如何使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">import requests</span><br><span class="line">web_data = requests.get(&apos;https://api.github.com/events&apos;)</span><br><span class="line">soup = BeautifulSoup(web_data, &apos;lxml&apos;) #解析Html</span><br><span class="line">soup.title</span><br></pre></td></tr></table></figure>
+<h1 id="啟動"><a href="#啟動" class="headerlink" title="啟動"></a>啟動</h1><h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>selenium_bs4_demo1.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from bs4 import BeautifulSoup</span><br><span class="line"></span><br><span class="line">from selenium import webdriver</span><br><span class="line"></span><br><span class="line">browser = webdriver.Firefox()</span><br><span class="line">browser.get(&apos;https://w3.iiiedu.org.tw/&apos;)</span><br><span class="line">wb_html = browser.page_source</span><br><span class="line">soup = BeautifulSoup(wb_html,&quot;lxml&quot;)</span><br></pre></td></tr></table></figure></p>
+<h1 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h1><p>大部分網頁都用requests都能獲取，用到selenium情況比較少，有登入或js需求可以參考，在此紀錄心得。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/05. Docker 邊做邊學(4) Dockerfile+Dockcompose/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1654,171 +1819,6 @@
 <li>訪問Jenkins</li>
 </ol>
 <p><img src="https://i.imgur.com/JaDpyDY.jpg" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/04. 瀏覽器自動化(4) Selenium + Beautiful Soup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Noyoung Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧學習筆記">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/04. 瀏覽器自動化(4) Selenium + Beautiful Soup/" itemprop="url">瀏覽器自動化(4) Selenium + Beautiful Soup</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T23:26:30+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Selenium/" itemprop="url" rel="index">
-                    <span itemprop="name">Selenium</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>安裝模塊</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">selenium</span><br><span class="line">requests</span><br><span class="line">beautifulsoup4</span><br></pre></td></tr></table></figure>
-<ol>
-<li>selenium<br>主要用於登入或js互動，剩餘的在使用bs4進行爬取。</li>
-</ol>
-<ol start="2">
-<li>requests<br>能模擬http請求，如:get、post、put、delete，通常是爬取分頁或a標籤時用到。</li>
-</ol>
-<p><a href="http://docs.python-requests.org/zh_CN/latest/user/quickstart.html" target="_blank" rel="noopener">官方文檔</a></p>
-<p>如何使用</p>
-<p>模擬請求</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r = requests.get(&apos;https://api.github.com/events&apos;)</span><br></pre></td></tr></table></figure>
-<p>查看請求狀態</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r.status_code</span><br><span class="line">輸出:</span><br><span class="line">&gt;&gt;&gt; 200</span><br></pre></td></tr></table></figure>
-<p>取得請求html內容</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r.text</span><br><span class="line">輸出:</span><br><span class="line">&gt;&gt;&gt; &apos;&lt;!doctype html&gt;&lt;html itemscope=&quot;&quot; itemtype=&quot;http://schema.org/WebPage&quot; lang=&quot;zh-TW&quot;&gt;&lt;head&gt;&lt;meta content=&quot;text/html; charset=UTF-8&quot; http-equiv=&quot;Content-Type&quot;&gt;&lt;meta content=&quot;/images/branding/googleg/1x/googleg_standard_color_128dp.png&quot; ...&lt;/html&gt;&apos;</span><br></pre></td></tr></table></figure>
-<ol start="3">
-<li>Beautiful Soup<br>Beautiful Soup能解析html，能快速尋找標籤內容，也可以透過CSS選擇器快速尋找帶有標籤屬性的內容。</li>
-</ol>
-<p><a href="http://beautifulsoup.readthedocs.io/zh_CN/latest/" target="_blank" rel="noopener">官方文檔</a></p>
-<p>如何使用</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">import requests</span><br><span class="line">web_data = requests.get(&apos;https://api.github.com/events&apos;)</span><br><span class="line">soup = BeautifulSoup(web_data, &apos;lxml&apos;) #解析Html</span><br><span class="line">soup.title</span><br></pre></td></tr></table></figure>
-<h1 id="啟動"><a href="#啟動" class="headerlink" title="啟動"></a>啟動</h1><h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>selenium_bs4_demo1.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from bs4 import BeautifulSoup</span><br><span class="line"></span><br><span class="line">from selenium import webdriver</span><br><span class="line"></span><br><span class="line">browser = webdriver.Firefox()</span><br><span class="line">browser.get(&apos;https://w3.iiiedu.org.tw/&apos;)</span><br><span class="line">wb_html = browser.page_source</span><br><span class="line">soup = BeautifulSoup(wb_html,&quot;lxml&quot;)</span><br></pre></td></tr></table></figure></p>
-<h1 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h1><p>大部分網頁都用requests都能獲取，用到selenium情況比較少，有登入或js需求可以參考，在此紀錄心得。</p>
 
           
         
