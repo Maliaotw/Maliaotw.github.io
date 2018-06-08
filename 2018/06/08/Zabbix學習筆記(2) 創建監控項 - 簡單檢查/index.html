@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-tw">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Zabbix," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="利用簡單檢查監測站點是否存活，Zabbix內置的簡單檢查可針對各端口站點監測是否有回應?速度如何? 1. 創建一個主機這個步驟是非必要的，這邊操作的目的在於避免與Agent端混淆。 創建主機  填寫主機內容 主機名稱:PingHost(也可以隨意命名)群組一定要選一個，這邊選擇Discovered hosts(發現的主機)  創建成功  2. 創建監控項選擇剛剛建好的主機，並創建監控項  簡單檢查">
+<meta name="keywords" content="Zabbix">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Zabbix學習筆記(2) 創建監控項 - 簡單檢查">
+<meta property="og:url" content="http://yoursite.com/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/index.html">
+<meta property="og:site_name" content="馬里奧學習筆記">
+<meta property="og:description" content="利用簡單檢查監測站點是否存活，Zabbix內置的簡單檢查可針對各端口站點監測是否有回應?速度如何? 1. 創建一個主機這個步驟是非必要的，這邊操作的目的在於避免與Agent端混淆。 創建主機  填寫主機內容 主機名稱:PingHost(也可以隨意命名)群組一定要選一個，這邊選擇Discovered hosts(發現的主機)  創建成功  2. 創建監控項選擇剛剛建好的主機，並創建監控項  簡單檢查">
+<meta property="og:locale" content="zh-tw">
+<meta property="og:image" content="https://i.imgur.com/vTuRRZz.png">
+<meta property="og:image" content="https://i.imgur.com/drUVtDQ.png">
+<meta property="og:image" content="https://i.imgur.com/zwqSQgD.png">
+<meta property="og:image" content="https://i.imgur.com/HmNJrE1.png">
+<meta property="og:image" content="https://i.imgur.com/cr0cZak.png">
+<meta property="og:image" content="https://i.imgur.com/K2Lc8Pn.png">
+<meta property="og:image" content="https://i.imgur.com/Y8n1V7S.png">
+<meta property="og:image" content="https://i.imgur.com/z6doriP.png">
+<meta property="og:image" content="https://i.imgur.com/eeIC7cF.png">
+<meta property="og:image" content="https://i.imgur.com/5TOTV2M.png">
+<meta property="og:image" content="https://i.imgur.com/UHe3NHc.png">
+<meta property="og:image" content="https://i.imgur.com/r6jakWW.png">
+<meta property="og:updated_time" content="2018-06-08T20:42:08.042Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Zabbix學習筆記(2) 創建監控項 - 簡單檢查">
+<meta name="twitter:description" content="利用簡單檢查監測站點是否存活，Zabbix內置的簡單檢查可針對各端口站點監測是否有回應?速度如何? 1. 創建一個主機這個步驟是非必要的，這邊操作的目的在於避免與Agent端混淆。 創建主機  填寫主機內容 主機名稱:PingHost(也可以隨意命名)群組一定要選一個，這邊選擇Discovered hosts(發現的主機)  創建成功  2. 創建監控項選擇剛剛建好的主機，並創建監控項  簡單檢查">
+<meta name="twitter:image" content="https://i.imgur.com/vTuRRZz.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/"/>
+
+
+
+
+
+  <title>Zabbix學習筆記(2) 創建監控項 - 簡單檢查 | 馬里奧學習筆記</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-tw">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">馬里奧學習筆記</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">編程沒有什麼不好</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            標籤
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分類
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            歸檔
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noyoung Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Zabbix學習筆記(2) 創建監控項 - 簡單檢查</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:02:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
+                    <span itemprop="name">Zabbix</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>利用簡單檢查監測站點是否存活，Zabbix內置的簡單檢查可針對各端口站點監測是否有回應?速度如何?</p>
+<h2 id="1-創建一個主機"><a href="#1-創建一個主機" class="headerlink" title="1. 創建一個主機"></a>1. 創建一個主機</h2><p>這個步驟是非必要的，這邊操作的目的在於避免與Agent端混淆。</p>
+<p><strong>創建主機</strong></p>
+<p><img src="https://i.imgur.com/vTuRRZz.png" alt=""></p>
+<p><strong>填寫主機內容</strong></p>
+<p>主機名稱:PingHost(也可以隨意命名)<br>群組一定要選一個，這邊選擇Discovered hosts(發現的主機)</p>
+<p><img src="https://i.imgur.com/drUVtDQ.png" alt=""></p>
+<p><strong>創建成功</strong></p>
+<p><img src="https://i.imgur.com/zwqSQgD.png" alt=""></p>
+<h2 id="2-創建監控項"><a href="#2-創建監控項" class="headerlink" title="2. 創建監控項"></a>2. 創建監控項</h2><p>選擇剛剛建好的主機，並創建監控項</p>
+<p><img src="https://i.imgur.com/HmNJrE1.png" alt=""></p>
+<p><strong>簡單檢查 Simple Check</strong></p>
+<p>類型選擇”簡單檢查”</p>
+<p><img src="https://i.imgur.com/cr0cZak.png" alt=""></p>
+<p>在鍵值空白旁點擊”選擇”</p>
+<p><img src="https://i.imgur.com/K2Lc8Pn.png" alt=""></p>
+<p><strong>什麼是簡單檢查？</strong></p>
+<p>簡單來說提供了三種監測服務，分別為Ping、TCP、UDP，<strong>Ping</strong>可以查看主機是否存活、丟包、超時等，<strong>TCP</strong>功能支持多種服務類型如：ssh, ldap, smtp, ftp, http, pop, nntp, imap, tcp, https, telnet，也可任意指定端口，主要查看是否可以連接、超時等，<strong>UDP</strong>功能與<strong>TCP</strong>接近，更多及相關參數可以參考<a href="https://www.zabbix.com/documentation/3.0/manual/config/items/itemtypes/simple_checks" target="_blank" rel="noopener">官方文檔</a>。</p>
+<p><img src="https://i.imgur.com/Y8n1V7S.png" alt=""></p>
+<blockquote>
+<p>選擇簡體中文可以得到較好的支持，試過選擇繁中這個頁面中文化不是很完全，比較偏好中文的朋友可選簡中試試。</p>
+</blockquote>
+<h2 id="3-填寫監測內容"><a href="#3-填寫監測內容" class="headerlink" title="3. 填寫監測內容"></a>3. 填寫監測內容</h2><p>監測Modem(IP:192.168.0.1)是否正常。</p>
+<p>類型：簡單檢查<br>鍵值：icmppingsec[192.168.0.1]<br>信息類型：浮點數<br>單位：s</p>
+<p>若選擇的鍵值是有返回響應時間，那信息類型就需要選擇<strong>浮點數</strong>，單位輸入<strong>s</strong>。</p>
+<p><strong>填寫內容</strong></p>
+<p>對應填寫內容如下，填寫完畢後要在頁面最下方點擊<strong>添加</strong>。</p>
+<p><img src="https://i.imgur.com/z6doriP.png" alt=""></p>
+<p><strong>填寫完畢</strong></p>
+<p><img src="https://i.imgur.com/eeIC7cF.png" alt=""></p>
+<h2 id="4-查看在監測的項目"><a href="#4-查看在監測的項目" class="headerlink" title="4. 查看在監測的項目"></a>4. 查看在監測的項目</h2><p><strong>最新數據</strong></p>
+<p>選擇監測中點擊”最新數據”</p>
+<p><img src="https://i.imgur.com/5TOTV2M.png" alt=""></p>
+<p><strong>找出監控項</strong></p>
+<p>篩選群組或主機找出監控項，查看是否已有數據。</p>
+<p><img src="https://i.imgur.com/UHe3NHc.png" alt=""></p>
+<p><strong>查看圖形</strong></p>
+<p>點擊圖形查看分時圖。</p>
+<p><img src="https://i.imgur.com/r6jakWW.png" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Zabbix/" rel="tag"># Zabbix</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/" rel="next" title="瀏覽器自動化(2) 同時調用Selenium2與Selenium3">
+                <i class="fa fa-chevron-left"></i> 瀏覽器自動化(2) 同時調用Selenium2與Selenium3
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/08/瀏覽器自動化(3) Selenium 使用OCR 簡易破解驗證碼/" rel="prev" title="瀏覽器自動化(3) Selenium 使用OCR 簡易破解驗證碼">
+                瀏覽器自動化(3) Selenium 使用OCR 簡易破解驗證碼 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Noyoung Guo</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">文章</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分類</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">標籤</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/yourname" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-創建一個主機"><span class="nav-number">1.</span> <span class="nav-text">1. 創建一個主機</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-創建監控項"><span class="nav-number">2.</span> <span class="nav-text">2. 創建監控項</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-填寫監測內容"><span class="nav-number">3.</span> <span class="nav-text">3. 填寫監測內容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-查看在監測的項目"><span class="nav-number">4.</span> <span class="nav-text">4. 查看在監測的項目</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Noyoung Guo</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 強力驅動</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主題 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

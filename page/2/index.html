@@ -249,7 +249,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/06. Docker 管理工具(1) Rancher Server建置/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(6) 用Python製作簡易Zabbix微監控/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Noyoung Guo">
@@ -268,7 +268,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/06. Docker 管理工具(1) Rancher Server建置/" itemprop="url">Docker 管理工具 (1) Rancher Server建置</a></h1>
+                <a class="post-title-link" href="/2018/06/08/Zabbix學習筆記(6) 用Python製作簡易Zabbix微監控/" itemprop="url">Zabbix學習筆記(6) 用Python製作簡易Zabbix微監控</a></h1>
         
 
         <div class="post-meta">
@@ -280,7 +280,1456 @@
               
                 <span class="post-meta-item-text">發表於</span>
               
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T23:26:30+08:00">
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:06:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
+                    <span itemprop="name">Zabbix</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="概念說明"><a href="#概念說明" class="headerlink" title="概念說明"></a>概念說明</h1><p>Zabbix前端報警及郵件發信等已可立即告警，但如果能整合到內部系統豈不甚好？</p>
+<p>既然如此，後面將會以下圖說明由Redis Server做為中間接收的媒介，讓Zabbix與內部系統整合告警。</p>
+<p><img src="https://i.imgur.com/TfZsAu6.png" alt=""></p>
+<h2 id="1-Zabbix-Server"><a href="#1-Zabbix-Server" class="headerlink" title="1. Zabbix Server"></a>1. Zabbix Server</h2><p>Zabbix告警動作可以選擇腳本，這點非常強大，只要設好監控項到動作告警，剩下都可以交由腳本做進一步的呈現。</p>
+<p><strong>觸發器</strong></p>
+<p>創建觸發器。</p>
+<p><img src="https://i.imgur.com/DDrmZGD.png" alt=""></p>
+<p><strong>報警媒介</strong></p>
+<p>創建腳本<strong>RedisAlarm.py</strong>，當發報時會將觸發器的狀態寫入到Redis中。</p>
+<p>名稱：RedisAlarm<br>類型：<strong>“腳本”</strong><br>腳本名稱：RedisAlarm.py<br>(<br>    路經:/usr/local/share/zabbix/alertscripts,<br>    權限:777<br>)<br>腳本參數：<br>    {ALERT.SENDTO} 收件人地址<br>    {ALERT.SUBJECT} 主題<br>    {ALERT.MESSAGE} 詳細內容</p>
+<p><img src="https://i.imgur.com/yRbM7Kd.png" alt=""></p>
+<ul>
+<li><strong>創建腳本</strong></li>
+</ul>
+<p>RedisAlarm.py</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#!/home/zabbix/anaconda2/bin/python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line"># RedisAlarm.py</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">import sys</span><br><span class="line">import redis</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    # &#123;ALERT.SENDTO&#125;</span><br><span class="line">    rc = redis.StrictRedis(sys.argv[1].decode(&apos;utf8&apos;))</span><br><span class="line">    # &#123;ALERT.SUBJECT&#125;</span><br><span class="line">    status = sys.argv[2].decode(&apos;utf8&apos;)</span><br><span class="line">    # &#123;ALERT.MESSAGE&#125;</span><br><span class="line">    name = sys.argv[3].decode(&apos;utf8&apos;)</span><br><span class="line"></span><br><span class="line">    if &quot;OK&quot; in status:</span><br><span class="line">        rc.set(name,status)</span><br><span class="line">    else:</span><br><span class="line">        rc.set(name,status)</span><br></pre></td></tr></table></figure>
+<p><strong>用戶報警媒介”收件人”</strong></p>
+<p>設定收件人為RedisServerIP，設定完記得按<strong>更新</strong>。</p>
+<p><img src="https://i.imgur.com/FKbdwmx.png" alt=""></p>
+<p><strong>動作</strong></p>
+<ul>
+<li><p><strong>選擇觸發器</strong></p>
+<p>  一個動作可包含多個觸發器。</p>
+<p>  <img src="https://i.imgur.com/3ImQRyJ.png" alt=""></p>
+</li>
+<li><p><strong>操作步驟</strong></p>
+<p>  默认接收人：{TRIGGER.STATUS} 觸發器狀態<br>  默认信息：{TRIGGER.NAME} 觸發器名稱</p>
+<p>  <img src="https://i.imgur.com/Sb7MmhR.png" alt=""></p>
+</li>
+<li><p><strong>恢复操作步驟</strong></p>
+<p>  默认接收人：{TRIGGER.STATUS} 觸發器狀態<br>  默认信息：{TRIGGER.NAME} 觸發器名稱</p>
+<p>  <img src="https://i.imgur.com/vZCFZdF.png" alt=""></p>
+</li>
+</ul>
+<h2 id="2-Redis-Server"><a href="#2-Redis-Server" class="headerlink" title="2. Redis Server"></a>2. Redis Server</h2><p>Redis Server是一個Key,Velue的數據庫，默認數據是存於內存的，擁有極快的存取速度，通常用於緩存資料使用。</p>
+<p><strong>建立初始資料</strong></p>
+<p>先確保Redis可否連接，在新增<strong>觸發器名稱</strong>作為<strong>Redis Key</strong>，這邊用一個簡單的腳本新增。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import redis</span><br><span class="line">r = redis.StrictRedis(&quot;127.0.0.1&quot;)</span><br><span class="line"></span><br><span class="line"># Check redis server</span><br><span class="line">try:</span><br><span class="line">    r.ping()</span><br><span class="line">except Exception as e:</span><br><span class="line">    print &quot;RedisServer Error&quot;</span><br><span class="line"></span><br><span class="line"># Add redis keys</span><br><span class="line">items = [&quot;Google&quot;,&quot;Modem&quot;,&quot;Negix1&quot;,&quot;Negix2&quot;]</span><br><span class="line">[r.set(i,&quot;OK&quot;) for i in items]</span><br><span class="line">print r.keys()</span><br></pre></td></tr></table></figure>
+<p>先全部新增為”OK”，不然後面Get不到值會出錯。</p>
+<h2 id="3-Zabbix-Alarm-Client"><a href="#3-Zabbix-Alarm-Client" class="headerlink" title="3. Zabbix Alarm Client"></a>3. Zabbix Alarm Client</h2><p>利用Wxpython製作一個實時監測Zabbix監控項的小程序。</p>
+<p>完成圖<br><img src="https://i.imgur.com/WE1PjE4.jpg" alt=""></p>
+<p>wxpython</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Docker 邊做邊學(4) Dockerfile+Dockcompose/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noyoung Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/Docker 邊做邊學(4) Dockerfile+Dockcompose/" itemprop="url">Docker 邊做邊學 (4) Dockerfile+Dockcompose</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:05:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>以tomcat+Jenkins為例，透過Dockerfile到jenkins官方下載war包同時構建鏡像，最後用Dockcompose創建容器。</p>
+<ol>
+<li>新建檔案 <code>Dockerfile</code> 並貼上以下內容：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FROM tomcat:latest</span><br><span class="line">RUN wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war</span><br><span class="line">RUN cp jenkins.war /usr/local/tomcat/webapps/jenkins.war</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>新建檔案 <code>docker-compose.yml</code> 並貼上以下內容：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">version: &apos;2&apos;</span><br><span class="line">services:</span><br><span class="line">  tomcat:</span><br><span class="line">    build: .</span><br><span class="line">    ports:</span><br><span class="line">    - 8085:8080/tcp</span><br><span class="line">    - 50005:50000/tcp</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>啟動</li>
+</ol>
+<ul>
+<li>docker-compose</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d --build</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/iRewP8x.jpg" alt=""></p>
+<ul>
+<li>docker ps</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                                              NAMES</span><br><span class="line">3d4d47d03920        jenkins_tomcat      &quot;catalina.sh run&quot;   3 minutes ago       Up 3 minutes        0.0.0.0:8085-&gt;8080/tcp, 0.0.0.0:50005-&gt;50000/tcp   jenkins_tomcat_1</span><br></pre></td></tr></table></figure>
+<ul>
+<li>docker images</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">jenkins_tomcat      latest              49636ae7145a        10 minutes ago      614MB</span><br><span class="line">tomcat              latest              9f1191b287da        2 weeks ago         465MB</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>訪問Jenkins</li>
+</ol>
+<p><img src="https://i.imgur.com/JaDpyDY.jpg" alt=""></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(5) 郵件告警/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noyoung Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/Zabbix學習筆記(5) 郵件告警/" itemprop="url">Zabbix學習筆記(5) 郵件告警</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:05:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
+                    <span itemprop="name">Zabbix</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>設置完觸發器已經可以在前端消息中報警，但這並不方便，若沒有登入Zabbix或人不在位置上，就無法實時得到告警信息。</p>
+<p>使用郵件告警來加強提醒效果，通常設置郵件告警有兩種方式，一種是Zabbix內建的郵件模板，另一種是自己寫python或sh腳本來實現。下面介紹的是第二種方法：利用python發信告警。</p>
+<h2 id="1-Python腳本"><a href="#1-Python腳本" class="headerlink" title="1. Python腳本"></a>1. Python腳本</h2><p>Zabbix可結合腳本告警，而用Python發信非常方便，只要是Linux系統通常都有內置Python，其中CentOS的yum工具就是用Python2所寫，如果要安裝Python3要留意避免版本衝突問題。</p>
+<p><strong>低安全性</strong></p>
+<p>要使用Gmail的話，需先至<a href="https://myaccount.google.com/lesssecureapps" target="_blank" rel="noopener">低安全性應用程式</a>網頁中開放存取權限，否則會無法發送成功。</p>
+<p><img src="https://i.imgur.com/QCyKuve.png" alt=""></p>
+<p><strong>腳本路經</strong></p>
+<p>默認路徑：<code>/usr/local/share/zabbix/alertscripts</code></p>
+<p>也可以透過<strong>設定檔</strong>查看更改成其他路徑：<code>/usr/local/etc/zabbix_server.conf</code></p>
+<p><strong>創建Python腳本</strong></p>
+<p>Python標準庫已內建SMTP模塊，不需安裝其他依賴，直接寫好腳本就可以發信。</p>
+<blockquote>
+<p>創建一個Python腳本並命名為<code>zabbix-alert-smtp.py</code>。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line">Zabbix SMTP Alert script for gmail.</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">import sys</span><br><span class="line">import smtplib</span><br><span class="line">from email.MIMEText import MIMEText</span><br><span class="line">from email.Header import Header</span><br><span class="line">from email.Utils import formatdate</span><br><span class="line"></span><br><span class="line"># Mail Account</span><br><span class="line">MAIL_ACCOUNT = &apos;your_account@gmail.com&apos;</span><br><span class="line">MAIL_PASSWORD = &apos;xxxx&apos;</span><br><span class="line"></span><br><span class="line"># Sender Name</span><br><span class="line">SENDER_NAME = u&apos;Zabbix Server Alert&apos;</span><br><span class="line"></span><br><span class="line"># Mail Server</span><br><span class="line">SMTP_SERVER = &apos;smtp.gmail.com&apos;</span><br><span class="line">SMTP_PORT = 587</span><br><span class="line"></span><br><span class="line">def send_mail(recipient, subject, body, encoding=&apos;utf-8&apos;):</span><br><span class="line"></span><br><span class="line">    msg = MIMEText(body, &apos;plain&apos;, encoding)</span><br><span class="line">    msg[&apos;Subject&apos;] = Header(subject, encoding)</span><br><span class="line">    msg[&apos;From&apos;] = Header(SENDER_NAME, encoding)</span><br><span class="line">    msg[&apos;To&apos;] = recipient</span><br><span class="line">    msg[&apos;Date&apos;] = formatdate()</span><br><span class="line"></span><br><span class="line">    session = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)</span><br><span class="line">    session.ehlo()</span><br><span class="line">    session.starttls()</span><br><span class="line">    session.ehlo()</span><br><span class="line">    session.login(MAIL_ACCOUNT, MAIL_PASSWORD)</span><br><span class="line">    session.sendmail(MAIL_ACCOUNT, recipient, msg.as_string())</span><br><span class="line"></span><br><span class="line">    # close session</span><br><span class="line">    session.quit()</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    send_mail(recipient=sys.argv[1],subject=sys.argv[2],body=sys.argv[3])</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>小說明</strong></p>
+<p>  輸入自己Gmail的帳密</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MAIL_ACCOUNT = &apos;your_account@gmail.com&apos;</span><br><span class="line">MAIL_PASSWORD = &apos;xxxx&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<pre><code>命令列參數
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">send_mail(recipient=sys.argv[1],subject=sys.argv[2],body=sys.argv[3])</span><br><span class="line">sys.argv開頭的皆為命令列參數，後面會在補充與Zabbix的對應位置，方便理解為何此處要用命令列參數。</span><br><span class="line">recipient 收件人</span><br><span class="line">subject 主旨</span><br><span class="line">body 內文</span><br></pre></td></tr></table></figure>
+</code></pre><p><strong>測試腳本</strong></p>
+<p>寄一封信給自己，主旨為”測試”，內文為”給自己”</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python zabbix-alert-smtp.py ceshizhanghu1001@gmail.com 測試 給自己</span><br></pre></td></tr></table></figure>
+<p><strong>寄送成功</strong></p>
+<p><img src="https://i.imgur.com/yFau5v3.png" alt=""></p>
+<h2 id="2-設定報警媒介"><a href="#2-設定報警媒介" class="headerlink" title="2. 設定報警媒介"></a>2. 設定報警媒介</h2><p>報警媒介可以依類型”電子郵件”、”短信”、”腳本”等，待觸發器發報時一併報警。</p>
+<p><strong>创建媒体类型</strong></p>
+<p>選單：”管理” -&gt; “報警媒介類型” -&gt; <strong>“创建媒体类型”</strong></p>
+<p><img src="https://i.imgur.com/2uwk6j2.png" alt=""></p>
+<p><strong>腳本信息</strong></p>
+<p>名稱：Gmail<br>類型：<strong>“腳本”</strong><br>腳本名稱：zabbix-alert-smtp.py<br>(<br>    路經:/usr/local/share/zabbix/alertscripts,<br>    權限:777<br>)<br>腳本參數：<br>    {ALERT.SENDTO} 收件人地址<br>    {ALERT.SUBJECT} 主題<br>    {ALERT.MESSAGE} 詳細內容</p>
+<p>以上輸入的三個腳本參數，也就對應著py腳本的<strong>命令列參數</strong>，權限需留意否則無法發送成功。</p>
+<p><img src="https://i.imgur.com/W0y5U4C.png" alt=""></p>
+<p><strong>添加完成</strong></p>
+<p><img src="https://i.imgur.com/XLuxLK1.png" alt=""></p>
+<h2 id="3-設定用戶報警媒介”收件人”"><a href="#3-設定用戶報警媒介”收件人”" class="headerlink" title="3. 設定用戶報警媒介”收件人”"></a>3. 設定用戶報警媒介”收件人”</h2><p><strong>選擇用戶</strong></p>
+<p>選單：”管理” -&gt; “用戶” -&gt; <strong>“Admin”</strong></p>
+<p><img src="https://i.imgur.com/13yT1Qm.png" alt=""></p>
+<p><strong>添加報警媒介</strong></p>
+<p>選單：”報警媒介” -&gt; “添加”</p>
+<p><img src="https://i.imgur.com/6f7W8lT.png" alt=""></p>
+<p><strong>報警媒介信息</strong></p>
+<p>類型：Gmail<br>收件人：<a href="mailto:ceshizhanghu1001@gmail.com" target="_blank" rel="noopener">ceshizhanghu1001@gmail.com</a>(測試)</p>
+<blockquote>
+<p>收件人地址，實際上是與腳本參數<strong>“{ALERT.SENDTO}”</strong>對應的。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/ONGE2zi.png" alt=""></p>
+<p><strong>添加完成</strong></p>
+<p>確認信息後按更新完成添加。</p>
+<p><img src="https://i.imgur.com/rzu8Ryz.png" alt=""></p>
+<h2 id="4-設定動作"><a href="#4-設定動作" class="headerlink" title="4. 設定動作"></a>4. 設定動作</h2><p>選單：”配置” -&gt; “動作” -&gt; <strong>“創建動作”</strong></p>
+<p><img src="https://i.imgur.com/OJUdmg1.png" alt=""></p>
+<p><strong>動作信息</strong></p>
+<p>名稱：Nginx1<br>條件：触发器 = PingHost: Nginx1</p>
+<p><img src="https://i.imgur.com/g6g9MVh.png" alt=""></p>
+<p><strong>操作信息</strong></p>
+<p>默認接收人：(不變)<br>默認信息：(不變)<br>操作細節：添加”用戶”及”報警媒介”</p>
+<blockquote>
+<p>默認接收人及默認信息，實際上就是對應腳本參數<strong>“{ALERT.SUBJECT}”</strong>及<strong>“{ALERT.MESSAGE}”</strong>。若不希望接收訊息時都是全英文，那麼可以將非<strong>{}</strong>的文字改成中文，這樣並不會影響功能。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/09nc4YV.png" alt=""></p>
+<p><strong>恢復操作信息</strong></p>
+<p>這部分與操作分頁設定相同，記得要添加操作細節(用戶及報警媒介)。</p>
+<p><img src="https://i.imgur.com/wVY3SiN.png" alt=""></p>
+<p><strong>動作添加完成</strong></p>
+<p><img src="https://i.imgur.com/dzd5ufC.png" alt=""></p>
+<h2 id="5-發信告警"><a href="#5-發信告警" class="headerlink" title="5. 發信告警"></a>5. 發信告警</h2><p>由步驟”腳本”到”動作”設置完畢後，只要每當異常、恢復都會發信通知一次。</p>
+<p><strong>動作日誌</strong></p>
+<p>選單：”報表” -&gt; <strong>“動作日誌”</strong></p>
+<p>Zabbix3.0以後新增的<strong>動作日誌</strong>功能非常好用，動作內容及是否成功通通都會顯示在這裡。</p>
+<p><img src="https://i.imgur.com/ZIndvdz.png" alt=""></p>
+<p><strong>異常時通知</strong></p>
+<p><img src="https://i.imgur.com/jKaVCyf.png" alt=""></p>
+<p><strong>恢復時通知</strong></p>
+<p><img src="https://i.imgur.com/v8Roflw.png" alt=""></p>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>一開始接觸會認為步驟繁瑣了點，其實配置上都是圍繞著<strong>腳本參數</strong>所關聯的，明白其中相關關係，做出更多報警如：Telegram、Line、微信等都是沒有問題的。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/瀏覽器自動化(5) Selenium + Scrapy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noyoung Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/瀏覽器自動化(5) Selenium + Scrapy/" itemprop="url">瀏覽器自動化(5) Selenium + Scrapy</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:05:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Selenium/" itemprop="url" rel="index">
+                    <span itemprop="name">Selenium</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>安裝模塊</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">selenium</span><br><span class="line">scrapy</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>selenium<br>主要先用於登入或js互動，剩餘的在使用scrapy進行爬取。</p>
+</li>
+<li><p>scrapy</p>
+</li>
+</ol>
+<p>Scrapy 是一个爬蟲框架,同時支持異步、多線程、速度非常快、高效，適合爬取海量數據及一層一層的爬取，</p>
+<p><a href="https://doc.scrapy.org/en/latest/" target="_blank" rel="noopener">官方文檔</a></p>
+<p>如何使用</p>
+<ul>
+<li>命令行調試</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">scrapy shell https://doc.scrapy.org/en/latest/_static/selectors-sample1.html</span><br><span class="line"># 會進入交互模式</span><br><span class="line">&gt;&gt;&gt; response.url # 查看當前url</span><br><span class="line">&apos;https://doc.scrapy.org/en/latest/_static/selectors-sample1.html&apos;</span><br><span class="line">&gt;&gt;&gt; response.status  # 查看response狀態</span><br><span class="line">200</span><br><span class="line">&gt;&gt;&gt; response.selector.xpath(&apos;//title/text()&apos;) # 選擇xpath</span><br><span class="line">[&lt;Selector (text) xpath=//title/text()&gt;] </span><br><span class="line">&gt;&gt;&gt; sel.xpath(&quot;.//a//@href&quot;).extract() # 獲取所有a標籤的url</span><br><span class="line">[&apos;image1.html&apos;, &apos;image2.html&apos;, &apos;image3.html&apos;, &apos;image4.html&apos;, &apos;image5.html&apos;]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>python 調試</li>
+</ul>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> scrapy.selector <span class="keyword">import</span> Selector</span><br><span class="line"></span><br><span class="line">browser = webdriver.Chrome()</span><br><span class="line"></span><br><span class="line">browser.get(<span class="string">"https://w3.iiiedu.org.tw/"</span>)</span><br><span class="line"></span><br><span class="line">sel = Selector(text=browser.page_source)</span><br><span class="line"></span><br><span class="line">titles = sel.xpath(<span class="string">".//*[@id='centerBodyBox_seminar']//a//text()"</span>).extract()</span><br><span class="line"></span><br><span class="line">print([t <span class="keyword">for</span> t <span class="keyword">in</span> titles])</span><br></pre></td></tr></table></figure>
+<p>輸出:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[&apos;&lt;免費研討會&gt; FB行銷@在地生活圈研討會&apos;,</span><br><span class="line"> &apos;AR/VR創新應用與視覺優化講座&apos;,</span><br><span class="line"> &apos;【免費】數位轉型系列講座：數位轉型趨勢和行動方案解析&apos;,</span><br><span class="line"> &apos;【免費】數位轉型系列講座：數位轉型勢在必行&apos;,</span><br><span class="line"> &apos;【免費】數位轉型系列講座：AIoT切入智慧醫療與照護的下一波革命&apos;,</span><br><span class="line"> &apos;【免費】數位轉型系列講座： AI電腦視覺讓你看得更清楚&apos;,</span><br><span class="line"> &apos;【免費】數位轉型系列講座：AI塑造新零售、新體驗&apos;,</span><br><span class="line"> &apos;【免費】數位轉型系列講座：AI金融科技的新突破 &apos;,</span><br><span class="line"> &apos;【免費】數位轉型系列講座：AI迎向精準行銷的數位革命&apos;,</span><br><span class="line"> &apos;【免費】數位轉型系列講座：深度學習與各類影像應用&apos;,</span><br><span class="line"> &apos;【免費】數位轉型系列講座： 數位轉型怎麼做？從企業戰略到人力資本之導入步驟及方法&apos;,</span><br><span class="line"> &apos;【免費】數位轉型系列講座：AI啟動無人機的未來商業&apos;,</span><br><span class="line"> &apos;【免費】數位轉型系列講座： AIoT產業智慧轉型的發展模式&apos;]</span><br></pre></td></tr></table></figure></p>
+<h1 id="啟動"><a href="#啟動" class="headerlink" title="啟動"></a>啟動</h1><ul>
+<li>新建專案項目</li>
+</ul>
+<p>建立專案</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scrapy startproject tutorial</span><br></pre></td></tr></table></figure>
+<p>查看目錄</p>
+<p>在終端輸入命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tree tutorial</span><br></pre></td></tr></table></figure></p>
+<p>新建一個myspider.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">tutorial/</span><br><span class="line">├── tutorial</span><br><span class="line">│   ├── __init__.py</span><br><span class="line">│   ├── items.py</span><br><span class="line">│   ├── middlewares.py</span><br><span class="line">│   ├── pipelines.py</span><br><span class="line">│   ├── __pycache__</span><br><span class="line">│   ├── settings.py</span><br><span class="line">│   └── spiders</span><br><span class="line">│       ├── __init__.py</span><br><span class="line">│       ├── myspider.py # 新建</span><br><span class="line">│       └── __pycache__</span><br><span class="line">└── scrapy.cfg</span><br></pre></td></tr></table></figure></p>
+<p>myspider.py<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> scrapy</span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> scrapy.selector <span class="keyword">import</span> Selector</span><br><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">mySpider</span><span class="params">(scrapy.Spider)</span>:</span></span><br><span class="line">    name = <span class="string">"mySpider"</span></span><br><span class="line"></span><br><span class="line">    start_urls = [<span class="string">"https://doc.scrapy.org/en/latest/_static/selectors-sample1.html"</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="comment"># 定義webdriver</span></span><br><span class="line">        self.browser = webdriver.Chrome()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse</span><span class="params">(self, response)</span>:</span></span><br><span class="line">        <span class="comment"># 先由self.browser進行請求</span></span><br><span class="line">        self.browser.get(response.url)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 用scrapy選擇器獲取selenium的頁面源代碼</span></span><br><span class="line">        sel = Selector(text=self.browser.page_source)</span><br><span class="line"></span><br><span class="line">        baseurl = sel.xpath(<span class="string">'//base/@href'</span>).extract_first()</span><br><span class="line">        <span class="comment"># 'http://example.com/'</span></span><br><span class="line"></span><br><span class="line">        links = sel.xpath(<span class="string">".//a//@href"</span>).extract()</span><br><span class="line">        <span class="comment"># ['image1.html', 'image2.html', 'image3.html', 'image4.html', 'image5.html']</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> links:</span><br><span class="line">            request = scrapy.Request(baseurl + i,</span><br><span class="line">                                     callback=self.parse_2,</span><br><span class="line">                                     )</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse_2</span><span class="params">(self, response)</span>:</span></span><br><span class="line">        <span class="string">'''進入下一個頁面'''</span></span><br><span class="line">        print(response.url)</span><br></pre></td></tr></table></figure></p>
+<p>執行</p>
+<blockquote>
+<p>scrapy crawl <name><br>name為mySpider.py裡頭定義的name，並非腳本或項目名。</name></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scrapy crawl mySpider</span><br></pre></td></tr></table></figure>
+<h1 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h1><p>scrapy除了使用上比較繁瑣一點，基本上使用上沒什麼缺點。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Docker 邊做邊學(3) 使用Dockerfile構建鏡像/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noyoung Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/Docker 邊做邊學(3) 使用Dockerfile構建鏡像/" itemprop="url">Docker 邊做邊學 (3) 使用Dockerfile構建鏡像</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:04:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Docker提供Dockerfile方法自動構建鏡像，只有將命令寫在Dockerfile檔案中，使用build方法就能一步一步自動構建鏡像，非常高效。</p>
+<ol>
+<li>準備或建立html檔案</li>
+</ol>
+<p>新增 <code>index.html</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;h1&gt;hello&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>創建檔案 <code>Dockerfile</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># VERSION 1</span><br><span class="line"># Author: Noyoung Guo</span><br><span class="line"></span><br><span class="line">FROM centos</span><br><span class="line"></span><br><span class="line">MAINTAINER noyoung noyoungit@gmail.com</span><br><span class="line"></span><br><span class="line">RUN rpm -ivh http://mirrors.aliyun.com/epel/epel-release-latest-7.noarch.rpm</span><br><span class="line">RUN yum install -y nginx</span><br><span class="line"></span><br><span class="line">ADD index.html /usr/share/nginx/html/index.html</span><br><span class="line"></span><br><span class="line">RUN echo &quot;daemon off;&quot; &gt;&gt; /etc/nginx/nginx.conf</span><br><span class="line"></span><br><span class="line">EXPOSE 80</span><br><span class="line">cmd [&quot;nginx&quot;]</span><br></pre></td></tr></table></figure>
+<p>Docker file 撰寫方式:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">From 來源</span><br><span class="line">Maintainer 選擇性，記錄作者與聯絡方式</span><br><span class="line">Run 建立IMAGE的過程，執行的指令</span><br><span class="line">WorkDIR 切換工作的路徑</span><br><span class="line">ADD 新增本機端的檔案或目錄到IMAGE內</span><br><span class="line">ENV 設定環境變數</span><br><span class="line">EXPOSE 端口</span><br><span class="line">VOLUME 數據卷</span><br><span class="line">CMD 命令</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>build Dockerfile</li>
+</ol>
+<p>最後的<code>.</code>就是當前目錄(Dockerfile檔案位置)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t noyoung/mynginx:v3 .</span><br></pre></td></tr></table></figure>
+<p>Options:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-t 選擇以&apos;name:tag&apos;格式的鏡像</span><br></pre></td></tr></table></figure></p>
+<ol start="4">
+<li>創建基於<code>noyoung/mynginx:v3</code>的容器</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 83:80 noyoung/mynginx:v3</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>訪問服務頁面</li>
+</ol>
+<p><img src="https://i.imgur.com/HYSDgDB.jpg" alt=""></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(4) 創建圖形/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noyoung Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/Zabbix學習筆記(4) 創建圖形/" itemprop="url">Zabbix學習筆記(4) 創建圖形</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:04:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
+                    <span itemprop="name">Zabbix</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>單個監控項的圖形都是獨立的，若要同時比較多主機、多監控項，就需要創建自定圖形。</p>
+<h2 id="監控項"><a href="#監控項" class="headerlink" title="監控項"></a>監控項</h2><blockquote>
+<p>創建圖形之前必須建立好監控項。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/9ev7cAC.png" alt=""></p>
+<h2 id="1-創建圖形"><a href="#1-創建圖形" class="headerlink" title="1. 創建圖形"></a>1. 創建圖形</h2><p>先選擇主機在創建圖形。</p>
+<p><img src="https://i.imgur.com/lcsp3iQ.png" alt=""></p>
+<h2 id="2-設置圖形"><a href="#2-設置圖形" class="headerlink" title="2. 設置圖形"></a>2. 設置圖形</h2><p><strong>加入監控項</strong></p>
+<p>將希望同時比較的監控項都加入到圖形中。</p>
+<p><img src="https://i.imgur.com/BY7hlTO.png" alt=""></p>
+<p><strong>調整顯示功能</strong></p>
+<p>功能選擇所有，這樣查看圖形時除了最新之外的”最小”、”平均”、”最大”都會顯示。</p>
+<p><img src="https://i.imgur.com/HQEK68l.png" alt=""></p>
+<h2 id="3-設置完成"><a href="#3-設置完成" class="headerlink" title="3. 設置完成"></a>3. 設置完成</h2><p><strong>查看圖形</strong></p>
+<p><img src="https://i.imgur.com/FghRq87.png" alt=""></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/瀏覽器自動化(4) Selenium + Beautiful Soup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noyoung Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/瀏覽器自動化(4) Selenium + Beautiful Soup/" itemprop="url">瀏覽器自動化(4) Selenium + Beautiful Soup</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:04:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Selenium/" itemprop="url" rel="index">
+                    <span itemprop="name">Selenium</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>安裝模塊</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">selenium</span><br><span class="line">requests</span><br><span class="line">beautifulsoup4</span><br></pre></td></tr></table></figure>
+<ol>
+<li>selenium<br>主要用於登入或js互動，剩餘的在使用bs4進行爬取。</li>
+</ol>
+<ol start="2">
+<li>requests<br>能模擬http請求，如:get、post、put、delete，通常是爬取分頁或a標籤時用到。</li>
+</ol>
+<p><a href="http://docs.python-requests.org/zh_CN/latest/user/quickstart.html" target="_blank" rel="noopener">官方文檔</a></p>
+<p>如何使用</p>
+<p>模擬請求</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r = requests.get(&apos;https://api.github.com/events&apos;)</span><br></pre></td></tr></table></figure>
+<p>查看請求狀態</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r.status_code</span><br><span class="line">輸出:</span><br><span class="line">&gt;&gt;&gt; 200</span><br></pre></td></tr></table></figure>
+<p>取得請求html內容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r.text</span><br><span class="line">輸出:</span><br><span class="line">&gt;&gt;&gt; &apos;&lt;!doctype html&gt;&lt;html itemscope=&quot;&quot; itemtype=&quot;http://schema.org/WebPage&quot; lang=&quot;zh-TW&quot;&gt;&lt;head&gt;&lt;meta content=&quot;text/html; charset=UTF-8&quot; http-equiv=&quot;Content-Type&quot;&gt;&lt;meta content=&quot;/images/branding/googleg/1x/googleg_standard_color_128dp.png&quot; ...&lt;/html&gt;&apos;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>Beautiful Soup<br>Beautiful Soup能解析html，能快速尋找標籤內容，也可以透過CSS選擇器快速尋找帶有標籤屬性的內容。</li>
+</ol>
+<p><a href="http://beautifulsoup.readthedocs.io/zh_CN/latest/" target="_blank" rel="noopener">官方文檔</a></p>
+<p>如何使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">import requests</span><br><span class="line">web_data = requests.get(&apos;https://api.github.com/events&apos;)</span><br><span class="line">soup = BeautifulSoup(web_data, &apos;lxml&apos;) #解析Html</span><br><span class="line">soup.title</span><br></pre></td></tr></table></figure>
+<h1 id="啟動"><a href="#啟動" class="headerlink" title="啟動"></a>啟動</h1><h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>selenium_bs4_demo1.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from bs4 import BeautifulSoup</span><br><span class="line"></span><br><span class="line">from selenium import webdriver</span><br><span class="line"></span><br><span class="line">browser = webdriver.Firefox()</span><br><span class="line">browser.get(&apos;https://w3.iiiedu.org.tw/&apos;)</span><br><span class="line">wb_html = browser.page_source</span><br><span class="line">soup = BeautifulSoup(wb_html,&quot;lxml&quot;)</span><br></pre></td></tr></table></figure></p>
+<h1 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h1><p>大部分網頁都用requests都能獲取，用到selenium情況比較少，有登入或js需求可以參考，在此紀錄心得。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(3) 創建觸發器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noyoung Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/Zabbix學習筆記(3) 創建觸發器/" itemprop="url">Zabbix學習筆記(3) 創建觸發器</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:03:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
+                    <span itemprop="name">Zabbix</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>觸發器可針對監控項設置警報等級及發報時機。</p>
+<h2 id="監控項"><a href="#監控項" class="headerlink" title="監控項"></a>監控項</h2><blockquote>
+<p>創建觸發器之前必須建立好監控項。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/9ev7cAC.png" alt=""></p>
+<h2 id="1-創建觸發器"><a href="#1-創建觸發器" class="headerlink" title="1. 創建觸發器"></a>1. 創建觸發器</h2><p>先選擇主機在創建觸發器。</p>
+<p><img src="https://i.imgur.com/xGIoaKP.png" alt=""></p>
+<p><strong>進入觸發器頁面</strong></p>
+<p><img src="https://i.imgur.com/HSmpCgU.png" alt=""></p>
+<h2 id="2-如何設置觸發器"><a href="#2-如何設置觸發器" class="headerlink" title="2. 如何設置觸發器"></a>2. 如何設置觸發器</h2><p><strong>創建需求</strong></p>
+<p>先列出創建需求，舉例：目前我希望根據監測Nginx1的實時情況，若<strong>timeout</strong>或<strong>超時200毫秒</strong>就發報。</p>
+<p><strong>如何填寫表達式</strong></p>
+<p>初次使用可以點擊表達式空白輸入匡下方的<strong>“表達式構造器”</strong>，幫助構造。</p>
+<p><img src="https://i.imgur.com/U9thjYm.png" alt=""></p>
+<ul>
+<li><p>表達式之一 <strong>timeout</strong></p>
+<p>  創建第一個表達式，若<strong>timeout</strong>時就發報。</p>
+</li>
+</ul>
+<ol>
+<li><p>點擊編輯</p>
+<p> <img src="https://i.imgur.com/80NGlyW.png" alt=""></p>
+</li>
+<li><p>進入條件頁面進行設置</p>
+<p> 監控項：<code>PingHost: Nginx1</code><br> 功能：<code>最新的T值 = N</code><br> 值：<code>0</code></p>
+<blockquote>
+<p>即PingHost主機下的Nginx1監控項當監測等於0(無服務)時，將立即發報。</p>
+</blockquote>
+<p> <img src="https://i.imgur.com/5Cdfmpa.png" alt=""></p>
+</li>
+<li><p>確認添加</p>
+<p> 確認無誤，點擊添加。</p>
+<p> <img src="https://i.imgur.com/eHeJ1LY.png" alt=""></p>
+</li>
+</ol>
+<ul>
+<li>表達式之二 <strong>超時200毫秒</strong></li>
+</ul>
+<ol>
+<li><p>點擊編輯</p>
+<p> <img src="https://i.imgur.com/80NGlyW.png" alt=""></p>
+</li>
+<li><p>進入條件頁面進行設置</p>
+<p> 監控項：<code>PingHost: Nginx1</code><br> 功能：<code>最新的T值 &gt; N</code><br> 值：<code>200</code></p>
+<blockquote>
+<p>即PingHost主機下的Nginx1監控項當監測<strong>超時200毫秒</strong>時，將立即發報。</p>
+</blockquote>
+<p> <img src="https://i.imgur.com/5qW111N.png" alt=""></p>
+</li>
+<li><p>確認添加</p>
+<p> 確認無誤，點擊’或’。</p>
+<p> <img src="https://i.imgur.com/Ce39EQ8.png" alt=""></p>
+</li>
+</ol>
+<p><strong>填寫內容</strong></p>
+<p>對應填寫內容如下，填寫完畢後要在頁面最下方點擊<strong>添加</strong>。</p>
+<p><img src="https://i.imgur.com/C84d30n.png" alt=""></p>
+<p><strong>填寫完畢</strong></p>
+<p>觸發器建立完成。</p>
+<p><img src="https://i.imgur.com/L9aGYk3.png" alt=""></p>
+<h2 id="3-設置前端提醒"><a href="#3-設置前端提醒" class="headerlink" title="3. 設置前端提醒"></a>3. 設置前端提醒</h2><p><strong>進入用戶基本資料</strong></p>
+<p><img src="https://i.imgur.com/L2SQbIr.png" alt=""></p>
+<p><strong>選擇正在發送消息</strong></p>
+<p>將<strong>恢復</strong>及<strong>災難</strong>或全部打勾後更新。</p>
+<p><img src="https://i.imgur.com/KnDDOK5.png" alt=""></p>
+<h2 id="4-設置完成"><a href="#4-設置完成" class="headerlink" title="4. 設置完成"></a>4. 設置完成</h2><p>觸發器及前端提醒皆已設置完成，當符合觸發器問題時，只要有登入Zabbix，警報都會彈出泡泡及聲音提醒。</p>
+<p><strong>警報發生</strong></p>
+<p><img src="https://i.imgur.com/plMe8yH.png" alt=""></p>
+<p><strong>警報恢復</strong></p>
+<p><img src="https://i.imgur.com/8dimVTC.png" alt=""></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Docker 邊做邊學(2) 製作鏡像 centos + nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noyoung Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/Docker 邊做邊學(2) 製作鏡像 centos + nginx/" itemprop="url">Docker 邊做邊學 (2) 製作鏡像 centos + nginx</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:03:00+08:00">
                 2018-06-08
               </time>
             
@@ -343,50 +1792,40 @@
         
           
             <ol>
-<li>啟動 Rancher Server</li>
+<li>創建並命名mynginx</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --restart=always -p 8080:8080 rancher/server</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.imgur.com/3KEBhJi.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name mynginx -it centos</span><br></pre></td></tr></table></figure>
+<p>容器內操作，安裝nginx</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@5de85a72b2c0 /]# rpm -ivh http://mirrors.aliyun.com/epel/</span><br><span class="line">[root@5de85a72b2c0 /]# epel-release-latest-7.noarch.rpm</span><br><span class="line">[root@5de85a72b2c0 /]# yum install -y nginx</span><br><span class="line">[root@5de85a72b2c0 /]# exit</span><br></pre></td></tr></table></figure>
 <ol start="2">
-<li>訪問Rancher Server頁面</li>
+<li>查看mynginx的ID</li>
 </ol>
-<p><img src="https://i.imgur.com/QQU0zaq.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a</span><br><span class="line"></span><br><span class="line">輸出:</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                          PORTS               NAMES</span><br><span class="line">5de85a72b2c0        centos              &quot;/bin/bash&quot;         3 minutes ago       Exited (0) About a minute ago                       mynginx</span><br></pre></td></tr></table></figure>
+<p>看到容器ID是<code>5de85a72b2c0</code></p>
 <ol start="3">
-<li>設定語言</li>
+<li>第一次製作鏡像</li>
 </ol>
-<p><img src="https://i.imgur.com/zBxK4W5.png" alt=""></p>
+<p>使用commit命令將容器製作為鏡像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit -m “mynginx” 5de85a72b2c0 noyung/mynginx:v1</span><br></pre></td></tr></table></figure>
+<p>運行完畢後，查看當前所有鏡像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+<p>這時候已經多出了一個新的鏡像</p>
+<p><img src="https://i.imgur.com/BEx8nYW.jpg" alt=""></p>
 <ol start="4">
-<li><p>添加 Rancher Agent</p>
-<p> <img src="https://i.imgur.com/LfSOTIm.png" alt=""></p>
-<p> 如果沒有特別的域名，直接點擊保存即可<br> <img src="https://i.imgur.com/0rJ267b.png" alt=""></p>
-<p> 將方框中的腳本，複製到Agent端執行<br> <img src="https://i.imgur.com/oHPXlAs.png" alt=""></p>
-<p> 例如 我的rencher Server及agent是同一臺主機，那麼直接貼上執行即可。<br> <img src="https://i.imgur.com/Q5v45vz.png" alt=""></p>
-<p> 執行完畢後，可以在主機列表中看到剛剛新增的主機。<br> <img src="https://i.imgur.com/WFjGfUB.png" alt=""></p>
-</li>
+<li>第二次製作鏡像</li>
 </ol>
-<ol start="5">
-<li>自定義應用</li>
-</ol>
-<p>測試在Rencher的第一個應用，這邊以Tomcat爲例。</p>
-<p>tomcat:latest<br>添加應用<br><img src="https://i.imgur.com/LBXIemT.png" alt=""></p>
-<p>輸入”應用名稱:myapp”後點擊創建。<br><img src="https://i.imgur.com/QgB5BZn.png" alt=""></p>
-<p>點擊”添加服務”<br><img src="https://i.imgur.com/BoAAgqy.png" alt=""></p>
-<p>服務中”名稱”可以自定義，”選擇鏡像：tomcat:lastet”(Rencher將會自動拉取鏡像)，端口映射部分由於Rencher已經定義了8080公開端口，因此新建的服務必須使用其他端口對應容器內的8080端口設定，這邊使用8081測試。<br><img src="https://i.imgur.com/fmncV99.png" alt=""></p>
-<p>拉到頁面下方看到這些設定可以不用管他，直接點擊創建。<br><img src="https://i.imgur.com/BypiDWQ.png" alt=""></p>
-<p>看到”Active”就代表正常啓動成功。<br><img src="https://i.imgur.com/GYReGFi.png" alt=""></p>
-<p>進入http://<server ip="">/8081網址，就可以看到Tomcat的頁面。<br><img src="https://i.imgur.com/s3vhsk3.png" alt=""></server></p>
-<ol start="6">
-<li>創建compose應用</li>
-</ol>
-<p>建立一個新的應用包含”MongoDB”的服務。</p>
-<p><strong>docker-compose.yml</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">version: &apos;2&apos;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  mongo:</span><br><span class="line">    image: &apos;mongo:latest&apos;</span><br><span class="line">    ports:</span><br><span class="line">      - &apos;27017:27017&apos;</span><br><span class="line">    volumes:</span><br><span class="line">      - &apos;/home/docker/workspace/mongo/data:/data/db&apos;</span><br><span class="line">    restart: always</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.imgur.com/vawZvcL.png" alt=""></p>
-<p><strong>Test TCP</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -vz 10.211.55.12 27017</span><br></pre></td></tr></table></figure>
-<p>測試TCP端口27017可不可連<br><img src="https://i.imgur.com/SonbGQ1.png" alt=""></p>
-<p><strong>Test GUI</strong></p>
-<p><img src="https://i.imgur.com/2WKMNUn.png" alt=""></p>
+<p>為剛才剛才建立好的鏡像加入一點內容</p>
+<p><strong>啟動新的容器</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name nginxv1 noyung/mynginx:v1</span><br></pre></td></tr></table></figure>
+<p><strong>在容器內，修改<code>nginx.conf</code>文件</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@00f79adf417e /]# vi /etc/nginx/nginx.conf</span><br></pre></td></tr></table></figure>
+<p>加入 <code>daemon off;</code> 後離開<code>exit</code></p>
+<p><strong>再次製作鏡像</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit -m “mynginx” dd99178fb0fb noyung/mynginx:v2</span><br></pre></td></tr></table></figure>
+<p><strong>啟動 V2 images</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 82:80 noyung/mynginx:v2 nginx</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/NKxVzOz.jpg" alt=""></p>
+<p>小總結<br>Docker可以根據自己需要的環境，慢慢打上服務配置製作鏡像，但是這樣的方式效率不太好，上面的步驟可以透過dockerfile搞定。</p>
 
           
         
@@ -435,7 +1874,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/06. 瀏覽器自動化(6) Selenium Server/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/瀏覽器自動化(3) Selenium 使用OCR 簡易破解驗證碼/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Noyoung Guo">
@@ -454,7 +1893,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/06. 瀏覽器自動化(6) Selenium Server/" itemprop="url">瀏覽器自動化(6) Selenium Server</a></h1>
+                <a class="post-title-link" href="/2018/06/08/瀏覽器自動化(3) Selenium 使用OCR 簡易破解驗證碼/" itemprop="url">瀏覽器自動化(3) Selenium 使用OCR 簡易破解驗證碼</a></h1>
         
 
         <div class="post-meta">
@@ -466,7 +1905,7 @@
               
                 <span class="post-meta-item-text">發表於</span>
               
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T23:26:30+08:00">
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:03:00+08:00">
                 2018-06-08
               </time>
             
@@ -528,1429 +1967,61 @@
       
         
           
-            <p>selenium-server可支持遠程操作，而cilent端要使用selenium，直接遠程調用selenium-server，支持多系統平台或多版本瀏覽器同時測試，因為是由clinet進行控制，selenium服務器也不用拉取腳本，非常方便管理。</p>
-<h1 id="基本環境"><a href="#基本環境" class="headerlink" title="基本環境"></a>基本環境</h1><ol>
-<li>java</li>
+            <ol>
+<li>Tesseract OCR</li>
 </ol>
-<p>必須先安裝java，選擇jre即可。</p>
-<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html" target="_blank" rel="noopener">官網下載</a></p>
-<ol start="2">
-<li>webdriver</li>
-</ol>
-<p>下載webdriver加到環境變數，一定要加入否則會無法驅動。</p>
-<p><a href="http://chromedriver.chromium.org/downloads" target="_blank" rel="noopener">ChromeDriver地址</a></p>
-<ol start="3">
-<li>selenium-server-standalone</li>
-</ol>
-<p>至官網下載最新版本selenium-server，需透過java啟動server。</p>
-<p><a href="https://www.seleniumhq.org/download/" target="_blank" rel="noopener">官網下載</a></p>
-<ol start="4">
-<li>python module <code>selenium</code></li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install selenium</span><br></pre></td></tr></table></figure>
-<h1 id="啟動"><a href="#啟動" class="headerlink" title="啟動"></a>啟動</h1><ul>
-<li>啟動 selenium-server</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar selenium-server-standalone-3.12.0.jar</span><br></pre></td></tr></table></figure>
-<p>啟動 默認是4444端口</p>
-<p><img src="https://i.imgur.com/pXAkrsO.jpg" alt=""></p>
-<p>網頁訪問</p>
-<p><img src="https://i.imgur.com/2gkheXH.jpg" alt=""></p>
-<p>進入console可以看到目前開啟了那些Sessions，點擊Take Screenshot會顯示當前畫面截圖。</p>
-<p><img src="https://i.imgur.com/xxXR3hA.jpg" alt=""></p>
+<p>tesseract 是 Google/HP 的一個開源項目，支持多系統，有預設引擎可以辨識，也可以自己訓練學習庫。</p>
 <ul>
-<li>client 腳本控制</li>
+<li>安裝 </li>
 </ul>
-<p>server與client可以是同一台，也可以分開，由於是瀏覽器自動化，分開的話會更好調試，也比較不會有搶屏的問題。</p>
-<p>官方文檔有說明驅動方式:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Usage Example::</span><br><span class="line"></span><br><span class="line">        from selenium import webdriver</span><br><span class="line"></span><br><span class="line">        selenium_grid_url = &quot;http://198.0.0.1:4444/wd/hub&quot;</span><br><span class="line"></span><br><span class="line">        # Create a desired capabilities object as a starting point.</span><br><span class="line">        capabilities = DesiredCapabilities.FIREFOX.copy()</span><br><span class="line">        capabilities[&apos;platform&apos;] = &quot;WINDOWS&quot;</span><br><span class="line">        capabilities[&apos;version&apos;] = &quot;10&quot;</span><br><span class="line"></span><br><span class="line">        # Instantiate an instance of Remote WebDriver with the desired capabilities.</span><br><span class="line">        driver = webdriver.Remote(desired_capabilities=capabilities,</span><br><span class="line">                                  command_executor=selenium_grid_url)</span><br><span class="line"></span><br><span class="line">    Note: Always use &apos;.copy()&apos; on the DesiredCapabilities object to avoid the side</span><br><span class="line">    effects of altering the Global class instance.</span><br></pre></td></tr></table></figure>
-<p><strong>remote_script1.py</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">from selenium.webdriver.common.desired_capabilities import DesiredCapabilities</span><br><span class="line">from selenium import webdriver</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">browser = webdriver.Remote(</span><br><span class="line">    command_executor=&apos;http://127.0.0.1:4444/wd/hub&apos;,</span><br><span class="line">    desired_capabilities=DesiredCapabilities.CHROME,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">browser.get(&quot;http://www.google.com&quot;)</span><br><span class="line"></span><br><span class="line">browser.quit()</span><br></pre></td></tr></table></figure>
-<p>DesiredCapabilities為瀏覽器的一些自定義，以下的說明文檔查看更多的配置。</p>
-<p><a href="https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities" target="_blank" rel="noopener">說明文檔</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DesiredCapabilities.CHROME # 默認的設置，返回的是字典類型</span><br><span class="line">&gt;&gt;&gt; &#123;&apos;browserName&apos;: &apos;chrome&apos;, &apos;version&apos;: &apos;&apos;, &apos;platform&apos;: &apos;ANY&apos;&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/07. Docker Selenium(1) 搭建/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Noyoung Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧學習筆記">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/07. Docker Selenium(1) 搭建/" itemprop="url">Docker Selenium(1) 搭建服務</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T23:26:30+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Selenium/" itemprop="url" rel="index">
-                    <span itemprop="name">Selenium</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Docker Selenium能讓Selenium在Docker中運行，可加速建置時間及獨立出各瀏覽器的版本<br>，保持了一定的隔離性，是非常好的測試環境。</p>
-<p><a href="https://github.com/SeleniumHQ/docker-selenium" target="_blank" rel="noopener">docker-selenium 官方文檔</a></p>
-<h1 id="鏡像介紹"><a href="#鏡像介紹" class="headerlink" title="鏡像介紹"></a>鏡像介紹</h1><p>selenium/hub: Grid Hub，相當於一個空白的Seleniun Server，<br>selenium/node-chrome: Chrome節點，需加入Grid Hub才能使用。<br>selenium/node-firefox: Firefox節點，需加入Grid Hub才能使用。<br>selenium/node-chrome-debug: Chrome節點，同時包含VNC Server，需加入Grid Hub才能使用。<br>selenium/node-firefox-debug: Firefox節點，同時包含VNC Server，需加入Grid Hub才能使用</p>
-<p>selenium/standalone-chrome: 包含Chrome的Seleniun Server，可直接調用。<br>selenium/standalone-firefox: 包含Chrome的Seleniun Server，可直接調用。<br>selenium/standalone-chrome-debug: 包含Chrome的Seleniun Server，同時包含VNC Server，可直接調用。<br>selenium/standalone-firefox-debug: 包含Chrome的Seleniun Server，同時包含VNC Server，可直接調用。</p>
-<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><h2 id="docker-conpose方法"><a href="#docker-conpose方法" class="headerlink" title="docker conpose方法"></a>docker conpose方法</h2><p>selenium 官方提供了docker compose方法，直接使用就可以輕鬆搭建了。</p>
-<p><a href="https://github.com/SeleniumHQ/docker-selenium#version-3" target="_blank" rel="noopener">官方連結</a></p>
+<p><a href="https://sourceforge.net/projects/tesseract-ocr-alt/files/" target="_blank" rel="noopener">windows 安裝檔 下載地址</a></p>
+<p>安裝後，須將OCR安裝路徑加入到環境變數，才能透過command辨識圖片文字。</p>
+<ul>
+<li>使用方法</li>
+</ul>
+<p>確認command可以調用tesseract</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tesseract</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/whYinJU.jpg" alt=""></p>
+<ol start="2">
+<li>Python Module pytesseract</li>
+</ol>
+<p>python直接調用本地tesseract ocr的模塊。</p>
+<ul>
+<li>安裝</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install pytesseract</span><br><span class="line">pip install pillow <span class="comment"># 還需安裝讀寫圖檔的模塊</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用方法</li>
+</ul>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">import</span> pytesseract</span><br><span class="line"></span><br><span class="line">i = Image.open(filename)</span><br><span class="line">pytesseract.image_to_string(i)</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>Selenium</li>
+</ol>
+<p>控制瀏覽器模擬輸入帳戶信息，透過ocr輸入驗證碼。</p>
+<h1 id="啟動"><a href="#啟動" class="headerlink" title="啟動"></a>啟動</h1><h2 id="機電在線-註冊頁面"><a href="#機電在線-註冊頁面" class="headerlink" title="機電在線 註冊頁面"></a>機電在線 註冊頁面</h2><p>以機電在線註冊頁面的驗證碼來測試tesseract的辨識效果如何。</p>
+<p><img src="https://i.imgur.com/V1B3H0B.jpg" alt=""></p>
+<p><strong>先寫幾個函數</strong></p>
+<ul>
+<li>依照元素大小截圖</li>
+</ul>
+<p><img src="https://i.imgur.com/LMkoRFj.jpg" alt=""></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 依照元素大小截圖</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">crop_screenshot</span><span class="params">(fullfile, cropfile, element)</span>:</span></span><br><span class="line">    browser.save_screenshot(fullfile)</span><br><span class="line">    <span class="keyword">if</span> element:</span><br><span class="line">        type = element[<span class="string">"type"</span>]</span><br><span class="line">        name = element[<span class="string">"name"</span>]</span><br><span class="line"></span><br><span class="line">        imgelement = browser.find_element_by_xpath(<span class="string">".//*[@%s=%r]"</span> % (type, name))</span><br><span class="line">        location = imgelement.location</span><br><span class="line">        size = imgelement.size</span><br><span class="line">        rangle = (int(location[<span class="string">'x'</span>]), int(location[<span class="string">'y'</span>]), int(</span><br><span class="line">            location[<span class="string">'x'</span>] + size[<span class="string">'width'</span>]), int(location[<span class="string">'y'</span>] + size[<span class="string">'height'</span>]))</span><br><span class="line"></span><br><span class="line">        i = Image.open(fullfile)</span><br><span class="line">        fincrop = i.crop(rangle)</span><br><span class="line">        fincrop.save(cropfile)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p>定位元素座標後，在以屏幕截圖的方式。切出只有驗證碼的圖片。</p>
+<p><img src="https://i.imgur.com/1HS4WLj.jpg" alt=""></p>
+<ul>
+<li>OCR辨識圖片文字</li>
+</ul>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ImgToOcr</span><span class="params">(filename)</span>:</span></span><br><span class="line"></span><br><span class="line">    i = Image.open(filename)</span><br><span class="line"></span><br><span class="line">    i = i.resize((<span class="number">90</span>, <span class="number">32</span>), Image.ANTIALIAS)  <span class="comment"># 調整圖片大小</span></span><br><span class="line"></span><br><span class="line">    Lim = i.convert(<span class="string">'L'</span>)  <span class="comment"># 詼諧</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 降噪</span></span><br><span class="line">    threshold = <span class="number">80</span></span><br><span class="line">    table = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">256</span>):</span><br><span class="line">        <span class="keyword">if</span> i &lt; threshold:</span><br><span class="line">            table.append(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            table.append(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    Lim = Lim.point(table, <span class="string">'1'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># OCR</span></span><br><span class="line">    OCR_text = pytesseract.image_to_string(Lim)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> len(OCR_text) == <span class="number">4</span>:</span><br><span class="line">        Lim.save(<span class="string">"./ocr/%s.png"</span> % OCR_text)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> OCR_text</span><br></pre></td></tr></table></figure>
+<p>原先的圖片太小，無法得到好的辨識效果，試著先將大小調整為(90, 32)，並做詼諧<br>、二值化，並以辨識文字做為檔名儲存，最後測試辨識20張圖片，效果為何。</p>
+<p><img src="https://i.imgur.com/Pplr2ky.jpg" alt=""></p>
+<p>測試效果發現辨識率挺不錯的，只有少數幾張的失敗。</p>
+<h1 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h1><p>預設的辭庫真的挺強大的，只要字體還算清楚，沒有雜點都能準確的辨識。當然，遇到的驗證碼沒有這麼順利的話，還是可以自己訓練的，只是步驟相當繁瑣，如果只是要登入的話，可以使用Cookie登入獲取資料，相對會容易些。</p>
+<p>幾個練習破解驗證碼的網站</p>
 <ol>
-<li><code>docker-compose.yaml</code></li>
+<li><a href="http://selcrs.nsysu.edu.tw/stu_enroll/" target="_blank" rel="noopener">中山大學 選課系統</a></li>
+<li><a href="https://regist.nctu.edu.tw/" target="_blank" rel="noopener">交通大學</a></li>
+<li><a href="http://www.jdol.com.cn/reg.html" target="_blank" rel="noopener">機電在線</a></li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"># To execute this docker-compose yml file use docker-compose -f &lt;file_name&gt; up</span><br><span class="line"># Add the &quot;-d&quot; flag at the end for deattached execution</span><br><span class="line">version: &quot;3&quot;</span><br><span class="line">services:</span><br><span class="line">  selenium-hub:</span><br><span class="line">    image: selenium/hub:3.12.0-boron</span><br><span class="line">    container_name: selenium-hub</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;4448:4444&quot;</span><br><span class="line">  chrome:</span><br><span class="line">    image: selenium/node-chrome:3.12.0-boron</span><br><span class="line">    depends_on:</span><br><span class="line">      - selenium-hub</span><br><span class="line">    environment:</span><br><span class="line">      - HUB_HOST=selenium-hub</span><br><span class="line">      - HUB_PORT=4444</span><br><span class="line">  firefox:</span><br><span class="line">    image: selenium/node-firefox:3.12.0-boron</span><br><span class="line">    depends_on:</span><br><span class="line">      - selenium-hub</span><br><span class="line">    environment:</span><br><span class="line">      - HUB_HOST=selenium-hub</span><br><span class="line">      - HUB_PORT=4444</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li><code>docker-compose up --build</code></li>
-</ol>
-<p><img src="https://i.imgur.com/pJbrl15.jpg" alt=""></p>
-<ol start="3">
-<li>搭建成功</li>
-</ol>
-<p>在<code>docker-compose.yaml</code>中我指定公開的是4448端口，打開頁面看到可以成功訪問，能調用的瀏覽器有Chrome及Firefox.</p>
-<p><img src="https://i.imgur.com/eYm25c9.jpg" alt=""></p>
-<h2 id="Python-調用"><a href="#Python-調用" class="headerlink" title="Python 調用"></a>Python 調用</h2><p>調用方法與本地搭建selenium server相同，以下以chrome為例。</p>
-<ol>
-<li>創建一個Chrome對象</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">from selenium import webdriver</span><br><span class="line">from selenium.webdriver.common.desired_capabilities import DesiredCapabilities</span><br><span class="line"></span><br><span class="line">browser = webdriver.Remote(</span><br><span class="line">    command_executor=&apos;http://192.168.8.22:4448/wd/hub&apos;,</span><br><span class="line">    desired_capabilities=DesiredCapabilities.CHROME,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>如果成功調用，在slenium頁面也會看到一個chrome正在被使用。</p>
-<p><img src="https://i.imgur.com/xyGw7CV.jpg" alt=""></p>
-<ol start="2">
-<li>進入Google首頁，試著打印網頁標題</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">browser.get(&apos;http://www.google.com&apos;)</span><br><span class="line">print(browser.title)</span><br><span class="line"># Google</span><br></pre></td></tr></table></figure>
-<ol start="3">
-<li>測試截取當前頁面</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">browser.save_screenshot(&quot;chrome.png&quot;)</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.imgur.com/iMRrjJJ.jpg" alt=""></p>
-<ol start="4">
-<li>釋放瀏覽器</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">browser.quit()</span><br></pre></td></tr></table></figure>
-<p>結束調用，slenium頁面上的chrome已經變回彩色的。</p>
-<p><img src="https://i.imgur.com/lcv62KH.jpg" alt=""></p>
-<h1 id="另外一種模式-Debug-Mode"><a href="#另外一種模式-Debug-Mode" class="headerlink" title="另外一種模式 : Debug Mode"></a>另外一種模式 : Debug Mode</h1><p>Docker Selenium 還有一種 Debug Mode，主要提供了有畫面的selenium，能直接看到瀏覽器在做什麼，Debug Mode使用了VNC服務器並佔用了5900端口，但要注意的是每個端口只能運行一個節點(Chrome、Firefox等)，如果希望包含兩個節點或更多，那麼就必須公開不同的端口，如5900:5900、5901:5900…</p>
-<h2 id="Docker-Compose-方法"><a href="#Docker-Compose-方法" class="headerlink" title="Docker Compose 方法:"></a>Docker Compose 方法:</h2><ol>
-<li><code>docker-compose up --build</code></li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"># To execute this docker-compose yml file use docker-compose -f &lt;file_name&gt; up</span><br><span class="line"># Add the &quot;-d&quot; flag at the end for deattached execution</span><br><span class="line">version: &apos;2&apos;</span><br><span class="line">services:</span><br><span class="line">  firefox:</span><br><span class="line">    image: selenium/node-firefox-debug:3.12.0-boron</span><br><span class="line">    volumes:</span><br><span class="line">      - /dev/shm:/dev/shm</span><br><span class="line">    depends_on:</span><br><span class="line">      - hub</span><br><span class="line">    environment:</span><br><span class="line">      HUB_HOST: hub</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;5900:5900&quot;</span><br><span class="line"></span><br><span class="line">  chrome:</span><br><span class="line">    image: selenium/node-chrome-debug:3.12.0-boron</span><br><span class="line">    volumes:</span><br><span class="line">      - /dev/shm:/dev/shm</span><br><span class="line">    depends_on:</span><br><span class="line">      - hub</span><br><span class="line">    environment:</span><br><span class="line">      HUB_HOST: hub</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;5901:5900&quot;</span><br><span class="line"></span><br><span class="line">  hub:</span><br><span class="line">    image: selenium/hub:3.12.0-boron</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;4450:4444&quot;</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>訪問selenium頁面</li>
-</ol>
-<p>這個頁面顯示了Selenium hub的狀態，如果想看到VNC的情況，需要進入Docker 容器才看的到。</p>
-<p><img src="https://i.imgur.com/0wKvGan.jpg" alt=""></p>
-<h2 id="用VNC-看瀏覽器在做什麼"><a href="#用VNC-看瀏覽器在做什麼" class="headerlink" title="用VNC 看瀏覽器在做什麼"></a>用VNC 看瀏覽器在做什麼</h2><ol>
-<li>安裝VNC軟體</li>
-</ol>
-<p>推薦工具 免費VNC : ultravnc</p>
-<p><a href="http://www.uvnc.com/downloads/ultravnc.html" target="_blank" rel="noopener">ultravnc下載地址</a></p>
-<ol start="2">
-<li>打開UltraVNC Viewer</li>
-</ol>
-<p><img src="https://i.imgur.com/J34ua3M.jpg" alt=""></p>
-<p>下載並安裝完成後,連進Docker內的VNC Server</p>
-<ol start="3">
-<li>點擊連接</li>
-</ol>
-<p><img src="https://i.imgur.com/5Yhe1Ut.jpg" alt=""></p>
-<ol start="4">
-<li>輸入密碼</li>
-</ol>
-<p><img src="https://i.imgur.com/BfJe4IN.jpg" alt=""></p>
-<p>默認密碼 : secret</p>
-<p>預設是有密碼的，若不希望輸入密碼可在容器變量中加入<code>VNC_NO_PASSWORD: 1</code>。</p>
-<ol start="5">
-<li>連接成功</li>
-</ol>
-<p>看到這個畫面代表成功連進了VNC</p>
-<p><img src="https://i.imgur.com/DbCUjtZ.jpg" alt=""></p>
-<h2 id="Python-調用-1"><a href="#Python-調用-1" class="headerlink" title="Python 調用"></a>Python 調用</h2><ol>
-<li>創建一個腳本，測試selnium運行的情況。</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">from selenium import webdriver</span><br><span class="line">from selenium.webdriver.common.desired_capabilities import DesiredCapabilities</span><br><span class="line">from selenium.webdriver.common.keys import Keys</span><br><span class="line"></span><br><span class="line">browser = webdriver.Remote(</span><br><span class="line">    command_executor=&apos;http://192.168.8.22:4450/wd/hub&apos;,</span><br><span class="line">    desired_capabilities=DesiredCapabilities.CHROME,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">browser.get(&quot;http://www.google.com&quot;)</span><br><span class="line">browser.find_element_by_id(&quot;lst-ib&quot;).send_keys(&quot;python&quot;)</span><br><span class="line">browser.find_element_by_name(&quot;btnK&quot;).send_keys(Keys.ENTER)</span><br><span class="line">titles = browser.find_elements_by_xpath(&quot;.//h3[@class=&apos;r&apos;]//a&quot;)</span><br><span class="line">print([i.text for i in titles])</span><br><span class="line">browser.quit()</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>有畫面的selenium出現了</li>
-</ol>
-<p><img src="https://i.imgur.com/j0D7KNq.jpg" alt=""></p>
-<h1 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h1><p>docker selenium透過Docker建置的關係，構建非常方便快速，這邊主要介紹了兩種模式創建容器，一種是可以看見瀏覽器的，一種是默默執行的，測試運行速度也非常的快，感覺起來似乎比實體主機還要順上很多，但以長期的測試情況，就不知道會不會有其他問題了。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/01. 瀏覽器自動化(1) 建置Python3+Selenium測試環境/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Noyoung Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧學習筆記">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/01. 瀏覽器自動化(1) 建置Python3+Selenium測試環境/" itemprop="url">瀏覽器自動化(1) 建置Python3+Selenium測試環境</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T23:26:30+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Selenium/" itemprop="url" rel="index">
-                    <span itemprop="name">Selenium</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>python要使用selenium可以直接安裝依賴模塊<code>selenium</code>進行操作，需要注意的是selenium操作瀏覽器是有版本支援問題的，以下為簡要說明:</p>
-<p>slenium2 可直接操作firefox46以下，並可直接調用不須另外使用webdriver驅動，最好用的是原生支持全屏截圖。其他瀏覽器不能直接調用，需要使用webdriver驅動。</p>
-<p>slenium3 基本都需要webdriver驅動，並且還需留意瀏覽器與webdriver版本問題，如下:</p>
-<p><strong>Chrome:</strong><br><a href="http://chromedriver.chromium.org/downloads" target="_blank" rel="noopener">ChromeDriver地址</a><br><a href="https://www.slimjet.com/chrome/google-chrome-old-version.php" target="_blank" rel="noopener">Chrome browser歷史版本(各系統)</a></p>
-<p>下載地址會說明支持對應版本<br>Chrome 65-67 使用 ChromeDriver 2.38<br>Chrome 63-65 使用 chromedriver 2.36<br>Chrome 62-64 使用 chromedriver 2.35<br>Chrome &gt; 41, 使用 chromedriver 2.15</p>
-<p><strong>Firefox:</strong></p>
-<p><a href="https://github.com/mozilla/geckodriver/releases" target="_blank" rel="noopener">geckodriver</a><br><a href="https://azodl.blogspot.tw/2015/03/firefox.html" target="_blank" rel="noopener">Firefox 歷史版本 阿榮免安裝</a><br><a href="http://ftp.mozilla.org/pub/firefox/releases/" target="_blank" rel="noopener">Firefox 歷史版本</a></p>
-<p>留意selenum版本對應問題<br>Firefox &lt; 46.1, 使用 Selenium 2.53.1<br><a href="https://sourceforge.net/projects/portableapps/files/Mozilla%20Firefox,%20Portable%20Ed./Mozilla%20Firefox,%20Portable%20Edition%2046.0.1/" target="_blank" rel="noopener">FirefoxPortable 46</a><br>Firefox &gt;= 47, 使用 Selenium 3.0.1 需加上geckodriver</p>
-<p><strong>Opera:</strong></p>
-<p><a href="https://github.com/operasoftware/operachromiumdriver/releases" target="_blank" rel="noopener">operachromiumdriver</a><br><a href="http://get.opera.com/ftp/pub/opera/desktop/" target="_blank" rel="noopener">Opera browser歷史版本(各系統)</a></p>
-<p>下載地址會說明支持對應版本<br>Opera 53 使用 operachromiumdriver 2.36<br>Opera 52 使用 operachromiumdriver 2.35</p>
-<h1 id="環境"><a href="#環境" class="headerlink" title="環境"></a>環境</h1><ol>
-<li><p>python selenium</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install selenium</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>browser</p>
-<p> 以Opera為例:</p>
-<ul>
-<li><a href="http://get.opera.com/ftp/pub/opera/desktop/52.0.2871.64/win/Opera_52.0.2871.64_Setup_x64.exe" target="_blank" rel="noopener">52.0.2871.64 下載地址</a></li>
-</ul>
-</li>
-<li><p>webdriver</p>
-<p> 操作瀏覽器之前，必須先有webdriver</p>
-<p> <a href="https://github.com/operasoftware/operachromiumdriver/releases" target="_blank" rel="noopener">opera chromium driver</a></p>
-<p> 我安裝的opera52版的瀏覽器，webdriver也要找對應支持的。<br> <img src="https://i.imgur.com/I7vhcbW.jpg" alt=""></p>
-<p> 如何安裝：</p>
-<ol>
-<li>下載對應webdriver</li>
-<li>將下載好的webdriver加到環境變數中</li>
-</ol>
-</li>
-</ol>
-<p><strong>當然</strong>，可以將會用到的webdriver都放在<code>c:\webdriver</code>中。</p>
-<p><img src="https://i.imgur.com/gIPWv6d.jpg" alt=""></p>
-<p>在將<code>c:\webdriver</code>整個資料夾加到環境變量中，如果有更新webdriver的需求也比較好整理。</p>
-<p><img src="https://i.imgur.com/dgQ8nUs.jpg" alt=""></p>
-<h1 id="啟動"><a href="#啟動" class="headerlink" title="啟動"></a>啟動</h1><p>selenium2、3調用上並沒有太大區別。</p>
-<h3 id="一般創建實例"><a href="#一般創建實例" class="headerlink" title="一般創建實例"></a>一般創建實例</h3><p>看到browser成功啟動，就說明webdriver成功驅動browser。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"></span><br><span class="line">Firefox = webdriver.Firefox()</span><br><span class="line">Chrome = webdriver.Chrome()</span><br></pre></td></tr></table></figure>
-<h3 id="使用者插件"><a href="#使用者插件" class="headerlink" title="使用者插件"></a>使用者插件</h3><p>selenium也可以直接調用包含使用者紀錄或插件(如:檔廣告)的browser。</p>
-<ul>
-<li><strong>Firefox</strong></li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"></span><br><span class="line">url = <span class="string">"https://mail.google.com"</span></span><br><span class="line">fp = webdriver.FirefoxProfile(<span class="string">'/Users/&lt;username&gt;/Library/Application Support/Firefox/Profiles/71v1uczn.default'</span>)</span><br><span class="line"></span><br><span class="line">driver = webdriver.Firefox(fp)</span><br><span class="line">driver.get(url)</span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong>Remote Firefox</strong></li>
-</ul>
-<p>如使用selenium server可以參考</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.desired_capabilities <span class="keyword">import</span> DesiredCapabilities</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.firefox.firefox_profile <span class="keyword">import</span> FirefoxProfile</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># 本機firefox設定檔路經</span></span><br><span class="line">profile = FirefoxProfile(<span class="string">'/home/user/.mozilla/firefox/089njn4b.default'</span>)</span><br><span class="line"></span><br><span class="line">browser = webdriver.Remote(</span><br><span class="line">            command_executor=<span class="string">'http://127.0.0.1:4446/wd/hub'</span>,</span><br><span class="line">            desired_capabilities=DesiredCapabilities.FIREFOX,</span><br><span class="line">            browser_profile=profile)</span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong>Chrome</strong></li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.chrome.options <span class="keyword">import</span> Options</span><br><span class="line"></span><br><span class="line">options = webdriver.ChromeOptions() </span><br><span class="line">options.add_argument(<span class="string">"user-data-dir=C:\\Path"</span>) <span class="comment">#Path to your chrome profile</span></span><br><span class="line">w = webdriver.Chrome(executable_path=<span class="string">"C:\\Users\\chromedriver.exe"</span>, chrome_options=options)</span><br></pre></td></tr></table></figure>
-<h3 id="指定webdriver路徑"><a href="#指定webdriver路徑" class="headerlink" title="指定webdriver路徑"></a>指定webdriver路徑</h3><p>webdriver不希望加入環境變量，也可以直接指定路徑調用。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line">path = <span class="string">"/opt/webdriver/chromedriver.exe"</span></span><br><span class="line">Chrome = webdriver.Chrome(path)</span><br></pre></td></tr></table></figure>
-<h3 id="指定chrome主程序目錄"><a href="#指定chrome主程序目錄" class="headerlink" title="指定chrome主程序目錄"></a>指定chrome主程序目錄</h3><ul>
-<li><strong>Firefox</strong></li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.firefox.firefox_binary <span class="keyword">import</span> FirefoxBinary</span><br><span class="line"></span><br><span class="line">binary = FirefoxBinary(<span class="string">"C:\Users\LENOVO\FirefoxPortable.exe"</span>)</span><br><span class="line">driver = webdriver.Firefox(firefox_binary=binary)</span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong>Chrome</strong></li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.chrome.options <span class="keyword">import</span> Options</span><br><span class="line">opts = Options()</span><br><span class="line">opts.binary_location = chromium_path</span><br><span class="line">driver = webdriver.Chrome(chrome_options=opts)</span><br></pre></td></tr></table></figure>
-<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>進入資策會網站，搜索後離開網頁。</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="comment"># @Date    : 2018-05-16 08:33:47</span></span><br><span class="line"><span class="comment"># @Author  : Maliao</span></span><br><span class="line"><span class="comment"># @Link    : None</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"></span><br><span class="line">browser = webdriver.Chrome()  <span class="comment"># 調用webdriver</span></span><br><span class="line"></span><br><span class="line">browser.get(<span class="string">"https://w3.iiiedu.org.tw/"</span>)  <span class="comment"># 訪問 資策會網站</span></span><br><span class="line"></span><br><span class="line">browser.find_element_by_id(<span class="string">"LongTerm"</span>).click()  <span class="comment"># 點擊ID "LongTerm" 專長養成班</span></span><br><span class="line"></span><br><span class="line">browser.find_element_by_id(<span class="string">"searchInput"</span>).send_keys(<span class="string">"python"</span>)  <span class="comment"># 搜索框輸入:"python"</span></span><br><span class="line"></span><br><span class="line">browser.find_element_by_id(<span class="string">"searchBtn"</span>).click()  <span class="comment"># 提交搜尋</span></span><br><span class="line"></span><br><span class="line">browser.save_screenshot(<span class="string">"iiiedu.png"</span>)  <span class="comment"># 螢幕截圖</span></span><br><span class="line"></span><br><span class="line">browser.quit()  <span class="comment"># 離開瀏覽器</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://i.imgur.com/hito4Ft.jpg" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/08. Docker Selenium(2) 更改容器變量/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Noyoung Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧學習筆記">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/08. Docker Selenium(2) 更改容器變量/" itemprop="url">Docker Selenium(2) 更改容器變量</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T23:26:30+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Selenium/" itemprop="url" rel="index">
-                    <span itemprop="name">Selenium</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>默認的Docker Selenium 只提供一個Browser Session可以用，每當有超過兩個Browser使用時，總是有一個在等待，這樣對於測試效率大大的降低，而建置時只要設好變量，就可以一次開10個…</p>
-<p><strong>加入變量</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Browser 最大到10個</span><br><span class="line">NODE_MAX_SESSION: 10</span><br><span class="line">NODE_MAX_INSTANCES: 10</span><br><span class="line"># VNC 沒有密碼</span><br><span class="line">VNC_NO_PASSWORD: 1</span><br></pre></td></tr></table></figure>
-<p>docker-compose.yml</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"># To execute this docker-compose yml file use docker-compose -f &lt;file_name&gt; up</span><br><span class="line"># Add the &quot;-d&quot; flag at the end for deattached execution</span><br><span class="line">version: &apos;2&apos;</span><br><span class="line">services:</span><br><span class="line">  firefox:</span><br><span class="line">    image: selenium/node-firefox-debug:3.12.0-boron</span><br><span class="line">    volumes:</span><br><span class="line">      - /dev/shm:/dev/shm</span><br><span class="line">    depends_on:</span><br><span class="line">      - hub</span><br><span class="line">    environment:</span><br><span class="line">      HUB_HOST: hub</span><br><span class="line">      NODE_MAX_SESSION: 10</span><br><span class="line">      NODE_MAX_INSTANCES: 10</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;5900:5900&quot;</span><br><span class="line"></span><br><span class="line">  chrome:</span><br><span class="line">    image: selenium/node-chrome-debug:3.12.0-boron</span><br><span class="line">    volumes:</span><br><span class="line">      - /dev/shm:/dev/shm</span><br><span class="line">    depends_on:</span><br><span class="line">      - hub</span><br><span class="line">    environment:</span><br><span class="line">      HUB_HOST: hub</span><br><span class="line">      NODE_MAX_SESSION: 10</span><br><span class="line">      NODE_MAX_INSTANCES: 10</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;5901:5900&quot;</span><br><span class="line">  hub:</span><br><span class="line">    image: selenium/hub:3.12.0-boron</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;4454:4444&quot;</span><br></pre></td></tr></table></figure>
-<p>執行結果</p>
-<p><img src="https://i.imgur.com/CDfvaZi.jpg" alt=""></p>
-<h2 id="更多變量"><a href="#更多變量" class="headerlink" title="更多變量"></a>更多變量</h2><p>透過<code>docker inspect NAME|ID</code>看容器變量。</p>
-<h3 id="Selenium-hub-變量"><a href="#Selenium-hub-變量" class="headerlink" title="Selenium hub 變量"></a>Selenium hub 變量</h3><p>selenium/hub:3.12.0-boron</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&quot;Env&quot;: [</span><br><span class="line">                &quot;PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&quot;,</span><br><span class="line">                &quot;DEBIAN_FRONTEND=noninteractive&quot;,</span><br><span class="line">                &quot;DEBCONF_NONINTERACTIVE_SEEN=true&quot;,</span><br><span class="line">                &quot;TZ=UTC&quot;,</span><br><span class="line">                &quot;GRID_MAX_SESSION=5&quot;,</span><br><span class="line">                &quot;GRID_NEW_SESSION_WAIT_TIMEOUT=-1&quot;,</span><br><span class="line">                &quot;GRID_THROW_ON_CAPABILITY_NOT_PRESENT=true&quot;,</span><br><span class="line">                &quot;GRID_JETTY_MAX_THREADS=-1&quot;,</span><br><span class="line">                &quot;GRID_CLEAN_UP_CYCLE=5000&quot;,</span><br><span class="line">                &quot;GRID_BROWSER_TIMEOUT=0&quot;,</span><br><span class="line">                &quot;GRID_TIMEOUT=30&quot;,</span><br><span class="line">                &quot;GRID_DEBUG=false&quot;,</span><br><span class="line">                &quot;GRID_HUB_PORT=4444&quot;,</span><br><span class="line">                &quot;GRID_HUB_HOST=0.0.0.0&quot;</span><br><span class="line">            ],</span><br></pre></td></tr></table></figure>
-<h3 id="Node-變量"><a href="#Node-變量" class="headerlink" title="Node 變量"></a>Node 變量</h3><p>selenium/node-chrome-debug:3.12.0-boron</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&quot;Env&quot;: [</span><br><span class="line">                &quot;NODE_MAX_INSTANCES=10&quot;,</span><br><span class="line">                &quot;NODE_MAX_SESSION=10&quot;,</span><br><span class="line">                &quot;HUB_HOST=hub&quot;,</span><br><span class="line">                &quot;VNC_NO_PASSWORD=1&quot;,</span><br><span class="line">                &quot;PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&quot;,</span><br><span class="line">                &quot;DEBIAN_FRONTEND=noninteractive&quot;,</span><br><span class="line">                &quot;DEBCONF_NONINTERACTIVE_SEEN=true&quot;,</span><br><span class="line">                &quot;TZ=UTC&quot;,</span><br><span class="line">                &quot;LANG_WHICH=en&quot;,</span><br><span class="line">                &quot;LANG_WHERE=US&quot;,</span><br><span class="line">                &quot;ENCODING=UTF-8&quot;,</span><br><span class="line">                &quot;LANGUAGE=en_US.UTF-8&quot;,</span><br><span class="line">                &quot;LANG=en_US.UTF-8&quot;,</span><br><span class="line">                &quot;SCREEN_WIDTH=1360&quot;,</span><br><span class="line">                &quot;SCREEN_HEIGHT=1020&quot;,</span><br><span class="line">                &quot;SCREEN_DEPTH=24&quot;,</span><br><span class="line">                &quot;DISPLAY=:99.0&quot;,</span><br><span class="line">                &quot;NODE_HOST=0.0.0.0&quot;,</span><br><span class="line">                &quot;NODE_PORT=5555&quot;,</span><br><span class="line">                &quot;NODE_REGISTER_CYCLE=5000&quot;,</span><br><span class="line">                &quot;NODE_POLLING=5000&quot;,</span><br><span class="line">                &quot;NODE_UNREGISTER_IF_STILL_DOWN_AFTER=60000&quot;,</span><br><span class="line">                &quot;NODE_DOWN_POLLING_LIMIT=2&quot;,</span><br><span class="line">                &quot;NODE_APPLICATION_NAME=&quot;,</span><br><span class="line">                &quot;DBUS_SESSION_BUS_ADDRESS=/dev/null&quot;</span><br><span class="line">            ],</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/09. Docker Selenium(3) 指定版本2.53/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Noyoung Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧學習筆記">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/09. Docker Selenium(3) 指定版本2.53/" itemprop="url">Docker Selenium(3) 指定版本2.53+Firefox46</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T23:26:30+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Selenium/" itemprop="url" rel="index">
-                    <span itemprop="name">Selenium</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>搭建Docker Selenium 2.53.1+Firefox46的筆記，在此紀錄…</p>
-<p><strong>docker-compose.yml</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">hub:</span><br><span class="line">  image: selenium/hub:2.53.1-beryllium</span><br><span class="line">  ports:</span><br><span class="line">    - &quot;4446:4444&quot;</span><br><span class="line">  environment:</span><br><span class="line">    - GRID_MAX_SESSION=5</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">firefox:</span><br><span class="line">  image: selenium/node-firefox-debug:2.53.1-beryllium</span><br><span class="line">  environment:</span><br><span class="line">    - NODE_MAX_INSTANCES=10</span><br><span class="line">    - NODE_MAX_SESSION=10</span><br><span class="line">  ports:</span><br><span class="line">    - &quot;5921:5900&quot;</span><br><span class="line">  links:</span><br><span class="line">    - hub</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">chrome:</span><br><span class="line">  image: selenium/node-chrome-debug:2.53.1-beryllium</span><br><span class="line">  environment:</span><br><span class="line">    - NODE_MAX_INSTANCES=10</span><br><span class="line">    - NODE_MAX_SESSION=10</span><br><span class="line">  ports:</span><br><span class="line">    - &quot;5922:5900&quot;</span><br><span class="line">  links:</span><br><span class="line">    - hub</span><br></pre></td></tr></table></figure>
-<p><strong>搭建完成</strong></p>
-<p><img src="https://i.imgur.com/pM5QLwk.jpg" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/1. Zabbix學習筆記(1) 用Docker建置Zabbix Server/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Noyoung Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧學習筆記">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/1. Zabbix學習筆記(1) 用Docker建置Zabbix Server/" itemprop="url">Zabbix學習筆記(1) 用Docker建置Zabbix Server</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T23:26:30+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
-                    <span itemprop="name">Zabbix</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在建置官方提供的zabbix-xxl之前，可以先將已知的”圖形中文亂碼”問題，把中文字型檔及設定檔準備好，在建置時直接對應映射即可，這樣就不用進容器再改一次．</p>
-<p><img src="https://i.imgur.com/nSHUnuf.png" alt=""></p>
-<p><strong>容器內路經</strong></p>
-<p>zabbix 字型路經：/usr/local/src/zabbix/frontends/php/fonts/<br>前端PHP配置檔路經：/usr/local/src/zabbix/frontends/php/include/defines.inc.php</p>
-<p>zabbix預設是沒有中文字型的，因此基本的字型檔會造成圖形文字呈現方格或是亂碼。</p>
-<p>解決方法只要將中文字型檔放入/usr/local/src/zabbix/frontends/php/fonts/，並在/usr/local/src/zabbix/frontends/php/include/defines.inc.php中更改配置就可以了。</p>
-<p>因為每次構建都有相同問題，所以我直接放在Github方便日後需要時可以直接構建。</p>
-<p><strong>docker-compose.yml</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">version: &apos;2&apos;</span><br><span class="line">services:</span><br><span class="line">  zabbix-db:</span><br><span class="line">    image: monitoringartist/zabbix-db-mariadb</span><br><span class="line">    volumes:</span><br><span class="line">      - ./zabbix/zabbix-db-storage:/var/lib/mysql</span><br><span class="line">      - ./zabbix/backups:/backups</span><br><span class="line">      - /etc/localtime:/etc/localtime:ro</span><br><span class="line">    environment:</span><br><span class="line">      - MARIADB_USER=zabbix</span><br><span class="line">      - MARIADB_PASS=admin</span><br><span class="line">  zabbix-server:</span><br><span class="line">    image: monitoringartist/zabbix-xxl:latest</span><br><span class="line">    depends_on:</span><br><span class="line">      - zabbix-db</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;80:80&quot;</span><br><span class="line">      - &quot;10051:10051&quot;</span><br><span class="line">    volumes:</span><br><span class="line">      - /etc/localtime:/etc/localtime:ro</span><br><span class="line">      - ./zabbix/temp:/usr/local/src/zabbix/temp</span><br><span class="line">      - ./zabbix/conf/fonts/:/usr/local/src/zabbix/frontends/php/fonts/</span><br><span class="line">      - ./zabbix/conf/defines.inc.php:/usr/local/src/zabbix/frontends/php/include/defines.inc.php</span><br><span class="line">    links:</span><br><span class="line">      - zabbix-db:zabbix.db</span><br><span class="line">    environment:</span><br><span class="line">      - ZS_DBHost=zabbix.db</span><br><span class="line">      - ZS_DBUser=zabbix</span><br><span class="line">      - ZS_DBPassword=admin</span><br><span class="line">volumes:</span><br><span class="line">  zabbix-db-storage:</span><br><span class="line">    driver: local</span><br><span class="line">  backups:</span><br><span class="line">    driver: local</span><br></pre></td></tr></table></figure>
-<p><a href="https://github.com/noyoung/DockerComposes/tree/master/zabbix" target="_blank" rel="noopener">源碼地址</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/10. Selenium技巧 - 不顯示窗口的瀏覽器/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Noyoung Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧學習筆記">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/10. Selenium技巧 - 不顯示窗口的瀏覽器/" itemprop="url">selenium技巧 - 不顯示窗口的瀏覽器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T23:26:30+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Selenium/" itemprop="url" rel="index">
-                    <span itemprop="name">Selenium</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>selenium可以模擬人的行為，好用歸好用，但如果安裝在server主機上或不想顯示GUI，那有什麼方法?</p>
-<h1 id="方法一-無頭瀏覽器hantomJS"><a href="#方法一-無頭瀏覽器hantomJS" class="headerlink" title="方法一 無頭瀏覽器hantomJS"></a>方法一 無頭瀏覽器<code>hantomJS</code></h1><p>PhantomJS是一個真實的無頭瀏覽器，需要另外下載配置到環境變數才能使用。</p>
-<p><a href="http://phantomjs.org/download.html" target="_blank" rel="noopener">官方下載</a></p>
-<ol>
-<li><p>下載對應的系統版本，加到環境變數中。</p>
-</li>
-<li><p>python module <code>selenium</code></p>
-</li>
-</ol>
-<p>新版本已不支持PhantomJS，建議安裝3.4.2版</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">selenium == 3.4.2</span><br></pre></td></tr></table></figure>
-<ol start="3">
-<li>python 控制</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">from selenium import webdriver</span><br><span class="line">from PIL import Image</span><br><span class="line">from io import BytesIO</span><br><span class="line">import base64</span><br><span class="line"></span><br><span class="line">browser = webdriver.PhantomJS()</span><br><span class="line">browser.get(&quot;http://www.google.com&quot;)</span><br><span class="line">image_data = browser.get_screenshot_as_base64() # 截圖</span><br><span class="line">i = Image.open(BytesIO(base64.b64decode(image_data)))</span><br><span class="line">i.show() # 顯示截圖</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.imgur.com/1keUmhY.jpg" alt=""></p>
-<h1 id="方法二-Chhome-headless"><a href="#方法二-Chhome-headless" class="headerlink" title="方法二: Chhome headless"></a>方法二: <code>Chhome headless</code></h1><p>Chrome V59 開始推出了headless mode，原生支持無頭環境運行Chrome，速度非常快。</p>
-<p><a href="https://developers.google.com/web/updates/2017/04/headless-chrome" target="_blank" rel="noopener">官方文檔</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">from selenium import webdriver</span><br><span class="line">from PIL import Image</span><br><span class="line">from io import BytesIO</span><br><span class="line">import base64</span><br><span class="line"></span><br><span class="line">chrome_options = webdriver.ChromeOptions()</span><br><span class="line">chrome_options.add_argument(&apos;--headless&apos;) # 啟動無頭模式</span><br><span class="line">chrome_options.add_argument(&apos;--disable-gpu&apos;) # windowsd必須加入此行</span><br><span class="line"></span><br><span class="line">browser = webdriver.Chrome(chrome_options=chrome_options)</span><br><span class="line">browser.get(&quot;http://www.google.com&quot;)</span><br><span class="line"></span><br><span class="line">image_data = browser.get_screenshot_as_base64()</span><br><span class="line"></span><br><span class="line">i = Image.open(BytesIO(base64.b64decode(image_data)))</span><br><span class="line"></span><br><span class="line">i.show()</span><br></pre></td></tr></table></figure>
-<h1 id="方法三-XVFB-Linux-虛擬桌面"><a href="#方法三-XVFB-Linux-虛擬桌面" class="headerlink" title="方法三: XVFB Linux 虛擬桌面"></a>方法三: XVFB Linux 虛擬桌面</h1><p>僅適用於linux，支持</p>
-<p>安裝方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get install Xvfb</span><br><span class="line">pip install pyvirtualdisplay</span><br></pre></td></tr></table></figure>
-<p>python 控制</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from pyvirtualdisplay import Display</span><br><span class="line">display = Display(visible=0, size=(1024, 768))</span><br><span class="line">display.start()</span><br><span class="line">browser = webdriver.Chrome()</span><br><span class="line">browser.get(&apos;http://www.google.com&apos;)</span><br><span class="line">print(browser.title)</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/11. selenium技巧- handle切換/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Noyoung Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧學習筆記">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/11. selenium技巧- handle切換/" itemprop="url">selenium技巧- handle切換</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T23:26:30+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Selenium/" itemprop="url" rel="index">
-                    <span itemprop="name">Selenium</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>標籤頁切換</p>
-<p><img src="https://i.imgur.com/Ofjiah6.jpg" alt=""></p>
-<ul>
-<li>在selenium中每個標籤頁都有一個handle，若不切換handle，定位到的元素只會找到當前頁面。</li>
-</ul>
-<p>這邊，以中國銀行點擊功能為例，會自動開啟新分頁。</p>
-<p>創建selenium對象</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line">browser = webdriver.Chrome()</span><br></pre></td></tr></table></figure>
-<p>訪問中國銀行，開啟功能分頁</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">browser.get(&quot;http://www.boc.cn/&quot;)</span><br><span class="line"></span><br><span class="line">links = browser.find_elements_by_xpath(&quot;.//*[@class=&apos;index_lg&apos;]//a&quot;)</span><br><span class="line"></span><br><span class="line">for i in links:</span><br><span class="line">    i.click()</span><br><span class="line"></span><br><span class="line">print(browser.title)</span><br></pre></td></tr></table></figure>
-<p>查看目前所有分頁的handle，而handle每次生成都會是不一樣的。</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">handles = browser.window_handles</span><br><span class="line"></span><br><span class="line">輸出:</span><br><span class="line">[<span class="string">'CDwindow-e10a2580-b8af-471c-a645-9265207ff5e6'</span>,</span><br><span class="line"> <span class="string">'CDwindow-21cd97f5-9e7f-436e-9de1-dfdb4bd38a14'</span>,</span><br><span class="line"> <span class="string">'CDwindow-95f59ba3-cbff-424f-a739-9fd170b936ae'</span>,</span><br><span class="line"> <span class="string">'CDwindow-fee5a3db-f3b2-4606-aefa-cbd42ebf3b30'</span>,</span><br><span class="line"> <span class="string">'CDwindow-c2977923-b62a-4fbf-a4d3-51ec90f3cdd8'</span>]</span><br></pre></td></tr></table></figure>
-<p>遍歷所有handle<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> h <span class="keyword">in</span> handles:</span><br><span class="line">    browser.switch_to_window(h) <span class="comment"># 切換handle</span></span><br><span class="line">    print(<span class="string">"當前 handle: "</span>, browser.current_window_handle)</span><br><span class="line">    print(<span class="string">"當前 title: "</span>, browser.title)</span><br><span class="line"></span><br><span class="line">輸出:</span><br><span class="line">handle:  CDwindow-e10a2580-b8af<span class="number">-471</span>c-a645<span class="number">-9265207</span>ff5e6</span><br><span class="line">title:  中国银行全球门户网站</span><br><span class="line">handle:  CDwindow<span class="number">-21</span>cd97f5<span class="number">-9e7</span>f<span class="number">-436e-9</span>de1-dfdb4bd38a14</span><br><span class="line">title:  海外及港澳台地区客户网银登录</span><br><span class="line">handle:  CDwindow<span class="number">-95</span>f59ba3-cbff<span class="number">-424</span>f-a739<span class="number">-9</span>fd170b936ae</span><br><span class="line">title:  登录</span><br><span class="line">handle:  CDwindow-fee5a3db-f3b2<span class="number">-4606</span>-aefa-cbd42ebf3b30</span><br><span class="line">title:  中国银行</span><br><span class="line">handle:  CDwindow-c2977923-b62a<span class="number">-4</span>fbf-a4d3<span class="number">-51</span>ec90f3cdd8</span><br><span class="line">title:  中国银行</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/2. Zabbix學習筆記(2) 創建監控項 - 簡單檢查/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Noyoung Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧學習筆記">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/2. Zabbix學習筆記(2) 創建監控項 - 簡單檢查/" itemprop="url">Zabbix學習筆記(2) 創建監控項 - 簡單檢查</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T23:26:30+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
-                    <span itemprop="name">Zabbix</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>利用簡單檢查監測站點是否存活，Zabbix內置的簡單檢查可針對各端口站點監測是否有回應?速度如何?</p>
-<h2 id="1-創建一個主機"><a href="#1-創建一個主機" class="headerlink" title="1. 創建一個主機"></a>1. 創建一個主機</h2><p>這個步驟是非必要的，這邊操作的目的在於避免與Agent端混淆。</p>
-<p><strong>創建主機</strong></p>
-<p><img src="https://i.imgur.com/vTuRRZz.png" alt=""></p>
-<p><strong>填寫主機內容</strong></p>
-<p>主機名稱:PingHost(也可以隨意命名)<br>群組一定要選一個，這邊選擇Discovered hosts(發現的主機)</p>
-<p><img src="https://i.imgur.com/drUVtDQ.png" alt=""></p>
-<p><strong>創建成功</strong></p>
-<p><img src="https://i.imgur.com/zwqSQgD.png" alt=""></p>
-<h2 id="2-創建監控項"><a href="#2-創建監控項" class="headerlink" title="2. 創建監控項"></a>2. 創建監控項</h2><p>選擇剛剛建好的主機，並創建監控項</p>
-<p><img src="https://i.imgur.com/HmNJrE1.png" alt=""></p>
-<p><strong>簡單檢查 Simple Check</strong></p>
-<p>類型選擇”簡單檢查”</p>
-<p><img src="https://i.imgur.com/cr0cZak.png" alt=""></p>
-<p>在鍵值空白旁點擊”選擇”</p>
-<p><img src="https://i.imgur.com/K2Lc8Pn.png" alt=""></p>
-<p><strong>什麼是簡單檢查？</strong></p>
-<p>簡單來說提供了三種監測服務，分別為Ping、TCP、UDP，<strong>Ping</strong>可以查看主機是否存活、丟包、超時等，<strong>TCP</strong>功能支持多種服務類型如：ssh, ldap, smtp, ftp, http, pop, nntp, imap, tcp, https, telnet，也可任意指定端口，主要查看是否可以連接、超時等，<strong>UDP</strong>功能與<strong>TCP</strong>接近，更多及相關參數可以參考<a href="https://www.zabbix.com/documentation/3.0/manual/config/items/itemtypes/simple_checks" target="_blank" rel="noopener">官方文檔</a>。</p>
-<p><img src="https://i.imgur.com/Y8n1V7S.png" alt=""></p>
-<blockquote>
-<p>選擇簡體中文可以得到較好的支持，試過選擇繁中這個頁面中文化不是很完全，比較偏好中文的朋友可選簡中試試。</p>
-</blockquote>
-<h2 id="3-填寫監測內容"><a href="#3-填寫監測內容" class="headerlink" title="3. 填寫監測內容"></a>3. 填寫監測內容</h2><p>監測Modem(IP:192.168.0.1)是否正常。</p>
-<p>類型：簡單檢查<br>鍵值：icmppingsec[192.168.0.1]<br>信息類型：浮點數<br>單位：s</p>
-<p>若選擇的鍵值是有返回響應時間，那信息類型就需要選擇<strong>浮點數</strong>，單位輸入<strong>s</strong>。</p>
-<p><strong>填寫內容</strong></p>
-<p>對應填寫內容如下，填寫完畢後要在頁面最下方點擊<strong>添加</strong>。</p>
-<p><img src="https://i.imgur.com/z6doriP.png" alt=""></p>
-<p><strong>填寫完畢</strong></p>
-<p><img src="https://i.imgur.com/eeIC7cF.png" alt=""></p>
-<h2 id="4-查看在監測的項目"><a href="#4-查看在監測的項目" class="headerlink" title="4. 查看在監測的項目"></a>4. 查看在監測的項目</h2><p><strong>最新數據</strong></p>
-<p>選擇監測中點擊”最新數據”</p>
-<p><img src="https://i.imgur.com/5TOTV2M.png" alt=""></p>
-<p><strong>找出監控項</strong></p>
-<p>篩選群組或主機找出監控項，查看是否已有數據。</p>
-<p><img src="https://i.imgur.com/UHe3NHc.png" alt=""></p>
-<p><strong>查看圖形</strong></p>
-<p>點擊圖形查看分時圖。</p>
-<p><img src="https://i.imgur.com/r6jakWW.png" alt=""></p>
 
           
         
