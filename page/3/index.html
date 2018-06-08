@@ -80,12 +80,12 @@
 
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="馬里奧學習筆記">
+<meta property="og:title" content="馬里奧">
 <meta property="og:url" content="http://yoursite.com/page/3/index.html">
-<meta property="og:site_name" content="馬里奧學習筆記">
+<meta property="og:site_name" content="馬里奧">
 <meta property="og:locale" content="zh-tw">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="馬里奧學習筆記">
+<meta name="twitter:title" content="馬里奧">
 
 
 
@@ -121,7 +121,7 @@
 
 
 
-  <title>馬里奧學習筆記</title>
+  <title>馬里奧</title>
   
 
 
@@ -152,7 +152,7 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">馬里奧學習筆記</span>
+        <span class="site-title">馬里奧</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -249,186 +249,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Noyoung Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧學習筆記">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/" itemprop="url">Zabbix學習筆記(2) 創建監控項 - 簡單檢查</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:02:00+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
-                    <span itemprop="name">Zabbix</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>利用簡單檢查監測站點是否存活，Zabbix內置的簡單檢查可針對各端口站點監測是否有回應?速度如何?</p>
-<h2 id="1-創建一個主機"><a href="#1-創建一個主機" class="headerlink" title="1. 創建一個主機"></a>1. 創建一個主機</h2><p>這個步驟是非必要的，這邊操作的目的在於避免與Agent端混淆。</p>
-<p><strong>創建主機</strong></p>
-<p><img src="https://i.imgur.com/vTuRRZz.png" alt=""></p>
-<p><strong>填寫主機內容</strong></p>
-<p>主機名稱:PingHost(也可以隨意命名)<br>群組一定要選一個，這邊選擇Discovered hosts(發現的主機)</p>
-<p><img src="https://i.imgur.com/drUVtDQ.png" alt=""></p>
-<p><strong>創建成功</strong></p>
-<p><img src="https://i.imgur.com/zwqSQgD.png" alt=""></p>
-<h2 id="2-創建監控項"><a href="#2-創建監控項" class="headerlink" title="2. 創建監控項"></a>2. 創建監控項</h2><p>選擇剛剛建好的主機，並創建監控項</p>
-<p><img src="https://i.imgur.com/HmNJrE1.png" alt=""></p>
-<p><strong>簡單檢查 Simple Check</strong></p>
-<p>類型選擇”簡單檢查”</p>
-<p><img src="https://i.imgur.com/cr0cZak.png" alt=""></p>
-<p>在鍵值空白旁點擊”選擇”</p>
-<p><img src="https://i.imgur.com/K2Lc8Pn.png" alt=""></p>
-<p><strong>什麼是簡單檢查？</strong></p>
-<p>簡單來說提供了三種監測服務，分別為Ping、TCP、UDP，<strong>Ping</strong>可以查看主機是否存活、丟包、超時等，<strong>TCP</strong>功能支持多種服務類型如：ssh, ldap, smtp, ftp, http, pop, nntp, imap, tcp, https, telnet，也可任意指定端口，主要查看是否可以連接、超時等，<strong>UDP</strong>功能與<strong>TCP</strong>接近，更多及相關參數可以參考<a href="https://www.zabbix.com/documentation/3.0/manual/config/items/itemtypes/simple_checks" target="_blank" rel="noopener">官方文檔</a>。</p>
-<p><img src="https://i.imgur.com/Y8n1V7S.png" alt=""></p>
-<blockquote>
-<p>選擇簡體中文可以得到較好的支持，試過選擇繁中這個頁面中文化不是很完全，比較偏好中文的朋友可選簡中試試。</p>
-</blockquote>
-<h2 id="3-填寫監測內容"><a href="#3-填寫監測內容" class="headerlink" title="3. 填寫監測內容"></a>3. 填寫監測內容</h2><p>監測Modem(IP:192.168.0.1)是否正常。</p>
-<p>類型：簡單檢查<br>鍵值：icmppingsec[192.168.0.1]<br>信息類型：浮點數<br>單位：s</p>
-<p>若選擇的鍵值是有返回響應時間，那信息類型就需要選擇<strong>浮點數</strong>，單位輸入<strong>s</strong>。</p>
-<p><strong>填寫內容</strong></p>
-<p>對應填寫內容如下，填寫完畢後要在頁面最下方點擊<strong>添加</strong>。</p>
-<p><img src="https://i.imgur.com/z6doriP.png" alt=""></p>
-<p><strong>填寫完畢</strong></p>
-<p><img src="https://i.imgur.com/eeIC7cF.png" alt=""></p>
-<h2 id="4-查看在監測的項目"><a href="#4-查看在監測的項目" class="headerlink" title="4. 查看在監測的項目"></a>4. 查看在監測的項目</h2><p><strong>最新數據</strong></p>
-<p>選擇監測中點擊”最新數據”</p>
-<p><img src="https://i.imgur.com/5TOTV2M.png" alt=""></p>
-<p><strong>找出監控項</strong></p>
-<p>篩選群組或主機找出監控項，查看是否已有數據。</p>
-<p><img src="https://i.imgur.com/UHe3NHc.png" alt=""></p>
-<p><strong>查看圖形</strong></p>
-<p>點擊圖形查看分時圖。</p>
-<p><img src="https://i.imgur.com/r6jakWW.png" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -438,7 +258,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧學習筆記">
+      <meta itemprop="name" content="馬里奧">
     </span>
 
     
@@ -616,7 +436,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧學習筆記">
+      <meta itemprop="name" content="馬里奧">
     </span>
 
     
@@ -809,6 +629,186 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noyoung Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/" itemprop="url">Zabbix學習筆記(2) 創建監控項 - 簡單檢查</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:02:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
+                    <span itemprop="name">Zabbix</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>利用簡單檢查監測站點是否存活，Zabbix內置的簡單檢查可針對各端口站點監測是否有回應?速度如何?</p>
+<h2 id="1-創建一個主機"><a href="#1-創建一個主機" class="headerlink" title="1. 創建一個主機"></a>1. 創建一個主機</h2><p>這個步驟是非必要的，這邊操作的目的在於避免與Agent端混淆。</p>
+<p><strong>創建主機</strong></p>
+<p><img src="https://i.imgur.com/vTuRRZz.png" alt=""></p>
+<p><strong>填寫主機內容</strong></p>
+<p>主機名稱:PingHost(也可以隨意命名)<br>群組一定要選一個，這邊選擇Discovered hosts(發現的主機)</p>
+<p><img src="https://i.imgur.com/drUVtDQ.png" alt=""></p>
+<p><strong>創建成功</strong></p>
+<p><img src="https://i.imgur.com/zwqSQgD.png" alt=""></p>
+<h2 id="2-創建監控項"><a href="#2-創建監控項" class="headerlink" title="2. 創建監控項"></a>2. 創建監控項</h2><p>選擇剛剛建好的主機，並創建監控項</p>
+<p><img src="https://i.imgur.com/HmNJrE1.png" alt=""></p>
+<p><strong>簡單檢查 Simple Check</strong></p>
+<p>類型選擇”簡單檢查”</p>
+<p><img src="https://i.imgur.com/cr0cZak.png" alt=""></p>
+<p>在鍵值空白旁點擊”選擇”</p>
+<p><img src="https://i.imgur.com/K2Lc8Pn.png" alt=""></p>
+<p><strong>什麼是簡單檢查？</strong></p>
+<p>簡單來說提供了三種監測服務，分別為Ping、TCP、UDP，<strong>Ping</strong>可以查看主機是否存活、丟包、超時等，<strong>TCP</strong>功能支持多種服務類型如：ssh, ldap, smtp, ftp, http, pop, nntp, imap, tcp, https, telnet，也可任意指定端口，主要查看是否可以連接、超時等，<strong>UDP</strong>功能與<strong>TCP</strong>接近，更多及相關參數可以參考<a href="https://www.zabbix.com/documentation/3.0/manual/config/items/itemtypes/simple_checks" target="_blank" rel="noopener">官方文檔</a>。</p>
+<p><img src="https://i.imgur.com/Y8n1V7S.png" alt=""></p>
+<blockquote>
+<p>選擇簡體中文可以得到較好的支持，試過選擇繁中這個頁面中文化不是很完全，比較偏好中文的朋友可選簡中試試。</p>
+</blockquote>
+<h2 id="3-填寫監測內容"><a href="#3-填寫監測內容" class="headerlink" title="3. 填寫監測內容"></a>3. 填寫監測內容</h2><p>監測Modem(IP:192.168.0.1)是否正常。</p>
+<p>類型：簡單檢查<br>鍵值：icmppingsec[192.168.0.1]<br>信息類型：浮點數<br>單位：s</p>
+<p>若選擇的鍵值是有返回響應時間，那信息類型就需要選擇<strong>浮點數</strong>，單位輸入<strong>s</strong>。</p>
+<p><strong>填寫內容</strong></p>
+<p>對應填寫內容如下，填寫完畢後要在頁面最下方點擊<strong>添加</strong>。</p>
+<p><img src="https://i.imgur.com/z6doriP.png" alt=""></p>
+<p><strong>填寫完畢</strong></p>
+<p><img src="https://i.imgur.com/eeIC7cF.png" alt=""></p>
+<h2 id="4-查看在監測的項目"><a href="#4-查看在監測的項目" class="headerlink" title="4. 查看在監測的項目"></a>4. 查看在監測的項目</h2><p><strong>最新數據</strong></p>
+<p>選擇監測中點擊”最新數據”</p>
+<p><img src="https://i.imgur.com/5TOTV2M.png" alt=""></p>
+<p><strong>找出監控項</strong></p>
+<p>篩選群組或主機找出監控項，查看是否已有數據。</p>
+<p><img src="https://i.imgur.com/UHe3NHc.png" alt=""></p>
+<p><strong>查看圖形</strong></p>
+<p>點擊圖形查看分時圖。</p>
+<p><img src="https://i.imgur.com/r6jakWW.png" alt=""></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/瀏覽器自動化(1) 建置Python3+Selenium測試環境/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -818,7 +818,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧學習筆記">
+      <meta itemprop="name" content="馬里奧">
     </span>
 
     
@@ -1025,7 +1025,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧學習筆記">
+      <meta itemprop="name" content="馬里奧">
     </span>
 
     
@@ -1229,7 +1229,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧學習筆記">
+      <meta itemprop="name" content="馬里奧">
     </span>
 
     
