@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Docker," />
 
 
 
@@ -79,14 +79,20 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="http://yoursite.com/categories/index.html">
+<meta name="description" content="Docker提供Dockerfile方法自動構建鏡像，只有將命令寫在Dockerfile檔案中，使用build方法就能一步一步自動構建鏡像，非常高效。  準備或建立html檔案  新增 index.html 1&amp;lt;h1&amp;gt;hello&amp;lt;/h1&amp;gt;  創建檔案 Dockerfile  12345678910111213141516# VERSION 1# Author: Noyoun">
+<meta name="keywords" content="Docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker 邊做邊學 (3) 使用Dockerfile構建鏡像">
+<meta property="og:url" content="http://yoursite.com/2018/06/08/04. Docker 邊做邊學(3) 使用Dockerfile構建鏡像/index.html">
 <meta property="og:site_name" content="馬里奧學習筆記">
+<meta property="og:description" content="Docker提供Dockerfile方法自動構建鏡像，只有將命令寫在Dockerfile檔案中，使用build方法就能一步一步自動構建鏡像，非常高效。  準備或建立html檔案  新增 index.html 1&amp;lt;h1&amp;gt;hello&amp;lt;/h1&amp;gt;  創建檔案 Dockerfile  12345678910111213141516# VERSION 1# Author: Noyoun">
 <meta property="og:locale" content="zh-tw">
-<meta property="og:updated_time" content="2018-06-08T17:50:38.736Z">
+<meta property="og:image" content="https://i.imgur.com/HYSDgDB.jpg">
+<meta property="og:updated_time" content="2018-06-08T19:13:02.032Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="categories">
+<meta name="twitter:title" content="Docker 邊做邊學 (3) 使用Dockerfile構建鏡像">
+<meta name="twitter:description" content="Docker提供Dockerfile方法自動構建鏡像，只有將命令寫在Dockerfile檔案中，使用build方法就能一步一步自動構建鏡像，非常高效。  準備或建立html檔案  新增 index.html 1&amp;lt;h1&amp;gt;hello&amp;lt;/h1&amp;gt;  創建檔案 Dockerfile  12345678910111213141516# VERSION 1# Author: Noyoun">
+<meta name="twitter:image" content="https://i.imgur.com/HYSDgDB.jpg">
 
 
 
@@ -116,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/categories/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/06/08/04. Docker 邊做邊學(3) 使用Dockerfile構建鏡像/"/>
 
 
 
 
 
-  <title>categories | 馬里奧學習筆記</title>
+  <title>Docker 邊做邊學 (3) 使用Dockerfile構建鏡像 | 馬里奧學習筆記</title>
   
 
 
@@ -237,40 +243,173 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/04. Docker 邊做邊學(3) 使用Dockerfile構建鏡像/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noyoung Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧學習筆記">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h1 class="post-title" itemprop="name headline">categories</h1>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <div class="category-all-page">
-            <div class="category-all-title">
-                目前共計 1 個分類
-            </div>
-            <div class="category-all">
-              <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Selenium/">Selenium</a><span class="category-list-count">11</span></li></ul>
-            </div>
-          </div>
+          <h1 class="post-title" itemprop="name headline">Docker 邊做邊學 (3) 使用Dockerfile構建鏡像</h1>
         
-      </div>
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T23:26:30+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <p>Docker提供Dockerfile方法自動構建鏡像，只有將命令寫在Dockerfile檔案中，使用build方法就能一步一步自動構建鏡像，非常高效。</p>
+<ol>
+<li>準備或建立html檔案</li>
+</ol>
+<p>新增 <code>index.html</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;h1&gt;hello&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>創建檔案 <code>Dockerfile</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># VERSION 1</span><br><span class="line"># Author: Noyoung Guo</span><br><span class="line"></span><br><span class="line">FROM centos</span><br><span class="line"></span><br><span class="line">MAINTAINER noyoung noyoungit@gmail.com</span><br><span class="line"></span><br><span class="line">RUN rpm -ivh http://mirrors.aliyun.com/epel/epel-release-latest-7.noarch.rpm</span><br><span class="line">RUN yum install -y nginx</span><br><span class="line"></span><br><span class="line">ADD index.html /usr/share/nginx/html/index.html</span><br><span class="line"></span><br><span class="line">RUN echo &quot;daemon off;&quot; &gt;&gt; /etc/nginx/nginx.conf</span><br><span class="line"></span><br><span class="line">EXPOSE 80</span><br><span class="line">cmd [&quot;nginx&quot;]</span><br></pre></td></tr></table></figure>
+<p>Docker file 撰寫方式:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">From 來源</span><br><span class="line">Maintainer 選擇性，記錄作者與聯絡方式</span><br><span class="line">Run 建立IMAGE的過程，執行的指令</span><br><span class="line">WorkDIR 切換工作的路徑</span><br><span class="line">ADD 新增本機端的檔案或目錄到IMAGE內</span><br><span class="line">ENV 設定環境變數</span><br><span class="line">EXPOSE 端口</span><br><span class="line">VOLUME 數據卷</span><br><span class="line">CMD 命令</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>build Dockerfile</li>
+</ol>
+<p>最後的<code>.</code>就是當前目錄(Dockerfile檔案位置)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t noyoung/mynginx:v3 .</span><br></pre></td></tr></table></figure>
+<p>Options:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-t 選擇以&apos;name:tag&apos;格式的鏡像</span><br></pre></td></tr></table></figure></p>
+<ol start="4">
+<li>創建基於<code>noyoung/mynginx:v3</code>的容器</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 83:80 noyoung/mynginx:v3</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>訪問服務頁面</li>
+</ol>
+<p><img src="https://i.imgur.com/HYSDgDB.jpg" alt=""></p>
+
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Docker/" rel="tag"># Docker</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/08/04. 瀏覽器自動化(4) Selenium + Beautiful Soup/" rel="next" title="瀏覽器自動化(4) Selenium + Beautiful Soup">
+                <i class="fa fa-chevron-left"></i> 瀏覽器自動化(4) Selenium + Beautiful Soup
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/08/03. 瀏覽器自動化(3) Selenium 使用OCR 簡易破解驗證碼/" rel="prev" title="瀏覽器自動化(3) Selenium 使用OCR 簡易破解驗證碼">
+                瀏覽器自動化(3) Selenium 使用OCR 簡易破解驗證碼 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -279,6 +418,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
