@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-tw">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Jenkins," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Jenkins服務器不只可以用於服務器本機的構建，還可以將其他台電腦作為Jenkins Agent(節點)進行控制。 新增節點這邊介紹新增節點的兩種方式:  Launch slave agents via SSH   用於控制Linux系統主機  通过Java Web启动代理 (需另外開啟)   用於控制Windows系統主機   Liunx這邊的環境是Ubuntu系統 Ubuntu IP: 19">
+<meta name="keywords" content="Jenkins">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jenkins學習(2) 新增節點">
+<meta property="og:url" content="http://yoursite.com/2018/06/08/Jenkins學習(2) 新增節點/index.html">
+<meta property="og:site_name" content="馬里奧">
+<meta property="og:description" content="Jenkins服務器不只可以用於服務器本機的構建，還可以將其他台電腦作為Jenkins Agent(節點)進行控制。 新增節點這邊介紹新增節點的兩種方式:  Launch slave agents via SSH   用於控制Linux系統主機  通过Java Web启动代理 (需另外開啟)   用於控制Windows系統主機   Liunx這邊的環境是Ubuntu系統 Ubuntu IP: 19">
+<meta property="og:locale" content="zh-tw">
+<meta property="og:image" content="https://i.imgur.com/A5NfHcr.jpg">
+<meta property="og:image" content="https://i.imgur.com/cHUqwO3.jpg">
+<meta property="og:image" content="https://i.imgur.com/H5tgVtC.jpg">
+<meta property="og:image" content="https://i.imgur.com/reH6W96.jpg">
+<meta property="og:image" content="https://i.imgur.com/V1RLdap.jpg">
+<meta property="og:image" content="https://i.imgur.com/HiwuFk4.jpg">
+<meta property="og:image" content="https://i.imgur.com/XskFRF0.jpg">
+<meta property="og:image" content="https://i.imgur.com/aZsIsTS.jpg">
+<meta property="og:image" content="https://i.imgur.com/2daUQR7.jpg">
+<meta property="og:image" content="https://i.imgur.com/ouxKYOw.jpg">
+<meta property="og:image" content="https://i.imgur.com/9g7GLJj.jpg">
+<meta property="og:image" content="https://i.imgur.com/a0p0W0l.jpg">
+<meta property="og:image" content="https://i.imgur.com/WlGY2NT.jpg">
+<meta property="og:image" content="https://i.imgur.com/6mcCPi4.jpg">
+<meta property="og:updated_time" content="2018-06-10T22:21:01.622Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Jenkins學習(2) 新增節點">
+<meta name="twitter:description" content="Jenkins服務器不只可以用於服務器本機的構建，還可以將其他台電腦作為Jenkins Agent(節點)進行控制。 新增節點這邊介紹新增節點的兩種方式:  Launch slave agents via SSH   用於控制Linux系統主機  通过Java Web启动代理 (需另外開啟)   用於控制Windows系統主機   Liunx這邊的環境是Ubuntu系統 Ubuntu IP: 19">
+<meta name="twitter:image" content="https://i.imgur.com/A5NfHcr.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/08/Jenkins學習(2) 新增節點/"/>
+
+
+
+
+
+  <title>Jenkins學習(2) 新增節點 | 馬里奧</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-tw">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">馬里奧</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">編程沒有什麼不好</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            標籤
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分類
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            歸檔
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Jenkins學習(2) 新增節點/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noyoung Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Jenkins學習(2) 新增節點</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:02:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Jenkins/" itemprop="url" rel="index">
+                    <span itemprop="name">Jenkins</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Jenkins服務器不只可以用於服務器本機的構建，還可以將其他台電腦作為Jenkins Agent(節點)進行控制。</p>
+<h1 id="新增節點"><a href="#新增節點" class="headerlink" title="新增節點"></a>新增節點</h1><p>這邊介紹新增節點的兩種方式:</p>
+<ul>
+<li><p>Launch slave agents via SSH</p>
+<p>  用於控制Linux系統主機</p>
+</li>
+<li><p>通过Java Web启动代理 (需另外開啟)</p>
+<p>  用於控制Windows系統主機</p>
+</li>
+</ul>
+<h2 id="Liunx"><a href="#Liunx" class="headerlink" title="Liunx"></a>Liunx</h2><p>這邊的環境是Ubuntu系統</p>
+<p>Ubuntu IP: 192.168.8.32<br>User: mario<br>passwd: <strong>**</strong></p>
+<ol>
+<li><p>進入新增節點頁面</p>
+<p> <code>http://&lt;jenkins_url&gt;/computer</code></p>
+<p> <img src="https://i.imgur.com/A5NfHcr.jpg" alt=""></p>
+</li>
+<li><p>新增節點</p>
+<p> 依序點選輸入即可</p>
+<p> <img src="https://i.imgur.com/cHUqwO3.jpg" alt=""></p>
+</li>
+<li><p>設置節點信息</p>
+</li>
+</ol>
+<ul>
+<li><p>開發構建數</p>
+<p>  最多執行的項目數，超過就等待構建</p>
+</li>
+<li><p>遠程工作目錄(必填)</p>
+<p>  如果在項目中沒有切換目錄，默認是以這個位置作為工作目錄。</p>
+</li>
+<li><p>標籤</p>
+<p>  當有多個節點時，可用標籤指定哪個節點執行。</p>
+</li>
+<li><p>用法</p>
+<p>  <strong>尽可能的使用这个节点</strong></p>
+<p>  若不指定節點，將會找目前空閒的主機進行構建</p>
+<p>  <strong>只允许运行绑定到这台机器的Job</strong></p>
+<p>  只支持有指定標籤的項目進行構建</p>
+</li>
+<li><p>啟動方式(必填)</p>
+<p>  先選擇<code>Launch agent via execution of command on the master</code>，在選點擊”ADD”按鈕加入節點主機信息。</p>
+<p>  <img src="https://i.imgur.com/H5tgVtC.jpg" alt=""></p>
+</li>
+</ul>
+<p><img src="https://i.imgur.com/reH6W96.jpg" alt=""></p>
+<ol start="4">
+<li>成功新增節點</li>
+</ol>
+<p><img src="https://i.imgur.com/V1RLdap.jpg" alt=""></p>
+<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><p>Windows系統在連接Jenkins服務器之前，需先開啟<code>TCP port for JNLP agents</code>端口讓Windows系統用戶連接。</p>
+<ol>
+<li><p>開啟端口</p>
+<p> 進入<code>全局安全配置</code>頁面，找到<code>代理</code>選擇<code>指定端口</code></p>
+<p> 因為我是用Docker建置，在建置時有額外開出50005端口，所以這邊選擇指定端口，若是自己搭建的Jenkins選擇隨機獲取也是可以的。</p>
+<p> <img src="https://i.imgur.com/HiwuFk4.jpg" alt=""></p>
+</li>
+<li><p>新增節點</p>
+<p> 增加代理端口後，在新增節點就會多一個<code>通过Java Web启动代理</code>，Windows系統用戶就這個來加入節點。</p>
+<p> <img src="https://i.imgur.com/XskFRF0.jpg" alt=""></p>
+</li>
+<li><p>節點狀態 - 未在線</p>
+<p> 節點是新增了，但是顯示X(未在線)</p>
+<p> <img src="https://i.imgur.com/aZsIsTS.jpg" alt=""></p>
+<p> 由於<code>通过Java Web启动代理</code>並不能像SSH連接電腦節點，因此還需要手動在Agent進行連接</p>
+</li>
+</ol>
+<ol start="4">
+<li><p>agent 連接 Jenkins </p>
+<p> <img src="https://i.imgur.com/2daUQR7.jpg" alt=""></p>
+<p> 頁面提示的兩個方法都可以連接，這邊使用第一個方法<code>Launch agent from browser</code></p>
+<ul>
+<li><p>點擊Launch 下載<code>slave-agent.jnlp</code></p>
+</li>
+<li><p>執行<code>slave-agent.jnlp</code></p>
+<p>這個檔案可以直接運行，如果遇到問題，可以先嘗試安裝或更新Java版本。</p>
+</li>
+<li><p>成功連接</p>
+<p><img src="https://i.imgur.com/ouxKYOw.jpg" alt=""></p>
+</li>
+<li><p>狀態正常</p>
+<p><img src="https://i.imgur.com/9g7GLJj.jpg" alt=""></p>
+</li>
+</ul>
+</li>
+</ol>
+<h1 id="錯誤筆記"><a href="#錯誤筆記" class="headerlink" title="錯誤筆記"></a>錯誤筆記</h1><h2 id="Linux連接節點失敗"><a href="#Linux連接節點失敗" class="headerlink" title="Linux連接節點失敗"></a>Linux連接節點失敗</h2><p><img src="https://i.imgur.com/a0p0W0l.jpg" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Linux Wonderful 4.4.0-104-generic #127-Ubuntu SMP Mon Dec 11 12:16:42 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux</span><br><span class="line">Installing JDK jdk-8u144-oth-JPR</span><br><span class="line">Downloading JDK from http://download.oracle.com/otn/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.tar.gz</span><br><span class="line">Oracle now requires Oracle account to download previous versions of JDK. Please specify your Oracle account username/password.</span><br><span class="line">java.io.IOException: Could not find any known supported java version in [java, /usr/bin/java, /usr/java/default/bin/java, /usr/java/latest/bin/java, /usr/local/bin/java, /usr/local/java/bin/java, /home/mario/workspace/jdk/bin/java], and we also failed to install JDK as a fallback</span><br></pre></td></tr></table></figure>
+<p>要安裝java</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install -y default-jre</span><br><span class="line">sudo apt-get install -y default-jdk</span><br></pre></td></tr></table></figure>
+<p>安裝後連接正常</p>
+<p><img src="https://i.imgur.com/WlGY2NT.jpg" alt=""></p>
+<p><img src="https://i.imgur.com/6mcCPi4.jpg" alt=""></p>
+<h1 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h1><p>Windows作業在連接上比較麻煩，而Linux可以直接透過SSH連接上非常方便。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Jenkins/" rel="tag"># Jenkins</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/08/瀏覽器自動化(1) 建置Python3+Selenium測試環境/" rel="next" title="瀏覽器自動化(1) 建置Python3+Selenium測試環境">
+                <i class="fa fa-chevron-left"></i> 瀏覽器自動化(1) 建置Python3+Selenium測試環境
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/08/Docker 邊做邊學(1) 搭建nginx服務器/" rel="prev" title="Docker 邊做邊學 (1) 搭建nginx服務器">
+                Docker 邊做邊學 (1) 搭建nginx服務器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Noyoung Guo</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">文章</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分類</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">標籤</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/yourname" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#新增節點"><span class="nav-number">1.</span> <span class="nav-text">新增節點</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Liunx"><span class="nav-number">1.1.</span> <span class="nav-text">Liunx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows"><span class="nav-number">1.2.</span> <span class="nav-text">Windows</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#錯誤筆記"><span class="nav-number">2.</span> <span class="nav-text">錯誤筆記</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux連接節點失敗"><span class="nav-number">2.1.</span> <span class="nav-text">Linux連接節點失敗</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小結"><span class="nav-number">3.</span> <span class="nav-text">小結</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Noyoung Guo</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 強力驅動</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主題 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
