@@ -249,7 +249,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Docker 學習筆記/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/瀏覽器自動化(1) 建置Python3+Selenium測試環境/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Maliao Guo">
@@ -268,7 +268,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/Docker 學習筆記/" itemprop="url">Docker 學習筆記</a></h1>
+                <a class="post-title-link" href="/2018/06/08/瀏覽器自動化(1) 建置Python3+Selenium測試環境/" itemprop="url">瀏覽器自動化(1) 建置Python3+Selenium測試環境</a></h1>
         
 
         <div class="post-meta">
@@ -303,8 +303,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Docker/" itemprop="url" rel="index">
-                    <span itemprop="name">Docker</span>
+                  <a href="/categories/Selenium/" itemprop="url" rel="index">
+                    <span itemprop="name">Selenium</span>
                   </a>
                 </span>
 
@@ -342,69 +342,72 @@
       
         
           
-            <h1 id="Dcoekr是什麼"><a href="#Dcoekr是什麼" class="headerlink" title="Dcoekr是什麼"></a>Dcoekr是什麼</h1><p><strong>Docker 組成：</strong></p>
-<ul>
-<li>Docker client</li>
-<li>Docker server</li>
-</ul>
-<p><strong>Docker 組件</strong></p>
-<ul>
-<li><p>鏡像 (image)</p>
-<p>  普遍鏡像依賴於Linux內核在封裝服務所提供的，稱為鏡像。</p>
+            <p>python要使用selenium可以直接安裝依賴模塊<code>selenium</code>進行操作，需要注意的是selenium操作瀏覽器是有版本支援問題的，以下為簡要說明:</p>
+<p>Slenium2 可直接操作firefox46以下，並可直接調用不須另外使用webdriver驅動，最好用的是原生支持全屏截圖。其他瀏覽器不能直接調用，需要使用webdriver驅動。</p>
+<p>Slenium3 基本都需要webdriver驅動，並且還需留意瀏覽器與webdriver版本問題，如下:</p>
+<p><strong>Chrome</strong><br><a href="http://chromedriver.chromium.org/downloads" target="_blank" rel="noopener">ChromeDriver地址</a><br><a href="https://www.slimjet.com/chrome/google-chrome-old-version.php" target="_blank" rel="noopener">Chrome browser歷史版本(各系統)</a></p>
+<p>下載地址會說明支持對應版本<br>Chrome 65-67 使用 ChromeDriver 2.38<br>Chrome 63-65 使用 chromedriver 2.36<br>Chrome 62-64 使用 chromedriver 2.35<br>Chrome &gt; 41, 使用 chromedriver 2.15</p>
+<p><strong>Firefox</strong></p>
+<p><a href="https://github.com/mozilla/geckodriver/releases" target="_blank" rel="noopener">geckodriver</a><br><a href="https://azodl.blogspot.tw/2015/03/firefox.html" target="_blank" rel="noopener">Firefox 歷史版本 阿榮免安裝</a><br><a href="http://ftp.mozilla.org/pub/firefox/releases/" target="_blank" rel="noopener">Firefox 歷史版本</a></p>
+<p>留意selenum版本對應問題<br>Firefox &lt; 46.1, 使用 Selenium 2.53.1<br><a href="https://sourceforge.net/projects/portableapps/files/Mozilla%20Firefox,%20Portable%20Ed./Mozilla%20Firefox,%20Portable%20Edition%2046.0.1/" target="_blank" rel="noopener">FirefoxPortable 46</a><br>Firefox &gt;= 47, 使用 Selenium 3.0.1 需加上geckodriver</p>
+<p><strong>Opera</strong></p>
+<p><a href="https://github.com/operasoftware/operachromiumdriver/releases" target="_blank" rel="noopener">operachromiumdriver</a><br><a href="http://get.opera.com/ftp/pub/opera/desktop/" target="_blank" rel="noopener">Opera browser歷史版本(各系統)</a></p>
+<p>下載地址會說明支持對應版本<br>Opera 53 使用 operachromiumdriver 2.36<br>Opera 52 使用 operachromiumdriver 2.35</p>
+<h1 id="環境"><a href="#環境" class="headerlink" title="環境"></a>環境</h1><ol>
+<li><p>python selenium</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install selenium</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>容器 (container)</p>
-<p>  以鏡像建立成應用或服務的，稱為容器。</p>
-</li>
-<li><p>倉庫 (repository)</p>
-<p>  倉庫是存放鏡像檔案的地方，分為公開倉庫及私有倉庫。公開倉庫如<a href="https://hub.docker.com/" target="_blank" rel="noopener">https://hub.docker.com/</a>，私有倉庫則可自行搭建。</p>
-</li>
-</ul>
-<p><strong>Docker Container VS 虛擬機</strong></p>
-<p>少了客體作業系統（Guest OS）這一層，更接近原生也更輕量。</p>
-<p><img src="https://i.imgur.com/Na4KOgP.png" alt=""></p>
-<p><strong>Docker使用場景</strong></p>
+<li><p>browser</p>
+<p> 以Opera為例:</p>
 <ul>
-<li>使用Docker容器開發、測試、部署服務</li>
-<li>創建隔離的運行環境</li>
-<li>搭建測試環境</li>
+<li><a href="http://get.opera.com/ftp/pub/opera/desktop/52.0.2871.64/win/Opera_52.0.2871.64_Setup_x64.exe" target="_blank" rel="noopener">52.0.2871.64 下載地址</a></li>
 </ul>
-<h1 id="Docker-安裝"><a href="#Docker-安裝" class="headerlink" title="Docker 安裝"></a>Docker 安裝</h1><p>Ubuntu系統安裝Docker方法非常簡單，可以直接參考以下網址的教學。</p>
-<p><a href="https://zouyapeng.gitbooks.io/docker/content/DockerInstallation/ubuntu_16_04.html" target="_blank" rel="noopener">Ubuntu 16.04 安装</a></p>
-<p>(記得：注销当前用户，重新登陆)</p>
-<h1 id="Docker-基本使用"><a href="#Docker-基本使用" class="headerlink" title="Docker 基本使用"></a>Docker 基本使用</h1><p><strong>查看Docker版本</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker -v</span><br></pre></td></tr></table></figure>
-<p><strong>拉取鏡像</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull IMAGE</span><br></pre></td></tr></table></figure>
-<p><strong>啟動容器</strong></p>
-<p>如果鏡像不存在，會自動拉取鏡像</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run [OPTIONS] IMAGE [COMMAND] [ARG...]</span><br></pre></td></tr></table></figure>
-<p>Options:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-d 後台運行</span><br><span class="line">-p 指定端口映射 (ex:80:80)</span><br><span class="line">-P 隨機端口映射</span><br><span class="line">-it 啟動並進入容器</span><br><span class="line">—rm 退出後自動刪除</span><br><span class="line">--name 自定義容器名</span><br></pre></td></tr></table></figure>
-<p>更多<a href="https://docs.docker.com/engine/reference/commandline/run/" target="_blank" rel="noopener">Dockcer Run</a></p>
-<p><strong>查看已建立的容器</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps [OPTIONS]</span><br></pre></td></tr></table></figure>
-<p>Options:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-a 顯示所有容器(默認只有顯示正在運行的容器)</span><br><span class="line">-l 顯示最新建立的容器</span><br></pre></td></tr></table></figure>
-<p>更多<a href="https://docs.docker.com/engine/reference/commandline/ps/" target="_blank" rel="noopener">Dockcer Ps</a></p>
-<p><strong>刪除容器</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker kill [OPTIONS] CONTAINER [CONTAINER...]</span><br></pre></td></tr></table></figure>
-<p><strong>顯示所有鏡像</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images [OPTIONS] [REPOSITORY[:TAG]]</span><br></pre></td></tr></table></figure>
-<p><strong>查看日誌</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logs [OPTIONS] CONTAINER</span><br></pre></td></tr></table></figure>
-<p>Options:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-f 實時更新</span><br><span class="line">-t 顯示時間</span><br></pre></td></tr></table></figure>
-<p>更多<a href="https://docs.docker.com/engine/reference/commandline/logs/" target="_blank" rel="noopener">docker logs</a></p>
-<p><strong>運行所有容器</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker start $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
-<p><strong>停止所有容器</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
-<p><strong>殺死所有正在運行的容器</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker kill $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
-<p><strong>刪除所有鏡像</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi $(docker images -q)</span><br></pre></td></tr></table></figure>
-<p><strong>進入容器</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker exec CONTAINER</span><br><span class="line">docker attach CONTAINER</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>webdriver</p>
+<p> 操作瀏覽器之前，必須先有webdriver</p>
+<p> <a href="https://github.com/operasoftware/operachromiumdriver/releases" target="_blank" rel="noopener">opera chromium driver</a></p>
+<p> 我安裝的opera52版的瀏覽器，webdriver也要找對應支持的。<br> <img src="https://i.imgur.com/I7vhcbW.jpg" alt=""></p>
+<p> 如何安裝：</p>
+<ol>
+<li>下載對應webdriver</li>
+<li>將下載好的webdriver加到環境變數中</li>
+</ol>
+</li>
+</ol>
+<p><strong>當然</strong>，可以將會用到的webdriver都放在<code>c:\webdriver</code>中。</p>
+<p><img src="https://i.imgur.com/gIPWv6d.jpg" alt=""></p>
+<p>在將<code>c:\webdriver</code>整個資料夾加到環境變量中，如果有更新webdriver的需求也比較好整理。</p>
+<p><img src="https://i.imgur.com/dgQ8nUs.jpg" alt=""></p>
+<h1 id="啟動"><a href="#啟動" class="headerlink" title="啟動"></a>啟動</h1><p>selenium2、3調用上並沒有太大區別。</p>
+<h3 id="一般創建實例"><a href="#一般創建實例" class="headerlink" title="一般創建實例"></a>一般創建實例</h3><p>看到browser成功啟動，就說明webdriver成功驅動browser。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"></span><br><span class="line">Firefox = webdriver.Firefox()</span><br><span class="line">Chrome = webdriver.Chrome()</span><br></pre></td></tr></table></figure>
+<h3 id="使用者插件"><a href="#使用者插件" class="headerlink" title="使用者插件"></a>使用者插件</h3><p>selenium也可以直接調用包含使用者紀錄或插件(如:檔廣告)的browser。</p>
+<ul>
+<li><strong>Firefox</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"></span><br><span class="line">url = <span class="string">"https://mail.google.com"</span></span><br><span class="line">fp = webdriver.FirefoxProfile(<span class="string">'/Users/&lt;username&gt;/Library/Application Support/Firefox/Profiles/71v1uczn.default'</span>)</span><br><span class="line"></span><br><span class="line">driver = webdriver.Firefox(fp)</span><br><span class="line">driver.get(url)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>Remote Firefox</strong></li>
+</ul>
+<p>如使用selenium server可以參考</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.desired_capabilities <span class="keyword">import</span> DesiredCapabilities</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.firefox.firefox_profile <span class="keyword">import</span> FirefoxProfile</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># 本機firefox設定檔路經</span></span><br><span class="line">profile = FirefoxProfile(<span class="string">'/home/user/.mozilla/firefox/089njn4b.default'</span>)</span><br><span class="line"></span><br><span class="line">browser = webdriver.Remote(</span><br><span class="line">            command_executor=<span class="string">'http://127.0.0.1:4446/wd/hub'</span>,</span><br><span class="line">            desired_capabilities=DesiredCapabilities.FIREFOX,</span><br><span class="line">            browser_profile=profile)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>Chrome</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.chrome.options <span class="keyword">import</span> Options</span><br><span class="line"></span><br><span class="line">options = webdriver.ChromeOptions() </span><br><span class="line">options.add_argument(<span class="string">"user-data-dir=C:\\Path"</span>) <span class="comment">#Path to your chrome profile</span></span><br><span class="line">w = webdriver.Chrome(executable_path=<span class="string">"C:\\Users\\chromedriver.exe"</span>, chrome_options=options)</span><br></pre></td></tr></table></figure>
+<h3 id="指定webdriver路徑"><a href="#指定webdriver路徑" class="headerlink" title="指定webdriver路徑"></a>指定webdriver路徑</h3><p>webdriver不希望加入環境變量，也可以直接指定路徑調用。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line">path = <span class="string">"/opt/webdriver/chromedriver.exe"</span></span><br><span class="line">Chrome = webdriver.Chrome(path)</span><br></pre></td></tr></table></figure>
+<h3 id="指定chrome主程序目錄"><a href="#指定chrome主程序目錄" class="headerlink" title="指定chrome主程序目錄"></a>指定chrome主程序目錄</h3><ul>
+<li><strong>Firefox</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.firefox.firefox_binary <span class="keyword">import</span> FirefoxBinary</span><br><span class="line"></span><br><span class="line">binary = FirefoxBinary(<span class="string">"C:\Users\LENOVO\FirefoxPortable.exe"</span>)</span><br><span class="line">driver = webdriver.Firefox(firefox_binary=binary)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>Chrome</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.chrome.options <span class="keyword">import</span> Options</span><br><span class="line">opts = Options()</span><br><span class="line">opts.binary_location = chromium_path</span><br><span class="line">driver = webdriver.Chrome(chrome_options=opts)</span><br></pre></td></tr></table></figure>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>進入資策會網站，搜索後離開網頁。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="comment"># @Date    : 2018-05-16 08:33:47</span></span><br><span class="line"><span class="comment"># @Author  : Maliao</span></span><br><span class="line"><span class="comment"># @Link    : None</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"></span><br><span class="line">browser = webdriver.Chrome()  <span class="comment"># 調用webdriver</span></span><br><span class="line"></span><br><span class="line">browser.get(<span class="string">"https://w3.iiiedu.org.tw/"</span>)  <span class="comment"># 訪問 資策會網站</span></span><br><span class="line"></span><br><span class="line">browser.find_element_by_id(<span class="string">"LongTerm"</span>).click()  <span class="comment"># 點擊ID "LongTerm" 專長養成班</span></span><br><span class="line"></span><br><span class="line">browser.find_element_by_id(<span class="string">"searchInput"</span>).send_keys(<span class="string">"python"</span>)  <span class="comment"># 搜索框輸入:"python"</span></span><br><span class="line"></span><br><span class="line">browser.find_element_by_id(<span class="string">"searchBtn"</span>).click()  <span class="comment"># 提交搜尋</span></span><br><span class="line"></span><br><span class="line">browser.save_screenshot(<span class="string">"iiiedu.png"</span>)  <span class="comment"># 螢幕截圖</span></span><br><span class="line"></span><br><span class="line">browser.quit()  <span class="comment"># 離開瀏覽器</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/hito4Ft.jpg" alt=""></p>
 
           
         
