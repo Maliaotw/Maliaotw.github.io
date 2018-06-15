@@ -249,7 +249,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Docker 管理工具(1) Rancher Server建置/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/IE11企業模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Maliao Guo">
@@ -268,7 +268,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/Docker 管理工具(1) Rancher Server建置/" itemprop="url">Docker 管理工具 (1) Rancher Server建置</a></h1>
+                <a class="post-title-link" href="/2018/06/08/IE11企業模式/" itemprop="url">IE11企業模式</a></h1>
         
 
         <div class="post-meta">
@@ -303,8 +303,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Docker/" itemprop="url" rel="index">
-                    <span itemprop="name">Docker</span>
+                  <a href="/categories/Windows/" itemprop="url" rel="index">
+                    <span itemprop="name">Windows</span>
                   </a>
                 </span>
 
@@ -342,51 +342,15 @@
       
         
           
-            <ol>
-<li>啟動 Rancher Server</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --restart=always -p 8080:8080 rancher/server</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.imgur.com/3KEBhJi.png" alt=""></p>
-<ol start="2">
-<li>訪問Rancher Server頁面</li>
-</ol>
-<p><img src="https://i.imgur.com/QQU0zaq.png" alt=""></p>
-<ol start="3">
-<li>設定語言</li>
-</ol>
-<p><img src="https://i.imgur.com/zBxK4W5.png" alt=""></p>
-<ol start="4">
-<li><p>添加 Rancher Agent</p>
-<p> <img src="https://i.imgur.com/LfSOTIm.png" alt=""></p>
-<p> 如果沒有特別的域名，直接點擊保存即可<br> <img src="https://i.imgur.com/0rJ267b.png" alt=""></p>
-<p> 將方框中的腳本，複製到Agent端執行<br> <img src="https://i.imgur.com/oHPXlAs.png" alt=""></p>
-<p> 例如 我的rencher Server及agent是同一臺主機，那麼直接貼上執行即可。<br> <img src="https://i.imgur.com/Q5v45vz.png" alt=""></p>
-<p> 執行完畢後，可以在主機列表中看到剛剛新增的主機。<br> <img src="https://i.imgur.com/WFjGfUB.png" alt=""></p>
-</li>
-</ol>
-<ol start="5">
-<li>自定義應用</li>
-</ol>
-<p>測試在Rencher的第一個應用，這邊以Tomcat爲例。</p>
-<p>tomcat:latest<br>添加應用<br><img src="https://i.imgur.com/LBXIemT.png" alt=""></p>
-<p>輸入”應用名稱:myapp”後點擊創建。<br><img src="https://i.imgur.com/QgB5BZn.png" alt=""></p>
-<p>點擊”添加服務”<br><img src="https://i.imgur.com/BoAAgqy.png" alt=""></p>
-<p>服務中”名稱”可以自定義，”選擇鏡像：tomcat:lastet”(Rencher將會自動拉取鏡像)，端口映射部分由於Rencher已經定義了8080公開端口，因此新建的服務必須使用其他端口對應容器內的8080端口設定，這邊使用8081測試。<br><img src="https://i.imgur.com/fmncV99.png" alt=""></p>
-<p>拉到頁面下方看到這些設定可以不用管他，直接點擊創建。<br><img src="https://i.imgur.com/BypiDWQ.png" alt=""></p>
-<p>看到”Active”就代表正常啓動成功。<br><img src="https://i.imgur.com/GYReGFi.png" alt=""></p>
-<p>進入http://<server ip="">/8081網址，就可以看到Tomcat的頁面。<br><img src="https://i.imgur.com/s3vhsk3.png" alt=""></server></p>
-<ol start="6">
-<li>創建compose應用</li>
-</ol>
-<p>建立一個新的應用包含”MongoDB”的服務。</p>
-<p><strong>docker-compose.yml</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">version: &apos;2&apos;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  mongo:</span><br><span class="line">    image: &apos;mongo:latest&apos;</span><br><span class="line">    ports:</span><br><span class="line">      - &apos;27017:27017&apos;</span><br><span class="line">    volumes:</span><br><span class="line">      - &apos;/home/docker/workspace/mongo/data:/data/db&apos;</span><br><span class="line">    restart: always</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.imgur.com/vawZvcL.png" alt=""></p>
-<p><strong>Test TCP</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -vz 10.211.55.12 27017</span><br></pre></td></tr></table></figure>
-<p>測試TCP端口27017可不可連<br><img src="https://i.imgur.com/SonbGQ1.png" alt=""></p>
-<p><strong>Test GUI</strong></p>
-<p><img src="https://i.imgur.com/2WKMNUn.png" alt=""></p>
+            <p>當初想暸解企業模式，主要是因為IE11並不支持goole線上文件，必須使用開發者切換到IE10才可以正常使用，再後來了解到IE企業模式可以透過XML針對不同domain來調整默認IE版本開啟，但我電腦的版本是windows家用版，在登錄檔中根本找不到這個功能，最後是先在windows專業版上面設定好reg再放到家用版使用。</p>
+<h1 id="建立XML"><a href="#建立XML" class="headerlink" title="建立XML"></a>建立XML</h1><p>讓IE知道要哪個domain要用哪個版本開啟，這邊是在C盤上建立，而要對應的版本在<code>docMode</code>後面輸入就好。</p>
+<p><strong>IE10 - docMode=”10”</strong><br><strong>IE11 - docMode=”edge”</strong></p>
+<p><code>C:\sites.xml</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;rules version=&quot;2&quot;&gt;</span><br><span class="line">&lt;docMode&gt;</span><br><span class="line">&lt;domain docMode=&quot;10&quot;&gt;google.com&lt;/domain&gt;</span><br><span class="line">&lt;domain docMode=&quot;edge&quot;&gt;www.baidu.com&lt;/domain&gt;</span><br><span class="line">&lt;/docMode&gt;</span><br><span class="line">&lt;emie /&gt;</span><br><span class="line">&lt;/rules&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="建立登錄檔"><a href="#建立登錄檔" class="headerlink" title="建立登錄檔"></a>建立登錄檔</h1><p>正式開啟IE企業模式，根據剛剛建立的xml進行調整。</p>
+<p><code>iemode.reg</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Windows Registry Editor Version 5.00</span><br><span class="line">[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\EnterpriseMode]</span><br><span class="line">&quot;Enable&quot;=&quot;&quot;</span><br><span class="line">&quot;SiteList&quot;=&quot;C:\\\sites.xml&quot;</span><br></pre></td></tr></table></figure>
+<p>對於愛用IE的用戶來說，這是一個非常好用的功能，到目前發現仍有不少網站無法完整支持IE11。</p>
 
           
         
@@ -435,7 +399,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/瀏覽器自動化(6) Selenium Server/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(6) 用Python製作簡易Zabbix微監控/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Maliao Guo">
@@ -454,7 +418,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/瀏覽器自動化(6) Selenium Server/" itemprop="url">瀏覽器自動化(6) Selenium Server</a></h1>
+                <a class="post-title-link" href="/2018/06/08/Zabbix學習筆記(6) 用Python製作簡易Zabbix微監控/" itemprop="url">Zabbix學習筆記(6) 用Python製作簡易Zabbix微監控</a></h1>
         
 
         <div class="post-meta">
@@ -489,8 +453,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Selenium/" itemprop="url" rel="index">
-                    <span itemprop="name">Selenium</span>
+                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
+                    <span itemprop="name">Zabbix</span>
                   </a>
                 </span>
 
@@ -528,47 +492,48 @@
       
         
           
-            <p>selenium-server可支持遠程操作，而cilent端要使用selenium，直接遠程調用selenium-server，支持多系統平台或多版本瀏覽器同時測試，因為是由clinet進行控制，selenium服務器也不用拉取腳本，非常方便管理。</p>
-<h1 id="基本環境"><a href="#基本環境" class="headerlink" title="基本環境"></a>基本環境</h1><ol>
-<li>java</li>
-</ol>
-<p>必須先安裝java，選擇jre即可。</p>
-<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html" target="_blank" rel="noopener">官網下載</a></p>
-<ol start="2">
-<li>webdriver</li>
-</ol>
-<p>下載webdriver加到環境變數，一定要加入否則會無法驅動。</p>
-<p><a href="http://chromedriver.chromium.org/downloads" target="_blank" rel="noopener">ChromeDriver地址</a></p>
-<ol start="3">
-<li>selenium-server-standalone</li>
-</ol>
-<p>至官網下載最新版本selenium-server，需透過java啟動server。</p>
-<p><a href="https://www.seleniumhq.org/download/" target="_blank" rel="noopener">官網下載</a></p>
-<ol start="4">
-<li>python module <code>selenium</code></li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install selenium</span><br></pre></td></tr></table></figure>
-<h1 id="啟動"><a href="#啟動" class="headerlink" title="啟動"></a>啟動</h1><ul>
-<li>啟動 selenium-server</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar selenium-server-standalone-3.12.0.jar</span><br></pre></td></tr></table></figure>
-<p>啟動 默認是4444端口</p>
-<p><img src="https://i.imgur.com/pXAkrsO.jpg" alt=""></p>
-<p>網頁訪問</p>
-<p><img src="https://i.imgur.com/2gkheXH.jpg" alt=""></p>
-<p>進入console可以看到目前開啟了那些Sessions，點擊Take Screenshot會顯示當前畫面截圖。</p>
-<p><img src="https://i.imgur.com/xxXR3hA.jpg" alt=""></p>
+            <h1 id="概念說明"><a href="#概念說明" class="headerlink" title="概念說明"></a>概念說明</h1><p>Zabbix前端報警及郵件發信等已可立即告警，但如果能整合到內部系統豈不甚好？</p>
+<p>既然如此，後面將會以下圖說明由Redis Server做為中間接收的媒介，讓Zabbix與內部系統整合告警。</p>
+<p><img src="https://i.imgur.com/TfZsAu6.png" alt=""></p>
+<h2 id="1-Zabbix-Server"><a href="#1-Zabbix-Server" class="headerlink" title="1. Zabbix Server"></a>1. Zabbix Server</h2><p>Zabbix告警動作可以選擇腳本，這點非常強大，只要設好監控項到動作告警，剩下都可以交由腳本做進一步的呈現。</p>
+<p><strong>觸發器</strong></p>
+<p>創建觸發器。</p>
+<p><img src="https://i.imgur.com/DDrmZGD.png" alt=""></p>
+<p><strong>報警媒介</strong></p>
+<p>創建腳本<strong>RedisAlarm.py</strong>，當發報時會將觸發器的狀態寫入到Redis中。</p>
+<p>名稱：RedisAlarm<br>類型：<strong>“腳本”</strong><br>腳本名稱：RedisAlarm.py<br>(<br>    路經:/usr/local/share/zabbix/alertscripts,<br>    權限:777<br>)<br>腳本參數：<br>    {ALERT.SENDTO} 收件人地址<br>    {ALERT.SUBJECT} 主題<br>    {ALERT.MESSAGE} 詳細內容</p>
+<p><img src="https://i.imgur.com/yRbM7Kd.png" alt=""></p>
 <ul>
-<li>client 腳本控制</li>
+<li><strong>創建腳本</strong></li>
 </ul>
-<p>server與client可以是同一台，也可以分開，由於是瀏覽器自動化，分開的話會更好調試，也比較不會有搶屏的問題。</p>
-<p>官方文檔有說明驅動方式:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Usage Example::</span><br><span class="line"></span><br><span class="line">        from selenium import webdriver</span><br><span class="line"></span><br><span class="line">        selenium_grid_url = &quot;http://198.0.0.1:4444/wd/hub&quot;</span><br><span class="line"></span><br><span class="line">        # Create a desired capabilities object as a starting point.</span><br><span class="line">        capabilities = DesiredCapabilities.FIREFOX.copy()</span><br><span class="line">        capabilities[&apos;platform&apos;] = &quot;WINDOWS&quot;</span><br><span class="line">        capabilities[&apos;version&apos;] = &quot;10&quot;</span><br><span class="line"></span><br><span class="line">        # Instantiate an instance of Remote WebDriver with the desired capabilities.</span><br><span class="line">        driver = webdriver.Remote(desired_capabilities=capabilities,</span><br><span class="line">                                  command_executor=selenium_grid_url)</span><br><span class="line"></span><br><span class="line">    Note: Always use &apos;.copy()&apos; on the DesiredCapabilities object to avoid the side</span><br><span class="line">    effects of altering the Global class instance.</span><br></pre></td></tr></table></figure>
-<p><strong>remote_script1.py</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">from selenium.webdriver.common.desired_capabilities import DesiredCapabilities</span><br><span class="line">from selenium import webdriver</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">browser = webdriver.Remote(</span><br><span class="line">    command_executor=&apos;http://127.0.0.1:4444/wd/hub&apos;,</span><br><span class="line">    desired_capabilities=DesiredCapabilities.CHROME,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">browser.get(&quot;http://www.google.com&quot;)</span><br><span class="line"></span><br><span class="line">browser.quit()</span><br></pre></td></tr></table></figure>
-<p>DesiredCapabilities為瀏覽器的一些自定義，以下的說明文檔查看更多的配置。</p>
-<p><a href="https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities" target="_blank" rel="noopener">說明文檔</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DesiredCapabilities.CHROME # 默認的設置，返回的是字典類型</span><br><span class="line">&gt;&gt;&gt; &#123;&apos;browserName&apos;: &apos;chrome&apos;, &apos;version&apos;: &apos;&apos;, &apos;platform&apos;: &apos;ANY&apos;&#125;</span><br></pre></td></tr></table></figure>
+<p>RedisAlarm.py</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#!/home/zabbix/anaconda2/bin/python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line"># RedisAlarm.py</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">import sys</span><br><span class="line">import redis</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    # &#123;ALERT.SENDTO&#125;</span><br><span class="line">    rc = redis.StrictRedis(sys.argv[1].decode(&apos;utf8&apos;))</span><br><span class="line">    # &#123;ALERT.SUBJECT&#125;</span><br><span class="line">    status = sys.argv[2].decode(&apos;utf8&apos;)</span><br><span class="line">    # &#123;ALERT.MESSAGE&#125;</span><br><span class="line">    name = sys.argv[3].decode(&apos;utf8&apos;)</span><br><span class="line"></span><br><span class="line">    if &quot;OK&quot; in status:</span><br><span class="line">        rc.set(name,status)</span><br><span class="line">    else:</span><br><span class="line">        rc.set(name,status)</span><br></pre></td></tr></table></figure>
+<p><strong>用戶報警媒介”收件人”</strong></p>
+<p>設定收件人為RedisServerIP，設定完記得按<strong>更新</strong>。</p>
+<p><img src="https://i.imgur.com/FKbdwmx.png" alt=""></p>
+<p><strong>動作</strong></p>
+<ul>
+<li><p><strong>選擇觸發器</strong></p>
+<p>  一個動作可包含多個觸發器。</p>
+<p>  <img src="https://i.imgur.com/3ImQRyJ.png" alt=""></p>
+</li>
+<li><p><strong>操作步驟</strong></p>
+<p>  默认接收人：{TRIGGER.STATUS} 觸發器狀態<br>  默认信息：{TRIGGER.NAME} 觸發器名稱</p>
+<p>  <img src="https://i.imgur.com/Sb7MmhR.png" alt=""></p>
+</li>
+<li><p><strong>恢复操作步驟</strong></p>
+<p>  默认接收人：{TRIGGER.STATUS} 觸發器狀態<br>  默认信息：{TRIGGER.NAME} 觸發器名稱</p>
+<p>  <img src="https://i.imgur.com/vZCFZdF.png" alt=""></p>
+</li>
+</ul>
+<h2 id="2-Redis-Server"><a href="#2-Redis-Server" class="headerlink" title="2. Redis Server"></a>2. Redis Server</h2><p>Redis Server是一個Key,Velue的數據庫，默認數據是存於內存的，擁有極快的存取速度，通常用於緩存資料使用。</p>
+<p><strong>建立初始資料</strong></p>
+<p>先確保Redis可否連接，在新增<strong>觸發器名稱</strong>作為<strong>Redis Key</strong>，這邊用一個簡單的腳本新增。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import redis</span><br><span class="line">r = redis.StrictRedis(&quot;127.0.0.1&quot;)</span><br><span class="line"></span><br><span class="line"># Check redis server</span><br><span class="line">try:</span><br><span class="line">    r.ping()</span><br><span class="line">except Exception as e:</span><br><span class="line">    print &quot;RedisServer Error&quot;</span><br><span class="line"></span><br><span class="line"># Add redis keys</span><br><span class="line">items = [&quot;Google&quot;,&quot;Modem&quot;,&quot;Negix1&quot;,&quot;Negix2&quot;]</span><br><span class="line">[r.set(i,&quot;OK&quot;) for i in items]</span><br><span class="line">print r.keys()</span><br></pre></td></tr></table></figure>
+<p>先全部新增為”OK”，不然後面Get不到值會出錯。</p>
+<h2 id="3-Zabbix-Alarm-Client"><a href="#3-Zabbix-Alarm-Client" class="headerlink" title="3. Zabbix Alarm Client"></a>3. Zabbix Alarm Client</h2><p>利用Wxpython製作一個實時監測Zabbix監控項的小程序。</p>
+<p>完成圖<br><img src="https://i.imgur.com/WE1PjE4.jpg" alt=""></p>
+<p>wxpython</p>
 
           
         
@@ -1502,7 +1467,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(4) 創建圖形/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Docker 邊做邊學(3) 使用Dockerfile構建鏡像/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Maliao Guo">
@@ -1521,7 +1486,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/Zabbix學習筆記(4) 創建圖形/" itemprop="url">Zabbix學習筆記(4) 創建圖形</a></h1>
+                <a class="post-title-link" href="/2018/06/08/Docker 邊做邊學(3) 使用Dockerfile構建鏡像/" itemprop="url">Docker 邊做邊學 (3) 使用Dockerfile構建鏡像</a></h1>
         
 
         <div class="post-meta">
@@ -1556,8 +1521,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
-                    <span itemprop="name">Zabbix</span>
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
                   </a>
                 </span>
 
@@ -1595,21 +1560,32 @@
       
         
           
-            <p>單個監控項的圖形都是獨立的，若要同時比較多主機、多監控項，就需要創建自定圖形。</p>
-<h2 id="監控項"><a href="#監控項" class="headerlink" title="監控項"></a>監控項</h2><blockquote>
-<p>創建圖形之前必須建立好監控項。</p>
-</blockquote>
-<p><img src="https://i.imgur.com/9ev7cAC.png" alt=""></p>
-<h2 id="1-創建圖形"><a href="#1-創建圖形" class="headerlink" title="1. 創建圖形"></a>1. 創建圖形</h2><p>先選擇主機在創建圖形。</p>
-<p><img src="https://i.imgur.com/lcsp3iQ.png" alt=""></p>
-<h2 id="2-設置圖形"><a href="#2-設置圖形" class="headerlink" title="2. 設置圖形"></a>2. 設置圖形</h2><p><strong>加入監控項</strong></p>
-<p>將希望同時比較的監控項都加入到圖形中。</p>
-<p><img src="https://i.imgur.com/BY7hlTO.png" alt=""></p>
-<p><strong>調整顯示功能</strong></p>
-<p>功能選擇所有，這樣查看圖形時除了最新之外的”最小”、”平均”、”最大”都會顯示。</p>
-<p><img src="https://i.imgur.com/HQEK68l.png" alt=""></p>
-<h2 id="3-設置完成"><a href="#3-設置完成" class="headerlink" title="3. 設置完成"></a>3. 設置完成</h2><p><strong>查看圖形</strong></p>
-<p><img src="https://i.imgur.com/FghRq87.png" alt=""></p>
+            <p>Docker提供Dockerfile方法自動構建鏡像，只有將命令寫在Dockerfile檔案中，使用build方法就能一步一步自動構建鏡像，非常高效。</p>
+<ol>
+<li>準備或建立html檔案</li>
+</ol>
+<p>新增 <code>index.html</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;h1&gt;hello&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>創建檔案 <code>Dockerfile</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># VERSION 1</span><br><span class="line"># Author: Noyoung Guo</span><br><span class="line"></span><br><span class="line">FROM centos</span><br><span class="line"></span><br><span class="line">MAINTAINER noyoung noyoungit@gmail.com</span><br><span class="line"></span><br><span class="line">RUN rpm -ivh http://mirrors.aliyun.com/epel/epel-release-latest-7.noarch.rpm</span><br><span class="line">RUN yum install -y nginx</span><br><span class="line"></span><br><span class="line">ADD index.html /usr/share/nginx/html/index.html</span><br><span class="line"></span><br><span class="line">RUN echo &quot;daemon off;&quot; &gt;&gt; /etc/nginx/nginx.conf</span><br><span class="line"></span><br><span class="line">EXPOSE 80</span><br><span class="line">cmd [&quot;nginx&quot;]</span><br></pre></td></tr></table></figure>
+<p>Docker file 撰寫方式:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">From 來源</span><br><span class="line">Maintainer 選擇性，記錄作者與聯絡方式</span><br><span class="line">Run 建立IMAGE的過程，執行的指令</span><br><span class="line">WorkDIR 切換工作的路徑</span><br><span class="line">ADD 新增本機端的檔案或目錄到IMAGE內</span><br><span class="line">ENV 設定環境變數</span><br><span class="line">EXPOSE 端口</span><br><span class="line">VOLUME 數據卷</span><br><span class="line">CMD 命令</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>build Dockerfile</li>
+</ol>
+<p>最後的<code>.</code>就是當前目錄(Dockerfile檔案位置)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t noyoung/mynginx:v3 .</span><br></pre></td></tr></table></figure>
+<p>Options:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-t 選擇以&apos;name:tag&apos;格式的鏡像</span><br></pre></td></tr></table></figure></p>
+<ol start="4">
+<li>創建基於<code>noyoung/mynginx:v3</code>的容器</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 83:80 noyoung/mynginx:v3</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>訪問服務頁面</li>
+</ol>
+<p><img src="https://i.imgur.com/HYSDgDB.jpg" alt=""></p>
 
           
         
@@ -1823,7 +1799,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Docker 邊做邊學(3) 使用Dockerfile構建鏡像/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(4) 創建圖形/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Maliao Guo">
@@ -1842,7 +1818,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/Docker 邊做邊學(3) 使用Dockerfile構建鏡像/" itemprop="url">Docker 邊做邊學 (3) 使用Dockerfile構建鏡像</a></h1>
+                <a class="post-title-link" href="/2018/06/08/Zabbix學習筆記(4) 創建圖形/" itemprop="url">Zabbix學習筆記(4) 創建圖形</a></h1>
         
 
         <div class="post-meta">
@@ -1877,8 +1853,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Docker/" itemprop="url" rel="index">
-                    <span itemprop="name">Docker</span>
+                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
+                    <span itemprop="name">Zabbix</span>
                   </a>
                 </span>
 
@@ -1916,32 +1892,21 @@
       
         
           
-            <p>Docker提供Dockerfile方法自動構建鏡像，只有將命令寫在Dockerfile檔案中，使用build方法就能一步一步自動構建鏡像，非常高效。</p>
-<ol>
-<li>準備或建立html檔案</li>
-</ol>
-<p>新增 <code>index.html</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;h1&gt;hello&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>創建檔案 <code>Dockerfile</code></li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># VERSION 1</span><br><span class="line"># Author: Noyoung Guo</span><br><span class="line"></span><br><span class="line">FROM centos</span><br><span class="line"></span><br><span class="line">MAINTAINER noyoung noyoungit@gmail.com</span><br><span class="line"></span><br><span class="line">RUN rpm -ivh http://mirrors.aliyun.com/epel/epel-release-latest-7.noarch.rpm</span><br><span class="line">RUN yum install -y nginx</span><br><span class="line"></span><br><span class="line">ADD index.html /usr/share/nginx/html/index.html</span><br><span class="line"></span><br><span class="line">RUN echo &quot;daemon off;&quot; &gt;&gt; /etc/nginx/nginx.conf</span><br><span class="line"></span><br><span class="line">EXPOSE 80</span><br><span class="line">cmd [&quot;nginx&quot;]</span><br></pre></td></tr></table></figure>
-<p>Docker file 撰寫方式:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">From 來源</span><br><span class="line">Maintainer 選擇性，記錄作者與聯絡方式</span><br><span class="line">Run 建立IMAGE的過程，執行的指令</span><br><span class="line">WorkDIR 切換工作的路徑</span><br><span class="line">ADD 新增本機端的檔案或目錄到IMAGE內</span><br><span class="line">ENV 設定環境變數</span><br><span class="line">EXPOSE 端口</span><br><span class="line">VOLUME 數據卷</span><br><span class="line">CMD 命令</span><br></pre></td></tr></table></figure>
-<ol start="3">
-<li>build Dockerfile</li>
-</ol>
-<p>最後的<code>.</code>就是當前目錄(Dockerfile檔案位置)。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t noyoung/mynginx:v3 .</span><br></pre></td></tr></table></figure>
-<p>Options:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-t 選擇以&apos;name:tag&apos;格式的鏡像</span><br></pre></td></tr></table></figure></p>
-<ol start="4">
-<li>創建基於<code>noyoung/mynginx:v3</code>的容器</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 83:80 noyoung/mynginx:v3</span><br></pre></td></tr></table></figure>
-<ol start="5">
-<li>訪問服務頁面</li>
-</ol>
-<p><img src="https://i.imgur.com/HYSDgDB.jpg" alt=""></p>
+            <p>單個監控項的圖形都是獨立的，若要同時比較多主機、多監控項，就需要創建自定圖形。</p>
+<h2 id="監控項"><a href="#監控項" class="headerlink" title="監控項"></a>監控項</h2><blockquote>
+<p>創建圖形之前必須建立好監控項。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/9ev7cAC.png" alt=""></p>
+<h2 id="1-創建圖形"><a href="#1-創建圖形" class="headerlink" title="1. 創建圖形"></a>1. 創建圖形</h2><p>先選擇主機在創建圖形。</p>
+<p><img src="https://i.imgur.com/lcsp3iQ.png" alt=""></p>
+<h2 id="2-設置圖形"><a href="#2-設置圖形" class="headerlink" title="2. 設置圖形"></a>2. 設置圖形</h2><p><strong>加入監控項</strong></p>
+<p>將希望同時比較的監控項都加入到圖形中。</p>
+<p><img src="https://i.imgur.com/BY7hlTO.png" alt=""></p>
+<p><strong>調整顯示功能</strong></p>
+<p>功能選擇所有，這樣查看圖形時除了最新之外的”最小”、”平均”、”最大”都會顯示。</p>
+<p><img src="https://i.imgur.com/HQEK68l.png" alt=""></p>
+<h2 id="3-設置完成"><a href="#3-設置完成" class="headerlink" title="3. 設置完成"></a>3. 設置完成</h2><p><strong>查看圖形</strong></p>
+<p><img src="https://i.imgur.com/FghRq87.png" alt=""></p>
 
           
         
