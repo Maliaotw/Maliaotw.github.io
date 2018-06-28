@@ -249,7 +249,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/jenkins學習(4) 拉取Gitlab項目/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/瀏覽器自動化(4) Selenium + Beautiful Soup/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Maliao Guo">
@@ -268,7 +268,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/jenkins學習(4) 拉取Gitlab項目/" itemprop="url">jenkins學習(4) 拉取Gitlab項目</a></h1>
+                <a class="post-title-link" href="/2018/06/08/瀏覽器自動化(4) Selenium + Beautiful Soup/" itemprop="url">瀏覽器自動化(4) Selenium + Beautiful Soup</a></h1>
         
 
         <div class="post-meta">
@@ -303,8 +303,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Jenkins/" itemprop="url" rel="index">
-                    <span itemprop="name">Jenkins</span>
+                  <a href="/categories/Selenium/" itemprop="url" rel="index">
+                    <span itemprop="name">Selenium</span>
                   </a>
                 </span>
 
@@ -315,6 +315,17 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/08/瀏覽器自動化(4) Selenium + Beautiful Soup/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/08/瀏覽器自動化(4) Selenium + Beautiful Soup/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -342,37 +353,30 @@
       
         
           
-            <h1 id="Gitlab"><a href="#Gitlab" class="headerlink" title="Gitlab"></a>Gitlab</h1><ol>
-<li>在Gitlab上創建一個項目</li>
+            <p>安裝模塊</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">selenium</span><br><span class="line">requests</span><br><span class="line">beautifulsoup4</span><br></pre></td></tr></table></figure>
+<ol>
+<li>selenium<br>主要用於登入或js互動，剩餘的在使用bs4進行爬取。</li>
 </ol>
-<p>ptt_1項目地址:<br><a href="http://192.168.1.112/2215/ptt_1.git" target="_blank" rel="noopener">http://192.168.1.112/2215/ptt_1.git</a></p>
-<p><img src="https://i.imgur.com/1J2Mem0.jpg" alt=""></p>
-<h1 id="Jenkins"><a href="#Jenkins" class="headerlink" title="Jenkins"></a>Jenkins</h1><ol>
-<li>設置節點Git</li>
-</ol>
-<p>手動指定節點的Git位置，默認會以Master的位置啟動Git，若不設定會報錯。</p>
-<p><img src="https://i.imgur.com/43LYKHD.jpg" alt=""></p>
 <ol start="2">
-<li>創建項目任務</li>
+<li>requests<br>能模擬http請求，如:get、post、put、delete，通常是爬取分頁或a標籤時用到。</li>
 </ol>
-<ul>
-<li>源码管理</li>
-</ul>
-<p>Repository URL:<a href="http://192.168.1.112/2215/ptt_1.git" target="_blank" rel="noopener">http://192.168.1.112/2215/ptt_1.git</a></p>
-<p><img src="https://i.imgur.com/NZCWvek.jpg" alt=""></p>
-<ul>
-<li><code>Execute Windows batch command</code></li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\Lenovo\Anaconda3\envs\test_venv35\Scripts\pip.exe install -r requirements.txt</span><br><span class="line">C:\Users\Lenovo\Anaconda3\envs\test_venv35\python.exe main.py</span><br></pre></td></tr></table></figure>
-<ul>
-<li>構建結果</li>
-</ul>
-<p>構建之前會先clone項目</p>
-<p><img src="https://i.imgur.com/NDGMLBj.jpg" alt=""></p>
-<p>安裝依賴</p>
-<p><img src="https://i.imgur.com/Y7V2cTX.jpg" alt=""></p>
-<p>執行python腳本</p>
-<p><img src="https://i.imgur.com/rYQDWaT.jpg" alt=""></p>
+<p><a href="http://docs.python-requests.org/zh_CN/latest/user/quickstart.html" target="_blank" rel="noopener">官方文檔</a></p>
+<p>如何使用</p>
+<p>模擬請求</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r = requests.get(&apos;https://api.github.com/events&apos;)</span><br></pre></td></tr></table></figure>
+<p>查看請求狀態</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r.status_code</span><br><span class="line">輸出:</span><br><span class="line">&gt;&gt;&gt; 200</span><br></pre></td></tr></table></figure>
+<p>取得請求html內容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r.text</span><br><span class="line">輸出:</span><br><span class="line">&gt;&gt;&gt; &apos;&lt;!doctype html&gt;&lt;html itemscope=&quot;&quot; itemtype=&quot;http://schema.org/WebPage&quot; lang=&quot;zh-TW&quot;&gt;&lt;head&gt;&lt;meta content=&quot;text/html; charset=UTF-8&quot; http-equiv=&quot;Content-Type&quot;&gt;&lt;meta content=&quot;/images/branding/googleg/1x/googleg_standard_color_128dp.png&quot; ...&lt;/html&gt;&apos;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>Beautiful Soup<br>Beautiful Soup能解析html，能快速尋找標籤內容，也可以透過CSS選擇器快速尋找帶有標籤屬性的內容。</li>
+</ol>
+<p><a href="http://beautifulsoup.readthedocs.io/zh_CN/latest/" target="_blank" rel="noopener">官方文檔</a></p>
+<p>如何使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">import requests</span><br><span class="line">web_data = requests.get(&apos;https://api.github.com/events&apos;)</span><br><span class="line">soup = BeautifulSoup(web_data, &apos;lxml&apos;) #解析Html</span><br><span class="line">soup.title</span><br></pre></td></tr></table></figure>
+<h1 id="啟動"><a href="#啟動" class="headerlink" title="啟動"></a>啟動</h1><h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>selenium_bs4_demo1.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from bs4 import BeautifulSoup</span><br><span class="line"></span><br><span class="line">from selenium import webdriver</span><br><span class="line"></span><br><span class="line">browser = webdriver.Firefox()</span><br><span class="line">browser.get(&apos;https://w3.iiiedu.org.tw/&apos;)</span><br><span class="line">wb_html = browser.page_source</span><br><span class="line">soup = BeautifulSoup(wb_html,&quot;lxml&quot;)</span><br></pre></td></tr></table></figure></p>
+<h1 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h1><p>大部分網頁都用requests都能獲取，用到selenium情況比較少，有登入或js需求可以參考，在此紀錄心得。</p>
 
           
         
@@ -488,6 +492,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/08/Docker 邊做邊學(2) 製作鏡像 centos + nginx/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/08/Docker 邊做邊學(2) 製作鏡像 centos + nginx/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -549,6 +564,195 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 82:80 noyung/mynginx:v2 nginx</span><br></pre></td></tr></table></figure>
 <p><img src="https://i.imgur.com/NKxVzOz.jpg" alt=""></p>
 <p>小總結<br>Docker可以根據自己需要的環境，慢慢打上服務配置製作鏡像，但是這樣的方式效率不太好，上面的步驟可以透過dockerfile搞定。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/jenkins學習(3) 創建項目任務/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Maliao Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/jenkins學習(3) 創建項目任務/" itemprop="url">jenkins學習(3) 創建項目任務</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:03:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Jenkins/" itemprop="url" rel="index">
+                    <span itemprop="name">Jenkins</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/08/jenkins學習(3) 創建項目任務/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/08/jenkins學習(3) 創建項目任務/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>用Jenkins創建一個簡單的項目，打印系統狀態<code>systeminfo</code></p>
+<ol>
+<li>創建一個新任務</li>
+</ol>
+<ol start="2">
+<li>輸入任務名稱</li>
+</ol>
+<p>類型選擇<code>构建一个自由风格的软件项目</code></p>
+<p><img src="https://i.imgur.com/ak8FjDt.jpg" alt=""></p>
+<ol start="3">
+<li>設置任務</li>
+</ol>
+<ul>
+<li>限制项目的运行节点</li>
+</ul>
+<p>說明:指定想控制的節點名稱</p>
+<p>這邊使用Windows系統的Host73</p>
+<p><img src="https://i.imgur.com/XSmN7qp.jpg" alt=""></p>
+<ul>
+<li>構建步驟</li>
+</ul>
+<p>在構建選項中，點擊<code>增加構建步驟</code>裡面的<code>Execute Windows batch command</code>，這是專門控制windows系統的方法，相等於在寫批次檔(bat)。</p>
+<p><img src="https://i.imgur.com/8Al5iwY.jpg" alt=""></p>
+<ul>
+<li><code>Execute Windows batch command</code> 內容</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systeminfo</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/bmj7Vdn.jpg" alt=""></p>
+<ul>
+<li>立即構建</li>
+</ul>
+<p><img src="https://i.imgur.com/TBVbP1M.jpg" alt=""></p>
+<ul>
+<li>構建結果</li>
+</ul>
+<p>在控制台輸出可以看到每次構建的結果，畫紅色底線的地方，就是在節點設置中的工作目錄，預設會在這個目錄構建項目。</p>
+<p><img src="https://i.imgur.com/h0mWPg5.jpg" alt=""></p>
 
           
         
@@ -663,6 +867,17 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/08/Zabbix學習筆記(3) 創建觸發器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/08/Zabbix學習筆記(3) 創建觸發器/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -808,184 +1023,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/jenkins學習(3) 創建項目任務/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Maliao Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/jenkins學習(3) 創建項目任務/" itemprop="url">jenkins學習(3) 創建項目任務</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:03:00+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Jenkins/" itemprop="url" rel="index">
-                    <span itemprop="name">Jenkins</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>用Jenkins創建一個簡單的項目，打印系統狀態<code>systeminfo</code></p>
-<ol>
-<li>創建一個新任務</li>
-</ol>
-<ol start="2">
-<li>輸入任務名稱</li>
-</ol>
-<p>類型選擇<code>构建一个自由风格的软件项目</code></p>
-<p><img src="https://i.imgur.com/ak8FjDt.jpg" alt=""></p>
-<ol start="3">
-<li>設置任務</li>
-</ol>
-<ul>
-<li>限制项目的运行节点</li>
-</ul>
-<p>說明:指定想控制的節點名稱</p>
-<p>這邊使用Windows系統的Host73</p>
-<p><img src="https://i.imgur.com/XSmN7qp.jpg" alt=""></p>
-<ul>
-<li>構建步驟</li>
-</ul>
-<p>在構建選項中，點擊<code>增加構建步驟</code>裡面的<code>Execute Windows batch command</code>，這是專門控制windows系統的方法，相等於在寫批次檔(bat)。</p>
-<p><img src="https://i.imgur.com/8Al5iwY.jpg" alt=""></p>
-<ul>
-<li><code>Execute Windows batch command</code> 內容</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systeminfo</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.imgur.com/bmj7Vdn.jpg" alt=""></p>
-<ul>
-<li>立即構建</li>
-</ul>
-<p><img src="https://i.imgur.com/TBVbP1M.jpg" alt=""></p>
-<ul>
-<li>構建結果</li>
-</ul>
-<p>在控制台輸出可以看到每次構建的結果，畫紅色底線的地方，就是在節點設置中的工作目錄，預設會在這個目錄構建項目。</p>
-<p><img src="https://i.imgur.com/h0mWPg5.jpg" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/瀏覽器自動化(3) Selenium 使用OCR 簡易破解驗證碼/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1052,6 +1089,17 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/08/瀏覽器自動化(3) Selenium 使用OCR 簡易破解驗證碼/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/08/瀏覽器自動化(3) Selenium 使用OCR 簡易破解驗證碼/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -1248,6 +1296,17 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/08/Jenkins學習(2) 新增節點/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/08/Jenkins學習(2) 新增節點/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -1484,6 +1543,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1547,6 +1617,197 @@
 </ol>
 <h2 id="使用腳本-1"><a href="#使用腳本-1" class="headerlink" title="使用腳本"></a>使用腳本</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"># @Date    : 2018-05-16 08:33:47</span><br><span class="line"># @Author  : Maliao</span><br><span class="line"># @Link    : None</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">from selenium import webdriver</span><br><span class="line">from selenium.webdriver.common.keys import Keys</span><br><span class="line"></span><br><span class="line">browser = webdriver.Chrome()  # 調用webdriver</span><br><span class="line"></span><br><span class="line">browser.get(&quot;http://www.google.com&quot;)</span><br><span class="line"></span><br><span class="line">browser.find_element_by_id(&quot;lst-ib&quot;).send_keys(&quot;python&quot;)  # 搜索框輸入:&quot;python&quot;</span><br><span class="line"></span><br><span class="line">browser.find_element_by_name(&quot;btnK&quot;).send_keys(Keys.ENTER)  # 提交搜尋</span><br><span class="line"></span><br><span class="line">titles = browser.find_elements_by_xpath(&quot;.//h3[@class=&apos;r&apos;]//a&quot;) # 搜尋所有標題</span><br><span class="line"></span><br><span class="line">print([i.text for i in titles]) # 打印所有標題</span><br><span class="line"></span><br><span class="line">browser.quit()  # 離開瀏覽器</span><br><span class="line"></span><br><span class="line"># 輸出:</span><br><span class="line">[&apos;Welcome to Python.org&apos;, &apos;Python教程- 廖雪峰的官方网站&apos;, &apos;Python - 维基百科，自由的百科全书&apos;, &apos;Python 简介| 菜鸟教程&apos;, &apos;教程一览| 莫烦Python&apos;, &apos;Python For Loops - W3Schools&apos;, &apos;Python Tutorial - W3Schools&apos;, &apos;Python - Attorneys at law – Geneva Switzerland Tokyo Brussels&apos;, &apos;Python Functions | DataCamp&apos;, &apos;用Python 理財：打造小資族選股策略- Hahow 好學校&apos;]</span><br></pre></td></tr></table></figure>
 <h1 id="小結"><a href="#小結" class="headerlink" title="小結:"></a>小結:</h1><p>操作上Chrome快速很多，而firefox雖然啟動比較慢，但不用webdriver及全屏截圖，實在相當便利。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Maliao Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/" itemprop="url">Zabbix學習筆記(2) 創建監控項 - 簡單檢查</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:02:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
+                    <span itemprop="name">Zabbix</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>利用簡單檢查監測站點是否存活，Zabbix內置的簡單檢查可針對各端口站點監測是否有回應?速度如何?</p>
+<h2 id="1-創建一個主機"><a href="#1-創建一個主機" class="headerlink" title="1. 創建一個主機"></a>1. 創建一個主機</h2><p>這個步驟是非必要的，這邊操作的目的在於避免與Agent端混淆。</p>
+<p><strong>創建主機</strong></p>
+<p><img src="https://i.imgur.com/vTuRRZz.png" alt=""></p>
+<p><strong>填寫主機內容</strong></p>
+<p>主機名稱:PingHost(也可以隨意命名)<br>群組一定要選一個，這邊選擇Discovered hosts(發現的主機)</p>
+<p><img src="https://i.imgur.com/drUVtDQ.png" alt=""></p>
+<p><strong>創建成功</strong></p>
+<p><img src="https://i.imgur.com/zwqSQgD.png" alt=""></p>
+<h2 id="2-創建監控項"><a href="#2-創建監控項" class="headerlink" title="2. 創建監控項"></a>2. 創建監控項</h2><p>選擇剛剛建好的主機，並創建監控項</p>
+<p><img src="https://i.imgur.com/HmNJrE1.png" alt=""></p>
+<p><strong>簡單檢查 Simple Check</strong></p>
+<p>類型選擇”簡單檢查”</p>
+<p><img src="https://i.imgur.com/cr0cZak.png" alt=""></p>
+<p>在鍵值空白旁點擊”選擇”</p>
+<p><img src="https://i.imgur.com/K2Lc8Pn.png" alt=""></p>
+<p><strong>什麼是簡單檢查？</strong></p>
+<p>簡單來說提供了三種監測服務，分別為Ping、TCP、UDP，<strong>Ping</strong>可以查看主機是否存活、丟包、超時等，<strong>TCP</strong>功能支持多種服務類型如：ssh, ldap, smtp, ftp, http, pop, nntp, imap, tcp, https, telnet，也可任意指定端口，主要查看是否可以連接、超時等，<strong>UDP</strong>功能與<strong>TCP</strong>接近，更多及相關參數可以參考<a href="https://www.zabbix.com/documentation/3.0/manual/config/items/itemtypes/simple_checks" target="_blank" rel="noopener">官方文檔</a>。</p>
+<p><img src="https://i.imgur.com/Y8n1V7S.png" alt=""></p>
+<blockquote>
+<p>選擇簡體中文可以得到較好的支持，試過選擇繁中這個頁面中文化不是很完全，比較偏好中文的朋友可選簡中試試。</p>
+</blockquote>
+<h2 id="3-填寫監測內容"><a href="#3-填寫監測內容" class="headerlink" title="3. 填寫監測內容"></a>3. 填寫監測內容</h2><p>監測Modem(IP:192.168.0.1)是否正常。</p>
+<p>類型：簡單檢查<br>鍵值：icmppingsec[192.168.0.1]<br>信息類型：浮點數<br>單位：s</p>
+<p>若選擇的鍵值是有返回響應時間，那信息類型就需要選擇<strong>浮點數</strong>，單位輸入<strong>s</strong>。</p>
+<p><strong>填寫內容</strong></p>
+<p>對應填寫內容如下，填寫完畢後要在頁面最下方點擊<strong>添加</strong>。</p>
+<p><img src="https://i.imgur.com/z6doriP.png" alt=""></p>
+<p><strong>填寫完畢</strong></p>
+<p><img src="https://i.imgur.com/eeIC7cF.png" alt=""></p>
+<h2 id="4-查看在監測的項目"><a href="#4-查看在監測的項目" class="headerlink" title="4. 查看在監測的項目"></a>4. 查看在監測的項目</h2><p><strong>最新數據</strong></p>
+<p>選擇監測中點擊”最新數據”</p>
+<p><img src="https://i.imgur.com/5TOTV2M.png" alt=""></p>
+<p><strong>找出監控項</strong></p>
+<p>篩選群組或主機找出監控項，查看是否已有數據。</p>
+<p><img src="https://i.imgur.com/UHe3NHc.png" alt=""></p>
+<p><strong>查看圖形</strong></p>
+<p>點擊圖形查看分時圖。</p>
+<p><img src="https://i.imgur.com/r6jakWW.png" alt=""></p>
 
           
         
@@ -1661,6 +1922,17 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/08/Docker 邊做邊學(1) 搭建nginx服務器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/08/Docker 邊做邊學(1) 搭建nginx服務器/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -1797,186 +2069,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Maliao Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/" itemprop="url">Zabbix學習筆記(2) 創建監控項 - 簡單檢查</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:02:00+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
-                    <span itemprop="name">Zabbix</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>利用簡單檢查監測站點是否存活，Zabbix內置的簡單檢查可針對各端口站點監測是否有回應?速度如何?</p>
-<h2 id="1-創建一個主機"><a href="#1-創建一個主機" class="headerlink" title="1. 創建一個主機"></a>1. 創建一個主機</h2><p>這個步驟是非必要的，這邊操作的目的在於避免與Agent端混淆。</p>
-<p><strong>創建主機</strong></p>
-<p><img src="https://i.imgur.com/vTuRRZz.png" alt=""></p>
-<p><strong>填寫主機內容</strong></p>
-<p>主機名稱:PingHost(也可以隨意命名)<br>群組一定要選一個，這邊選擇Discovered hosts(發現的主機)</p>
-<p><img src="https://i.imgur.com/drUVtDQ.png" alt=""></p>
-<p><strong>創建成功</strong></p>
-<p><img src="https://i.imgur.com/zwqSQgD.png" alt=""></p>
-<h2 id="2-創建監控項"><a href="#2-創建監控項" class="headerlink" title="2. 創建監控項"></a>2. 創建監控項</h2><p>選擇剛剛建好的主機，並創建監控項</p>
-<p><img src="https://i.imgur.com/HmNJrE1.png" alt=""></p>
-<p><strong>簡單檢查 Simple Check</strong></p>
-<p>類型選擇”簡單檢查”</p>
-<p><img src="https://i.imgur.com/cr0cZak.png" alt=""></p>
-<p>在鍵值空白旁點擊”選擇”</p>
-<p><img src="https://i.imgur.com/K2Lc8Pn.png" alt=""></p>
-<p><strong>什麼是簡單檢查？</strong></p>
-<p>簡單來說提供了三種監測服務，分別為Ping、TCP、UDP，<strong>Ping</strong>可以查看主機是否存活、丟包、超時等，<strong>TCP</strong>功能支持多種服務類型如：ssh, ldap, smtp, ftp, http, pop, nntp, imap, tcp, https, telnet，也可任意指定端口，主要查看是否可以連接、超時等，<strong>UDP</strong>功能與<strong>TCP</strong>接近，更多及相關參數可以參考<a href="https://www.zabbix.com/documentation/3.0/manual/config/items/itemtypes/simple_checks" target="_blank" rel="noopener">官方文檔</a>。</p>
-<p><img src="https://i.imgur.com/Y8n1V7S.png" alt=""></p>
-<blockquote>
-<p>選擇簡體中文可以得到較好的支持，試過選擇繁中這個頁面中文化不是很完全，比較偏好中文的朋友可選簡中試試。</p>
-</blockquote>
-<h2 id="3-填寫監測內容"><a href="#3-填寫監測內容" class="headerlink" title="3. 填寫監測內容"></a>3. 填寫監測內容</h2><p>監測Modem(IP:192.168.0.1)是否正常。</p>
-<p>類型：簡單檢查<br>鍵值：icmppingsec[192.168.0.1]<br>信息類型：浮點數<br>單位：s</p>
-<p>若選擇的鍵值是有返回響應時間，那信息類型就需要選擇<strong>浮點數</strong>，單位輸入<strong>s</strong>。</p>
-<p><strong>填寫內容</strong></p>
-<p>對應填寫內容如下，填寫完畢後要在頁面最下方點擊<strong>添加</strong>。</p>
-<p><img src="https://i.imgur.com/z6doriP.png" alt=""></p>
-<p><strong>填寫完畢</strong></p>
-<p><img src="https://i.imgur.com/eeIC7cF.png" alt=""></p>
-<h2 id="4-查看在監測的項目"><a href="#4-查看在監測的項目" class="headerlink" title="4. 查看在監測的項目"></a>4. 查看在監測的項目</h2><p><strong>最新數據</strong></p>
-<p>選擇監測中點擊”最新數據”</p>
-<p><img src="https://i.imgur.com/5TOTV2M.png" alt=""></p>
-<p><strong>找出監控項</strong></p>
-<p>篩選群組或主機找出監控項，查看是否已有數據。</p>
-<p><img src="https://i.imgur.com/UHe3NHc.png" alt=""></p>
-<p><strong>查看圖形</strong></p>
-<p>點擊圖形查看分時圖。</p>
-<p><img src="https://i.imgur.com/r6jakWW.png" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Docker 學習筆記/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2043,6 +2135,17 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/08/Docker 學習筆記/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/08/Docker 學習筆記/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -2426,6 +2529,14 @@
 
   
 
+    
+      <script id="dsq-count-scr" src="https://maliao.disqus.com/count.js" async></script>
+    
+
+    
+
+  
+
 
 
 
@@ -2438,10 +2549,6 @@
   
 
 
-
-
-
-  
 
 
 
