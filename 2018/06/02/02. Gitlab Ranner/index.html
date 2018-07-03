@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-tw">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Gitlab Runner中文文檔 安裝 runner 建立一個目錄 例如:C:\GitLab-Runner  下載對應的gitlab-runner版本，將下載的檔案更改名稱為gitlab-runner.exe。   x86x64  Registering Runners  官方註冊教學 3.1 打開cmd(管理員執行) 3.2 输入 GitLab 实例 URL:1./gitlab-runner.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="馬里奧">
+<meta property="og:url" content="http://yoursite.com/2018/06/02/02. Gitlab Ranner/index.html">
+<meta property="og:site_name" content="馬里奧">
+<meta property="og:description" content="Gitlab Runner中文文檔 安裝 runner 建立一個目錄 例如:C:\GitLab-Runner  下載對應的gitlab-runner版本，將下載的檔案更改名稱為gitlab-runner.exe。   x86x64  Registering Runners  官方註冊教學 3.1 打開cmd(管理員執行) 3.2 输入 GitLab 实例 URL:1./gitlab-runner.">
+<meta property="og:locale" content="zh-tw">
+<meta property="og:image" content="https://i.imgur.com/dHvhicX.jpg">
+<meta property="og:image" content="https://i.imgur.com/j2G6Sa3.jpg">
+<meta property="og:image" content="https://i.imgur.com/iEZaga5.jpg">
+<meta property="og:image" content="https://i.imgur.com/wUx7TmJ.jpg">
+<meta property="og:updated_time" content="2018-07-03T06:17:33.723Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="馬里奧">
+<meta name="twitter:description" content="Gitlab Runner中文文檔 安裝 runner 建立一個目錄 例如:C:\GitLab-Runner  下載對應的gitlab-runner版本，將下載的檔案更改名稱為gitlab-runner.exe。   x86x64  Registering Runners  官方註冊教學 3.1 打開cmd(管理員執行) 3.2 输入 GitLab 实例 URL:1./gitlab-runner.">
+<meta name="twitter:image" content="https://i.imgur.com/dHvhicX.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/02/02. Gitlab Ranner/"/>
+
+
+
+
+
+  <title> | 馬里奧</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-tw">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">馬里奧</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">編程沒有什麼不好</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            標籤
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分類
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            歸檔
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/02/02. Gitlab Ranner/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Maliao Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-02T19:40:01+08:00">
+                2018-06-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/02/02. Gitlab Ranner/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/02/02. Gitlab Ranner/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Gitlab-Runner"><a href="#Gitlab-Runner" class="headerlink" title="Gitlab Runner"></a>Gitlab Runner</h1><p><a href="https://docs.gitlab.com.cn/runner/" target="_blank" rel="noopener">中文文檔</a></p>
+<h1 id="安裝-runner"><a href="#安裝-runner" class="headerlink" title="安裝 runner"></a>安裝 runner</h1><ol>
+<li><p>建立一個目錄 例如:<code>C:\GitLab-Runner</code></p>
+</li>
+<li><p>下載對應的gitlab-runner版本，將下載的檔案更改名稱為<code>gitlab-runner.exe</code>。</p>
+</li>
+</ol>
+<p><a href="https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-windows-386.exe" target="_blank" rel="noopener">x86</a><br><a href="https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-windows-amd64.exe" target="_blank" rel="noopener">x64</a></p>
+<ol start="3">
+<li>Registering Runners</li>
+</ol>
+<p><a href="https://docs.gitlab.com.cn/runner/register/index.html" target="_blank" rel="noopener">官方註冊教學</a></p>
+<p>3.1 打開cmd(管理員執行)</p>
+<p>3.2 输入 GitLab 实例 URL:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gitlab-runner.exe register</span><br></pre></td></tr></table></figure></p>
+<p>3.3 输入 GitLab 实例 URL:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Please enter the gitlab-ci coordinator URL</span><br><span class="line">http://192.168.1.112/</span><br></pre></td></tr></table></figure></p>
+<p>3.4 输入获取到的用于注册 Runner 的 token:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Please enter the gitlab-ci token for this runner</span><br><span class="line">1Y6skuaKaYDyNucjYS9_</span><br></pre></td></tr></table></figure></p>
+<p>3.5 输入该 Runner 的描述，稍后也可通过 GitLab’s UI 修改:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Please enter the gitlab-ci description for this runner</span><br><span class="line">[hostame] my-runner test</span><br></pre></td></tr></table></figure></p>
+<p>3.6 给该 Runner 指派 tags, 稍后也可以在 GitLab’s UI 修改:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Please enter the gitlab-ci tags for this runner (comma separated):</span><br><span class="line">my-tag,another-tag</span><br></pre></td></tr></table></figure></p>
+<p>3.7 选择 Runner 是否接收未指定 tags 的任务（默认值：false）， 稍后可以在 GitLab’s UI 修改：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Whether to run untagged jobs [true/false]:</span><br><span class="line">[false]: true</span><br></pre></td></tr></table></figure></p>
+<p>3.8 选择是否为当前项目锁定该 Runner， 之后可以在 GitLab’s UI 修改。 该功能通常用于被指定为某个项目的 Runner （默认值：true）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Whether to lock Runner to current project [true/false]:</span><br><span class="line">[true]: true</span><br></pre></td></tr></table></figure></p>
+<p>3.9 选择 Runner executor:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Please enter the executor: ssh, docker+machine, docker-ssh+machine, kubernetes, docker, parallels, virtualbox, docker-ssh, shell:</span><br><span class="line">shell</span><br></pre></td></tr></table></figure></p>
+<p>3.10 如果你选择 Docker 作为你的 executor，注册程序会让你设置一个默认的镜像， 作用于 .gitlab-ci.yml 中未指定镜像的项目：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Please enter the Docker image (eg. ruby:2.1):</span><br><span class="line">alpine:latest</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://i.imgur.com/dHvhicX.jpg" alt=""></p>
+<p><img src="https://i.imgur.com/j2G6Sa3.jpg" alt=""></p>
+<p>如果你想在同一台机器上注册多个 Runner，可以重复运行 ./gitlab-runner.exe register 这个命令进行配置。</p>
+<ol start="4">
+<li>將Runner作為服務安裝並啟動它。您可以使用內置系統帳戶（推薦）或使用用戶帳戶運行服務。</li>
+</ol>
+<ul>
+<li><strong>使用內置系統帳戶運行服務</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gitlab-runner install</span><br><span class="line">gitlab-runner start</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/iEZaga5.jpg" alt=""></p>
+<p><img src="https://i.imgur.com/wUx7TmJ.jpg" alt=""></p>
+<ul>
+<li><strong>使用用戶帳戶運行服務</strong></li>
+</ul>
+<p>您必須輸入當前用戶帳戶的有效密碼，因為它需要Windows啟動服務：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gitlab-runner install --user ENTER-YOUR-USERNAME --password ENTER-YOUR-PASSWORD</span><br><span class="line">gitlab-runner start</span><br></pre></td></tr></table></figure>
+<p>如果您在Runner安裝過程中遇到任何錯誤，請參閱故障排除部分。</p>
+<ol start="6">
+<li>（可選）更新運行程序的concurrent值C:\GitLab-Runner\config.toml 以允許多個並發作業，如高級配置詳細信息中所述。另外，您可以使用高級配置詳細信息來更新您的shell執行程序以使用Bash或PowerShell而不是批處理。</li>
+</ol>
+<p>瞧！Runner已安裝，正在運行，並且將在每次系統重新啟動後重新啟動。日誌存儲在Windows事件日誌中。</p>
+<h1 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h1><ol>
+<li><p>停止服務（您需要像以前那樣提升命令提示符）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd C:\GitLab-Runner</span><br><span class="line">gitlab-runner stop</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>下載x86或amd64的二進製文件並替換runner的可執行文件。您可以下載Bleeding Edge中所述的每個可用版本的二進製文件 - 下載任何其他帶標籤的版本。</p>
+</li>
+<li><p>開始服務：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab-runner start</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="卸載"><a href="#卸載" class="headerlink" title="卸載"></a>卸載</h1><ol>
+<li>從提升的命令提示符：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd C:\GitLab-Runner</span><br><span class="line">gitlab-runner stop</span><br><span class="line">gitlab-runner uninstall</span><br><span class="line">cd ..</span><br><span class="line">rmdir /s GitLab-Runner</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="故障排除"><a href="#故障排除" class="headerlink" title="故障排除"></a>故障排除</h1><p>確保您閱讀了常見問題部分，其中介紹了GitLab Runner最常見的一些問題。</p>
+<p>如果您遇到類似帳戶名稱的錯誤，請嘗試.\在用戶名之前添加：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab-runner install --user &quot;.\ENTER-YOUR-USERNAME&quot; --password &quot;ENTER-YOUR-PASSWORD&quot;</span><br></pre></td></tr></table></figure>
+<p>如果您遇到a 服務在啟動服務時由於登錄失敗錯誤而無法啟動，請查看常見問題解答以檢查如何解決問題。</p>
+<p>如果您沒有Windows密碼，Runner的服務將無法啟動，但您可以使用內置系統帳戶。</p>
+<p>如果您對內置系統帳戶有問題，請閱讀 如何 使用Microsoft支持網站上的內置系統帳戶啟動服務。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/08/04. Pocket API體驗筆記/" rel="prev" title="Pocket API + Python 學習筆記">
+                Pocket API + Python 學習筆記 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Maliao Guo</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-name">文章</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分類</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">標籤</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/yourname" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Gitlab-Runner"><span class="nav-number">1.</span> <span class="nav-text">Gitlab Runner</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安裝-runner"><span class="nav-number">2.</span> <span class="nav-text">安裝 runner</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更新"><span class="nav-number">3.</span> <span class="nav-text">更新</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#卸載"><span class="nav-number">4.</span> <span class="nav-text">卸載</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#故障排除"><span class="nav-number">5.</span> <span class="nav-text">故障排除</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Maliao Guo</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 強力驅動</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主題 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://maliao.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2018/06/02/02. Gitlab Ranner/';
+          this.page.identifier = '2018/06/02/02. Gitlab Ranner/';
+          this.page.title = '';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://maliao.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
