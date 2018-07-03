@@ -456,7 +456,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Maliao Guo">
@@ -475,7 +475,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/" itemprop="url">瀏覽器自動化(2) 同時調用Selenium2與Selenium3</a></h1>
+                <a class="post-title-link" href="/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/" itemprop="url">Zabbix學習筆記(2) 創建監控項 - 簡單檢查</a></h1>
         
 
         <div class="post-meta">
@@ -510,8 +510,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Selenium/" itemprop="url" rel="index">
-                    <span itemprop="name">Selenium</span>
+                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
+                    <span itemprop="name">Zabbix</span>
                   </a>
                 </span>
 
@@ -528,9 +528,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/#comments" itemprop="discussionUrl">
+                <a href="/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -560,43 +560,45 @@
       
         
           
-            <p>虛擬還境可將python的模塊依賴分開管理，能使用指定版本或避免衝突問題。</p>
-<h1 id="Selenium2"><a href="#Selenium2" class="headerlink" title="Selenium2"></a>Selenium2</h1><p>使用技巧:</p>
-<ol>
-<li>firefox 不須透過webdriver。</li>
-<li>默認支持全屏幕截圖。</li>
-</ol>
-<p>如何調用</p>
-<ol>
-<li><p>建立虛擬環境 Selenium2 VEnv</p>
-<p> 安裝指定版本</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install selenium==2.53.2</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>下載免安裝的firefox46.01</p>
-</li>
-</ol>
-<p><a href="https://sourceforge.net/projects/portableapps/files/Mozilla%20Firefox,%20Portable%20Ed./Mozilla%20Firefox,%20Portable%20Edition%2046.0.1/" target="_blank" rel="noopener">FirefoxPortable 46 下載地址</a></p>
-<h2 id="使用腳本"><a href="#使用腳本" class="headerlink" title="使用腳本"></a>使用腳本</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"># @Date    : 2018-05-16 08:33:47</span><br><span class="line"># @Author  : Maliao</span><br><span class="line"># @Link    : None</span><br><span class="line"></span><br><span class="line">from selenium import webdriver</span><br><span class="line">from PIL import Image</span><br><span class="line">from selenium.webdriver.firefox.firefox_binary import FirefoxBinary</span><br><span class="line">from selenium.webdriver.firefox.firefox_profile import FirefoxProfile</span><br><span class="line">from time import sleep</span><br><span class="line"></span><br><span class="line">binary = FirefoxBinary(r&quot;.\FirefoxPortable\FirefoxPortable.exe&quot;) # firefox 主程序 檔案</span><br><span class="line">profile = FirefoxProfile(r&apos;.\FirefoxPortable\Data\profile&apos;) # firefox 使用者設定檔</span><br><span class="line"></span><br><span class="line">browser = webdriver.Firefox(firefox_binary=binary, firefox_profile=profile)</span><br><span class="line">browser.set_window_size(800, 900) # 指定窗口大小</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 依照元素大小截圖</span><br><span class="line">def crop_screenshot(fullfile, cropfile, element):</span><br><span class="line">    browser.save_screenshot(fullfile)</span><br><span class="line">    if element:</span><br><span class="line">        type = element[&quot;type&quot;]</span><br><span class="line">        name = element[&quot;name&quot;]</span><br><span class="line"></span><br><span class="line">        imgelement = browser.find_element_by_xpath(&quot;.//*[@%s=%r]&quot; % (type, name))</span><br><span class="line">        location = imgelement.location</span><br><span class="line">        size = imgelement.size</span><br><span class="line">        rangle = (int(location[&apos;x&apos;]), int(location[&apos;y&apos;]), int(</span><br><span class="line">            location[&apos;x&apos;] + size[&apos;width&apos;]), int(location[&apos;y&apos;] + size[&apos;height&apos;]))</span><br><span class="line"></span><br><span class="line">        i = Image.open(fullfile)</span><br><span class="line">        fincrop = i.crop(rangle)</span><br><span class="line">        fincrop.save(cropfile)</span><br><span class="line">    else:</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line"># 滾動窗口 加載所有圖片</span><br><span class="line">def js_scroll_down(text):</span><br><span class="line">    jsdown = &apos;&apos;&apos;</span><br><span class="line">    (function () &#123;</span><br><span class="line">                var y = 0;</span><br><span class="line">                var step = 100;</span><br><span class="line">                window.scroll(0, 0);</span><br><span class="line"></span><br><span class="line">                function f() &#123;</span><br><span class="line">                    if (y &lt; document.body.scrollHeight) &#123;</span><br><span class="line">                        y += step;</span><br><span class="line">                        window.scroll(0, y);</span><br><span class="line">                        setTimeout(f, 100);</span><br><span class="line">                    &#125; else &#123;</span><br><span class="line">                        window.scroll(0, 0);</span><br><span class="line">                        document.title += &quot;%s&quot;;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                setTimeout(f, 1000);</span><br><span class="line">            &#125;)();</span><br><span class="line">    &apos;&apos;&apos; % text</span><br><span class="line"></span><br><span class="line">    browser.execute_script(jsdown)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">browser.get(&quot;https://www.ithome.com/html/android/360003.htm&quot;)</span><br><span class="line"></span><br><span class="line"># 調用JS 下拉加載所有圖片</span><br><span class="line">text = &quot;SD&quot;</span><br><span class="line">js_scroll_down(text)</span><br><span class="line">changetitle = &quot;%s%s&quot; % (browser.title, text)</span><br><span class="line">while 1:  # 死循環 等待js跑完</span><br><span class="line">    nowtitle = browser.title</span><br><span class="line">    if changetitle in nowtitle:</span><br><span class="line">        break</span><br><span class="line">    else:</span><br><span class="line">        sleep(1)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 儲存 指定元素截圖</span><br><span class="line">element = &#123;&quot;type&quot;: &quot;class&quot;, &quot;name&quot;: &quot;post_content&quot;&#125;</span><br><span class="line">cropfile = r&quot;./data/ithome%s.png&quot; % browser.current_url.split(&quot;/&quot;)[-1].split(&quot;.&quot;)[0]</span><br><span class="line">fullfile = r&quot;./data/ithomeCN.png&quot;</span><br><span class="line">crop_screenshot(fullfile=fullfile, cropfile=cropfile, element=element)</span><br><span class="line"></span><br><span class="line"># 關閉瀏覽器</span><br><span class="line">browser.quit()</span><br></pre></td></tr></table></figure>
-<p>截出一整張的長截圖。</p>
-<p><img src="https://i.imgur.com/7TpWiwI.jpg" alt=""></p>
-<h1 id="selenium3"><a href="#selenium3" class="headerlink" title="selenium3"></a>selenium3</h1><p>使用技巧:</p>
-<ol>
-<li>支持最新版瀏覽器。</li>
-<li>需使用webdriver驅動。</li>
-</ol>
-<p>如何調用</p>
-<ol>
-<li><p>建立虛擬環境 Selenium3 VEnv</p>
-<p> 安裝最新版本</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install selenium</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><a href="https://www.slimjet.com/chrome/google-chrome-old-version.php" target="_blank" rel="noopener">下載Chrome</a></p>
-</li>
-<li><p><a href="http://chromedriver.chromium.org/downloads" target="_blank" rel="noopener">下載Chome Driver</a></p>
-</li>
-</ol>
-<h2 id="使用腳本-1"><a href="#使用腳本-1" class="headerlink" title="使用腳本"></a>使用腳本</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"># @Date    : 2018-05-16 08:33:47</span><br><span class="line"># @Author  : Maliao</span><br><span class="line"># @Link    : None</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">from selenium import webdriver</span><br><span class="line">from selenium.webdriver.common.keys import Keys</span><br><span class="line"></span><br><span class="line">browser = webdriver.Chrome()  # 調用webdriver</span><br><span class="line"></span><br><span class="line">browser.get(&quot;http://www.google.com&quot;)</span><br><span class="line"></span><br><span class="line">browser.find_element_by_id(&quot;lst-ib&quot;).send_keys(&quot;python&quot;)  # 搜索框輸入:&quot;python&quot;</span><br><span class="line"></span><br><span class="line">browser.find_element_by_name(&quot;btnK&quot;).send_keys(Keys.ENTER)  # 提交搜尋</span><br><span class="line"></span><br><span class="line">titles = browser.find_elements_by_xpath(&quot;.//h3[@class=&apos;r&apos;]//a&quot;) # 搜尋所有標題</span><br><span class="line"></span><br><span class="line">print([i.text for i in titles]) # 打印所有標題</span><br><span class="line"></span><br><span class="line">browser.quit()  # 離開瀏覽器</span><br><span class="line"></span><br><span class="line"># 輸出:</span><br><span class="line">[&apos;Welcome to Python.org&apos;, &apos;Python教程- 廖雪峰的官方网站&apos;, &apos;Python - 维基百科，自由的百科全书&apos;, &apos;Python 简介| 菜鸟教程&apos;, &apos;教程一览| 莫烦Python&apos;, &apos;Python For Loops - W3Schools&apos;, &apos;Python Tutorial - W3Schools&apos;, &apos;Python - Attorneys at law – Geneva Switzerland Tokyo Brussels&apos;, &apos;Python Functions | DataCamp&apos;, &apos;用Python 理財：打造小資族選股策略- Hahow 好學校&apos;]</span><br></pre></td></tr></table></figure>
-<h1 id="小結"><a href="#小結" class="headerlink" title="小結:"></a>小結:</h1><p>操作上Chrome快速很多，而firefox雖然啟動比較慢，但不用webdriver及全屏截圖，實在相當便利。</p>
+            <p>利用簡單檢查監測站點是否存活，Zabbix內置的簡單檢查可針對各端口站點監測是否有回應?速度如何?</p>
+<h2 id="1-創建一個主機"><a href="#1-創建一個主機" class="headerlink" title="1. 創建一個主機"></a>1. 創建一個主機</h2><p>這個步驟是非必要的，這邊操作的目的在於避免與Agent端混淆。</p>
+<p><strong>創建主機</strong></p>
+<p><img src="https://i.imgur.com/vTuRRZz.png" alt=""></p>
+<p><strong>填寫主機內容</strong></p>
+<p>主機名稱:PingHost(也可以隨意命名)<br>群組一定要選一個，這邊選擇Discovered hosts(發現的主機)</p>
+<p><img src="https://i.imgur.com/drUVtDQ.png" alt=""></p>
+<p><strong>創建成功</strong></p>
+<p><img src="https://i.imgur.com/zwqSQgD.png" alt=""></p>
+<h2 id="2-創建監控項"><a href="#2-創建監控項" class="headerlink" title="2. 創建監控項"></a>2. 創建監控項</h2><p>選擇剛剛建好的主機，並創建監控項</p>
+<p><img src="https://i.imgur.com/HmNJrE1.png" alt=""></p>
+<p><strong>簡單檢查 Simple Check</strong></p>
+<p>類型選擇”簡單檢查”</p>
+<p><img src="https://i.imgur.com/cr0cZak.png" alt=""></p>
+<p>在鍵值空白旁點擊”選擇”</p>
+<p><img src="https://i.imgur.com/K2Lc8Pn.png" alt=""></p>
+<p><strong>什麼是簡單檢查？</strong></p>
+<p>簡單來說提供了三種監測服務，分別為Ping、TCP、UDP，<strong>Ping</strong>可以查看主機是否存活、丟包、超時等，<strong>TCP</strong>功能支持多種服務類型如：ssh, ldap, smtp, ftp, http, pop, nntp, imap, tcp, https, telnet，也可任意指定端口，主要查看是否可以連接、超時等，<strong>UDP</strong>功能與<strong>TCP</strong>接近，更多及相關參數可以參考<a href="https://www.zabbix.com/documentation/3.0/manual/config/items/itemtypes/simple_checks" target="_blank" rel="noopener">官方文檔</a>。</p>
+<p><img src="https://i.imgur.com/Y8n1V7S.png" alt=""></p>
+<blockquote>
+<p>選擇簡體中文可以得到較好的支持，試過選擇繁中這個頁面中文化不是很完全，比較偏好中文的朋友可選簡中試試。</p>
+</blockquote>
+<h2 id="3-填寫監測內容"><a href="#3-填寫監測內容" class="headerlink" title="3. 填寫監測內容"></a>3. 填寫監測內容</h2><p>監測Modem(IP:192.168.0.1)是否正常。</p>
+<p>類型：簡單檢查<br>鍵值：icmppingsec[192.168.0.1]<br>信息類型：浮點數<br>單位：s</p>
+<p>若選擇的鍵值是有返回響應時間，那信息類型就需要選擇<strong>浮點數</strong>，單位輸入<strong>s</strong>。</p>
+<p><strong>填寫內容</strong></p>
+<p>對應填寫內容如下，填寫完畢後要在頁面最下方點擊<strong>添加</strong>。</p>
+<p><img src="https://i.imgur.com/z6doriP.png" alt=""></p>
+<p><strong>填寫完畢</strong></p>
+<p><img src="https://i.imgur.com/eeIC7cF.png" alt=""></p>
+<h2 id="4-查看在監測的項目"><a href="#4-查看在監測的項目" class="headerlink" title="4. 查看在監測的項目"></a>4. 查看在監測的項目</h2><p><strong>最新數據</strong></p>
+<p>選擇監測中點擊”最新數據”</p>
+<p><img src="https://i.imgur.com/5TOTV2M.png" alt=""></p>
+<p><strong>找出監控項</strong></p>
+<p>篩選群組或主機找出監控項，查看是否已有數據。</p>
+<p><img src="https://i.imgur.com/UHe3NHc.png" alt=""></p>
+<p><strong>查看圖形</strong></p>
+<p>點擊圖形查看分時圖。</p>
+<p><img src="https://i.imgur.com/r6jakWW.png" alt=""></p>
 
           
         
@@ -1104,7 +1106,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Maliao Guo">
@@ -1123,7 +1125,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/" itemprop="url">Zabbix學習筆記(2) 創建監控項 - 簡單檢查</a></h1>
+                <a class="post-title-link" href="/2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/" itemprop="url">瀏覽器自動化(2) 同時調用Selenium2與Selenium3</a></h1>
         
 
         <div class="post-meta">
@@ -1136,6 +1138,195 @@
                 <span class="post-meta-item-text">發表於</span>
               
               <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:02:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Selenium/" itemprop="url" rel="index">
+                    <span itemprop="name">Selenium</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>虛擬還境可將python的模塊依賴分開管理，能使用指定版本或避免衝突問題。</p>
+<h1 id="Selenium2"><a href="#Selenium2" class="headerlink" title="Selenium2"></a>Selenium2</h1><p>使用技巧:</p>
+<ol>
+<li>firefox 不須透過webdriver。</li>
+<li>默認支持全屏幕截圖。</li>
+</ol>
+<p>如何調用</p>
+<ol>
+<li><p>建立虛擬環境 Selenium2 VEnv</p>
+<p> 安裝指定版本</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install selenium==2.53.2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>下載免安裝的firefox46.01</p>
+</li>
+</ol>
+<p><a href="https://sourceforge.net/projects/portableapps/files/Mozilla%20Firefox,%20Portable%20Ed./Mozilla%20Firefox,%20Portable%20Edition%2046.0.1/" target="_blank" rel="noopener">FirefoxPortable 46 下載地址</a></p>
+<h2 id="使用腳本"><a href="#使用腳本" class="headerlink" title="使用腳本"></a>使用腳本</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"># @Date    : 2018-05-16 08:33:47</span><br><span class="line"># @Author  : Maliao</span><br><span class="line"># @Link    : None</span><br><span class="line"></span><br><span class="line">from selenium import webdriver</span><br><span class="line">from PIL import Image</span><br><span class="line">from selenium.webdriver.firefox.firefox_binary import FirefoxBinary</span><br><span class="line">from selenium.webdriver.firefox.firefox_profile import FirefoxProfile</span><br><span class="line">from time import sleep</span><br><span class="line"></span><br><span class="line">binary = FirefoxBinary(r&quot;.\FirefoxPortable\FirefoxPortable.exe&quot;) # firefox 主程序 檔案</span><br><span class="line">profile = FirefoxProfile(r&apos;.\FirefoxPortable\Data\profile&apos;) # firefox 使用者設定檔</span><br><span class="line"></span><br><span class="line">browser = webdriver.Firefox(firefox_binary=binary, firefox_profile=profile)</span><br><span class="line">browser.set_window_size(800, 900) # 指定窗口大小</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 依照元素大小截圖</span><br><span class="line">def crop_screenshot(fullfile, cropfile, element):</span><br><span class="line">    browser.save_screenshot(fullfile)</span><br><span class="line">    if element:</span><br><span class="line">        type = element[&quot;type&quot;]</span><br><span class="line">        name = element[&quot;name&quot;]</span><br><span class="line"></span><br><span class="line">        imgelement = browser.find_element_by_xpath(&quot;.//*[@%s=%r]&quot; % (type, name))</span><br><span class="line">        location = imgelement.location</span><br><span class="line">        size = imgelement.size</span><br><span class="line">        rangle = (int(location[&apos;x&apos;]), int(location[&apos;y&apos;]), int(</span><br><span class="line">            location[&apos;x&apos;] + size[&apos;width&apos;]), int(location[&apos;y&apos;] + size[&apos;height&apos;]))</span><br><span class="line"></span><br><span class="line">        i = Image.open(fullfile)</span><br><span class="line">        fincrop = i.crop(rangle)</span><br><span class="line">        fincrop.save(cropfile)</span><br><span class="line">    else:</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line"># 滾動窗口 加載所有圖片</span><br><span class="line">def js_scroll_down(text):</span><br><span class="line">    jsdown = &apos;&apos;&apos;</span><br><span class="line">    (function () &#123;</span><br><span class="line">                var y = 0;</span><br><span class="line">                var step = 100;</span><br><span class="line">                window.scroll(0, 0);</span><br><span class="line"></span><br><span class="line">                function f() &#123;</span><br><span class="line">                    if (y &lt; document.body.scrollHeight) &#123;</span><br><span class="line">                        y += step;</span><br><span class="line">                        window.scroll(0, y);</span><br><span class="line">                        setTimeout(f, 100);</span><br><span class="line">                    &#125; else &#123;</span><br><span class="line">                        window.scroll(0, 0);</span><br><span class="line">                        document.title += &quot;%s&quot;;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                setTimeout(f, 1000);</span><br><span class="line">            &#125;)();</span><br><span class="line">    &apos;&apos;&apos; % text</span><br><span class="line"></span><br><span class="line">    browser.execute_script(jsdown)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">browser.get(&quot;https://www.ithome.com/html/android/360003.htm&quot;)</span><br><span class="line"></span><br><span class="line"># 調用JS 下拉加載所有圖片</span><br><span class="line">text = &quot;SD&quot;</span><br><span class="line">js_scroll_down(text)</span><br><span class="line">changetitle = &quot;%s%s&quot; % (browser.title, text)</span><br><span class="line">while 1:  # 死循環 等待js跑完</span><br><span class="line">    nowtitle = browser.title</span><br><span class="line">    if changetitle in nowtitle:</span><br><span class="line">        break</span><br><span class="line">    else:</span><br><span class="line">        sleep(1)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 儲存 指定元素截圖</span><br><span class="line">element = &#123;&quot;type&quot;: &quot;class&quot;, &quot;name&quot;: &quot;post_content&quot;&#125;</span><br><span class="line">cropfile = r&quot;./data/ithome%s.png&quot; % browser.current_url.split(&quot;/&quot;)[-1].split(&quot;.&quot;)[0]</span><br><span class="line">fullfile = r&quot;./data/ithomeCN.png&quot;</span><br><span class="line">crop_screenshot(fullfile=fullfile, cropfile=cropfile, element=element)</span><br><span class="line"></span><br><span class="line"># 關閉瀏覽器</span><br><span class="line">browser.quit()</span><br></pre></td></tr></table></figure>
+<p>截出一整張的長截圖。</p>
+<p><img src="https://i.imgur.com/7TpWiwI.jpg" alt=""></p>
+<h1 id="selenium3"><a href="#selenium3" class="headerlink" title="selenium3"></a>selenium3</h1><p>使用技巧:</p>
+<ol>
+<li>支持最新版瀏覽器。</li>
+<li>需使用webdriver驅動。</li>
+</ol>
+<p>如何調用</p>
+<ol>
+<li><p>建立虛擬環境 Selenium3 VEnv</p>
+<p> 安裝最新版本</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install selenium</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://www.slimjet.com/chrome/google-chrome-old-version.php" target="_blank" rel="noopener">下載Chrome</a></p>
+</li>
+<li><p><a href="http://chromedriver.chromium.org/downloads" target="_blank" rel="noopener">下載Chome Driver</a></p>
+</li>
+</ol>
+<h2 id="使用腳本-1"><a href="#使用腳本-1" class="headerlink" title="使用腳本"></a>使用腳本</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"># @Date    : 2018-05-16 08:33:47</span><br><span class="line"># @Author  : Maliao</span><br><span class="line"># @Link    : None</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">from selenium import webdriver</span><br><span class="line">from selenium.webdriver.common.keys import Keys</span><br><span class="line"></span><br><span class="line">browser = webdriver.Chrome()  # 調用webdriver</span><br><span class="line"></span><br><span class="line">browser.get(&quot;http://www.google.com&quot;)</span><br><span class="line"></span><br><span class="line">browser.find_element_by_id(&quot;lst-ib&quot;).send_keys(&quot;python&quot;)  # 搜索框輸入:&quot;python&quot;</span><br><span class="line"></span><br><span class="line">browser.find_element_by_name(&quot;btnK&quot;).send_keys(Keys.ENTER)  # 提交搜尋</span><br><span class="line"></span><br><span class="line">titles = browser.find_elements_by_xpath(&quot;.//h3[@class=&apos;r&apos;]//a&quot;) # 搜尋所有標題</span><br><span class="line"></span><br><span class="line">print([i.text for i in titles]) # 打印所有標題</span><br><span class="line"></span><br><span class="line">browser.quit()  # 離開瀏覽器</span><br><span class="line"></span><br><span class="line"># 輸出:</span><br><span class="line">[&apos;Welcome to Python.org&apos;, &apos;Python教程- 廖雪峰的官方网站&apos;, &apos;Python - 维基百科，自由的百科全书&apos;, &apos;Python 简介| 菜鸟教程&apos;, &apos;教程一览| 莫烦Python&apos;, &apos;Python For Loops - W3Schools&apos;, &apos;Python Tutorial - W3Schools&apos;, &apos;Python - Attorneys at law – Geneva Switzerland Tokyo Brussels&apos;, &apos;Python Functions | DataCamp&apos;, &apos;用Python 理財：打造小資族選股策略- Hahow 好學校&apos;]</span><br></pre></td></tr></table></figure>
+<h1 id="小結"><a href="#小結" class="headerlink" title="小結:"></a>小結:</h1><p>操作上Chrome快速很多，而firefox雖然啟動比較慢，但不用webdriver及全屏截圖，實在相當便利。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(1) 用Docker建置Zabbix Server/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Maliao Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/Zabbix學習筆記(1) 用Docker建置Zabbix Server/" itemprop="url">Zabbix學習筆記(1) 用Docker建置Zabbix Server</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:01:00+08:00">
                 2018-06-08
               </time>
             
@@ -1176,9 +1367,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/#comments" itemprop="discussionUrl">
+                <a href="/2018/06/08/Zabbix學習筆記(1) 用Docker建置Zabbix Server/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2018/06/08/Zabbix學習筆記(1) 用Docker建置Zabbix Server/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1208,45 +1399,16 @@
       
         
           
-            <p>利用簡單檢查監測站點是否存活，Zabbix內置的簡單檢查可針對各端口站點監測是否有回應?速度如何?</p>
-<h2 id="1-創建一個主機"><a href="#1-創建一個主機" class="headerlink" title="1. 創建一個主機"></a>1. 創建一個主機</h2><p>這個步驟是非必要的，這邊操作的目的在於避免與Agent端混淆。</p>
-<p><strong>創建主機</strong></p>
-<p><img src="https://i.imgur.com/vTuRRZz.png" alt=""></p>
-<p><strong>填寫主機內容</strong></p>
-<p>主機名稱:PingHost(也可以隨意命名)<br>群組一定要選一個，這邊選擇Discovered hosts(發現的主機)</p>
-<p><img src="https://i.imgur.com/drUVtDQ.png" alt=""></p>
-<p><strong>創建成功</strong></p>
-<p><img src="https://i.imgur.com/zwqSQgD.png" alt=""></p>
-<h2 id="2-創建監控項"><a href="#2-創建監控項" class="headerlink" title="2. 創建監控項"></a>2. 創建監控項</h2><p>選擇剛剛建好的主機，並創建監控項</p>
-<p><img src="https://i.imgur.com/HmNJrE1.png" alt=""></p>
-<p><strong>簡單檢查 Simple Check</strong></p>
-<p>類型選擇”簡單檢查”</p>
-<p><img src="https://i.imgur.com/cr0cZak.png" alt=""></p>
-<p>在鍵值空白旁點擊”選擇”</p>
-<p><img src="https://i.imgur.com/K2Lc8Pn.png" alt=""></p>
-<p><strong>什麼是簡單檢查？</strong></p>
-<p>簡單來說提供了三種監測服務，分別為Ping、TCP、UDP，<strong>Ping</strong>可以查看主機是否存活、丟包、超時等，<strong>TCP</strong>功能支持多種服務類型如：ssh, ldap, smtp, ftp, http, pop, nntp, imap, tcp, https, telnet，也可任意指定端口，主要查看是否可以連接、超時等，<strong>UDP</strong>功能與<strong>TCP</strong>接近，更多及相關參數可以參考<a href="https://www.zabbix.com/documentation/3.0/manual/config/items/itemtypes/simple_checks" target="_blank" rel="noopener">官方文檔</a>。</p>
-<p><img src="https://i.imgur.com/Y8n1V7S.png" alt=""></p>
-<blockquote>
-<p>選擇簡體中文可以得到較好的支持，試過選擇繁中這個頁面中文化不是很完全，比較偏好中文的朋友可選簡中試試。</p>
-</blockquote>
-<h2 id="3-填寫監測內容"><a href="#3-填寫監測內容" class="headerlink" title="3. 填寫監測內容"></a>3. 填寫監測內容</h2><p>監測Modem(IP:192.168.0.1)是否正常。</p>
-<p>類型：簡單檢查<br>鍵值：icmppingsec[192.168.0.1]<br>信息類型：浮點數<br>單位：s</p>
-<p>若選擇的鍵值是有返回響應時間，那信息類型就需要選擇<strong>浮點數</strong>，單位輸入<strong>s</strong>。</p>
-<p><strong>填寫內容</strong></p>
-<p>對應填寫內容如下，填寫完畢後要在頁面最下方點擊<strong>添加</strong>。</p>
-<p><img src="https://i.imgur.com/z6doriP.png" alt=""></p>
-<p><strong>填寫完畢</strong></p>
-<p><img src="https://i.imgur.com/eeIC7cF.png" alt=""></p>
-<h2 id="4-查看在監測的項目"><a href="#4-查看在監測的項目" class="headerlink" title="4. 查看在監測的項目"></a>4. 查看在監測的項目</h2><p><strong>最新數據</strong></p>
-<p>選擇監測中點擊”最新數據”</p>
-<p><img src="https://i.imgur.com/5TOTV2M.png" alt=""></p>
-<p><strong>找出監控項</strong></p>
-<p>篩選群組或主機找出監控項，查看是否已有數據。</p>
-<p><img src="https://i.imgur.com/UHe3NHc.png" alt=""></p>
-<p><strong>查看圖形</strong></p>
-<p>點擊圖形查看分時圖。</p>
-<p><img src="https://i.imgur.com/r6jakWW.png" alt=""></p>
+            <p>在建置官方提供的zabbix-xxl之前，可以先將已知的”圖形中文亂碼”問題，把中文字型檔及設定檔準備好，在建置時直接對應映射即可，這樣就不用進容器再改一次．</p>
+<p><img src="https://i.imgur.com/nSHUnuf.png" alt=""></p>
+<p><strong>容器內路經</strong></p>
+<p>zabbix 字型路經：/usr/local/src/zabbix/frontends/php/fonts/<br>前端PHP配置檔路經：/usr/local/src/zabbix/frontends/php/include/defines.inc.php</p>
+<p>zabbix預設是沒有中文字型的，因此基本的字型檔會造成圖形文字呈現方格或是亂碼。</p>
+<p>解決方法只要將中文字型檔放入/usr/local/src/zabbix/frontends/php/fonts/，並在/usr/local/src/zabbix/frontends/php/include/defines.inc.php中更改配置就可以了。</p>
+<p>因為每次構建都有相同問題，所以我直接放在Github方便日後需要時可以直接構建。</p>
+<p><strong>docker-compose.yml</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">version: &apos;2&apos;</span><br><span class="line">services:</span><br><span class="line">  zabbix-db:</span><br><span class="line">    image: monitoringartist/zabbix-db-mariadb</span><br><span class="line">    volumes:</span><br><span class="line">      - ./zabbix/zabbix-db-storage:/var/lib/mysql</span><br><span class="line">      - ./zabbix/backups:/backups</span><br><span class="line">      - /etc/localtime:/etc/localtime:ro</span><br><span class="line">    environment:</span><br><span class="line">      - MARIADB_USER=zabbix</span><br><span class="line">      - MARIADB_PASS=admin</span><br><span class="line">  zabbix-server:</span><br><span class="line">    image: monitoringartist/zabbix-xxl:latest</span><br><span class="line">    depends_on:</span><br><span class="line">      - zabbix-db</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;80:80&quot;</span><br><span class="line">      - &quot;10051:10051&quot;</span><br><span class="line">    volumes:</span><br><span class="line">      - /etc/localtime:/etc/localtime:ro</span><br><span class="line">      - ./zabbix/temp:/usr/local/src/zabbix/temp</span><br><span class="line">      - ./zabbix/conf/fonts/:/usr/local/src/zabbix/frontends/php/fonts/</span><br><span class="line">      - ./zabbix/conf/defines.inc.php:/usr/local/src/zabbix/frontends/php/include/defines.inc.php</span><br><span class="line">    links:</span><br><span class="line">      - zabbix-db:zabbix.db</span><br><span class="line">    environment:</span><br><span class="line">      - ZS_DBHost=zabbix.db</span><br><span class="line">      - ZS_DBUser=zabbix</span><br><span class="line">      - ZS_DBPassword=admin</span><br><span class="line">volumes:</span><br><span class="line">  zabbix-db-storage:</span><br><span class="line">    driver: local</span><br><span class="line">  backups:</span><br><span class="line">    driver: local</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/noyoung/DockerComposes/tree/master/zabbix" target="_blank" rel="noopener">源碼地址</a></p>
 
           
         
@@ -1465,168 +1627,6 @@
 <h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>進入資策會網站，搜索後離開網頁。</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="comment"># @Date    : 2018-05-16 08:33:47</span></span><br><span class="line"><span class="comment"># @Author  : Maliao</span></span><br><span class="line"><span class="comment"># @Link    : None</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"></span><br><span class="line">browser = webdriver.Chrome()  <span class="comment"># 調用webdriver</span></span><br><span class="line"></span><br><span class="line">browser.get(<span class="string">"https://w3.iiiedu.org.tw/"</span>)  <span class="comment"># 訪問 資策會網站</span></span><br><span class="line"></span><br><span class="line">browser.find_element_by_id(<span class="string">"LongTerm"</span>).click()  <span class="comment"># 點擊ID "LongTerm" 專長養成班</span></span><br><span class="line"></span><br><span class="line">browser.find_element_by_id(<span class="string">"searchInput"</span>).send_keys(<span class="string">"python"</span>)  <span class="comment"># 搜索框輸入:"python"</span></span><br><span class="line"></span><br><span class="line">browser.find_element_by_id(<span class="string">"searchBtn"</span>).click()  <span class="comment"># 提交搜尋</span></span><br><span class="line"></span><br><span class="line">browser.save_screenshot(<span class="string">"iiiedu.png"</span>)  <span class="comment"># 螢幕截圖</span></span><br><span class="line"></span><br><span class="line">browser.quit()  <span class="comment"># 離開瀏覽器</span></span><br></pre></td></tr></table></figure>
 <p><img src="https://i.imgur.com/hito4Ft.jpg" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(1) 用Docker建置Zabbix Server/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Maliao Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/Zabbix學習筆記(1) 用Docker建置Zabbix Server/" itemprop="url">Zabbix學習筆記(1) 用Docker建置Zabbix Server</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:01:00+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Zabbix/" itemprop="url" rel="index">
-                    <span itemprop="name">Zabbix</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/06/08/Zabbix學習筆記(1) 用Docker建置Zabbix Server/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/06/08/Zabbix學習筆記(1) 用Docker建置Zabbix Server/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在建置官方提供的zabbix-xxl之前，可以先將已知的”圖形中文亂碼”問題，把中文字型檔及設定檔準備好，在建置時直接對應映射即可，這樣就不用進容器再改一次．</p>
-<p><img src="https://i.imgur.com/nSHUnuf.png" alt=""></p>
-<p><strong>容器內路經</strong></p>
-<p>zabbix 字型路經：/usr/local/src/zabbix/frontends/php/fonts/<br>前端PHP配置檔路經：/usr/local/src/zabbix/frontends/php/include/defines.inc.php</p>
-<p>zabbix預設是沒有中文字型的，因此基本的字型檔會造成圖形文字呈現方格或是亂碼。</p>
-<p>解決方法只要將中文字型檔放入/usr/local/src/zabbix/frontends/php/fonts/，並在/usr/local/src/zabbix/frontends/php/include/defines.inc.php中更改配置就可以了。</p>
-<p>因為每次構建都有相同問題，所以我直接放在Github方便日後需要時可以直接構建。</p>
-<p><strong>docker-compose.yml</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">version: &apos;2&apos;</span><br><span class="line">services:</span><br><span class="line">  zabbix-db:</span><br><span class="line">    image: monitoringartist/zabbix-db-mariadb</span><br><span class="line">    volumes:</span><br><span class="line">      - ./zabbix/zabbix-db-storage:/var/lib/mysql</span><br><span class="line">      - ./zabbix/backups:/backups</span><br><span class="line">      - /etc/localtime:/etc/localtime:ro</span><br><span class="line">    environment:</span><br><span class="line">      - MARIADB_USER=zabbix</span><br><span class="line">      - MARIADB_PASS=admin</span><br><span class="line">  zabbix-server:</span><br><span class="line">    image: monitoringartist/zabbix-xxl:latest</span><br><span class="line">    depends_on:</span><br><span class="line">      - zabbix-db</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;80:80&quot;</span><br><span class="line">      - &quot;10051:10051&quot;</span><br><span class="line">    volumes:</span><br><span class="line">      - /etc/localtime:/etc/localtime:ro</span><br><span class="line">      - ./zabbix/temp:/usr/local/src/zabbix/temp</span><br><span class="line">      - ./zabbix/conf/fonts/:/usr/local/src/zabbix/frontends/php/fonts/</span><br><span class="line">      - ./zabbix/conf/defines.inc.php:/usr/local/src/zabbix/frontends/php/include/defines.inc.php</span><br><span class="line">    links:</span><br><span class="line">      - zabbix-db:zabbix.db</span><br><span class="line">    environment:</span><br><span class="line">      - ZS_DBHost=zabbix.db</span><br><span class="line">      - ZS_DBUser=zabbix</span><br><span class="line">      - ZS_DBPassword=admin</span><br><span class="line">volumes:</span><br><span class="line">  zabbix-db-storage:</span><br><span class="line">    driver: local</span><br><span class="line">  backups:</span><br><span class="line">    driver: local</span><br></pre></td></tr></table></figure>
-<p><a href="https://github.com/noyoung/DockerComposes/tree/master/zabbix" target="_blank" rel="noopener">源碼地址</a></p>
 
           
         
@@ -2352,7 +2352,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">標籤</span>
                 </a>
               </div>
