@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Python,Selenium,Docker," />
+  <meta name="keywords" content="Python,Selenium," />
 
 
 
@@ -79,20 +79,18 @@
 
 
 
-<meta name="description" content="搭建Docker Selenium 2.53.1+Firefox46的筆記，在此紀錄… docker-compose.yml 12345678910111213141516171819202122232425262728hub:  image: selenium/hub:2.53.1-beryllium  ports:    - &amp;quot;4446:4444&amp;quot;  environment">
-<meta name="keywords" content="Python,Selenium,Docker">
+<meta name="description" content="雖然selenium提供很多方法瀏覽器的各種操作，但還是有些情況是需要調用JS才能夠實現的，另外調用js還有一個優點，那就是不會報錯，對於那些不穩定的元素不想用try的話，可以試試execute_script來調用JS。 打開網頁進入谷歌 1234from selenium import webdriverbrowser = webdriver.Chrome()browser.get(&amp;quot;">
+<meta name="keywords" content="Python,Selenium">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Docker Selenium(3) 指定版本2.53+Firefox46">
-<meta property="og:url" content="http://yoursite.com/2018/06/08/Docker Selenium(3) 指定版本2.53/index.html">
+<meta property="og:title" content="selenium技巧 - 調用JS">
+<meta property="og:url" content="http://yoursite.com/2018/06/28/12. selenium技巧 - 調用JS/index.html">
 <meta property="og:site_name" content="馬里奧">
-<meta property="og:description" content="搭建Docker Selenium 2.53.1+Firefox46的筆記，在此紀錄… docker-compose.yml 12345678910111213141516171819202122232425262728hub:  image: selenium/hub:2.53.1-beryllium  ports:    - &amp;quot;4446:4444&amp;quot;  environment">
+<meta property="og:description" content="雖然selenium提供很多方法瀏覽器的各種操作，但還是有些情況是需要調用JS才能夠實現的，另外調用js還有一個優點，那就是不會報錯，對於那些不穩定的元素不想用try的話，可以試試execute_script來調用JS。 打開網頁進入谷歌 1234from selenium import webdriverbrowser = webdriver.Chrome()browser.get(&amp;quot;">
 <meta property="og:locale" content="zh-tw">
-<meta property="og:image" content="https://i.imgur.com/pM5QLwk.jpg">
-<meta property="og:updated_time" content="2018-06-08T20:41:48.818Z">
+<meta property="og:updated_time" content="2018-06-28T14:41:45.282Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Docker Selenium(3) 指定版本2.53+Firefox46">
-<meta name="twitter:description" content="搭建Docker Selenium 2.53.1+Firefox46的筆記，在此紀錄… docker-compose.yml 12345678910111213141516171819202122232425262728hub:  image: selenium/hub:2.53.1-beryllium  ports:    - &amp;quot;4446:4444&amp;quot;  environment">
-<meta name="twitter:image" content="https://i.imgur.com/pM5QLwk.jpg">
+<meta name="twitter:title" content="selenium技巧 - 調用JS">
+<meta name="twitter:description" content="雖然selenium提供很多方法瀏覽器的各種操作，但還是有些情況是需要調用JS才能夠實現的，另外調用js還有一個優點，那就是不會報錯，對於那些不穩定的元素不想用try的話，可以試試execute_script來調用JS。 打開網頁進入谷歌 1234from selenium import webdriverbrowser = webdriver.Chrome()browser.get(&amp;quot;">
 
 
 
@@ -122,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/06/08/Docker Selenium(3) 指定版本2.53/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/06/28/12. selenium技巧 - 調用JS/"/>
 
 
 
 
 
-  <title>Docker Selenium(3) 指定版本2.53+Firefox46 | 馬里奧</title>
+  <title>selenium技巧 - 調用JS | 馬里奧</title>
   
 
 
@@ -255,7 +253,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Docker Selenium(3) 指定版本2.53/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/28/12. selenium技巧 - 調用JS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Maliao Guo">
@@ -272,7 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Docker Selenium(3) 指定版本2.53+Firefox46</h1>
+          <h1 class="post-title" itemprop="name headline">selenium技巧 - 調用JS</h1>
         
 
         <div class="post-meta">
@@ -284,8 +282,8 @@
               
                 <span class="post-meta-item-text">發表於</span>
               
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:09:00+08:00">
-                2018-06-08
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-28T16:26:30+08:00">
+                2018-06-28
               </time>
             
 
@@ -325,9 +323,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/06/08/Docker Selenium(3) 指定版本2.53/#comments" itemprop="discussionUrl">
+                <a href="/2018/06/28/12. selenium技巧 - 調用JS/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/06/08/Docker Selenium(3) 指定版本2.53/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2018/06/28/12. selenium技巧 - 調用JS/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -355,11 +353,13 @@
       
 
       
-        <p>搭建Docker Selenium 2.53.1+Firefox46的筆記，在此紀錄…</p>
-<p><strong>docker-compose.yml</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">hub:</span><br><span class="line">  image: selenium/hub:2.53.1-beryllium</span><br><span class="line">  ports:</span><br><span class="line">    - &quot;4446:4444&quot;</span><br><span class="line">  environment:</span><br><span class="line">    - GRID_MAX_SESSION=5</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">firefox:</span><br><span class="line">  image: selenium/node-firefox-debug:2.53.1-beryllium</span><br><span class="line">  environment:</span><br><span class="line">    - NODE_MAX_INSTANCES=10</span><br><span class="line">    - NODE_MAX_SESSION=10</span><br><span class="line">  ports:</span><br><span class="line">    - &quot;5921:5900&quot;</span><br><span class="line">  links:</span><br><span class="line">    - hub</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">chrome:</span><br><span class="line">  image: selenium/node-chrome-debug:2.53.1-beryllium</span><br><span class="line">  environment:</span><br><span class="line">    - NODE_MAX_INSTANCES=10</span><br><span class="line">    - NODE_MAX_SESSION=10</span><br><span class="line">  ports:</span><br><span class="line">    - &quot;5922:5900&quot;</span><br><span class="line">  links:</span><br><span class="line">    - hub</span><br></pre></td></tr></table></figure>
-<p><strong>搭建完成</strong></p>
-<p><img src="https://i.imgur.com/pM5QLwk.jpg" alt=""></p>
+        <p>雖然selenium提供很多方法瀏覽器的各種操作，但還是有些情況是需要調用JS才能夠實現的，另外調用js還有一個優點，那就是不會報錯，對於那些不穩定的元素不想用try的話，可以試試<code>execute_script</code>來調用JS。</p>
+<p>打開網頁進入谷歌</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from selenium import webdriver</span><br><span class="line"></span><br><span class="line">browser = webdriver.Chrome()</span><br><span class="line">browser.get(&quot;http://www.google.com.tw/&quot;)</span><br></pre></td></tr></table></figure>
+<p>用js進行刪除及輸入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 刪除圖片元素</span><br><span class="line">browser.execute_script(&apos;document.getElementById(&quot;lga&quot;).remove();&apos;)</span><br><span class="line"># 輸入文字&quot;python&quot;</span><br><span class="line">browser.execute_script(&apos;document.getElementsByName(&quot;q&quot;)[0].value = &quot;python&quot;&apos;)</span><br></pre></td></tr></table></figure>
+<p>先用js搜索元素，再返回selenium對象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 搜索</span><br><span class="line">btnK = browser.execute_script(&quot;return document.getElementsByName(&apos;btnK&apos;)&quot;) # 返回selenium對象</span><br><span class="line">btnK[0].click() # selenium.click</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -381,8 +381,6 @@
           
             <a href="/tags/Selenium/" rel="tag"># Selenium</a>
           
-            <a href="/tags/Docker/" rel="tag"># Docker</a>
-          
         </div>
       
 
@@ -394,8 +392,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/06/08/Docker Selenium(2) 更改容器變量/" rel="next" title="Docker Selenium(2) 更改容器變量">
-                <i class="fa fa-chevron-left"></i> Docker Selenium(2) 更改容器變量
+              <a href="/2018/06/08/Selenium技巧- handle切換/" rel="next" title="selenium技巧- handle切換">
+                <i class="fa fa-chevron-left"></i> selenium技巧- handle切換
               </a>
             
           </div>
@@ -404,8 +402,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/06/08/Selenium技巧 - 不顯示窗口的瀏覽器/" rel="prev" title="selenium技巧 - 不顯示窗口的瀏覽器">
-                selenium技巧 - 不顯示窗口的瀏覽器 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/07/03/02. Windows Update自動更新/" rel="prev" title="Windows Update自動更新">
+                Windows Update自動更新 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -703,9 +701,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2018/06/08/Docker Selenium(3) 指定版本2.53/';
-          this.page.identifier = '2018/06/08/Docker Selenium(3) 指定版本2.53/';
-          this.page.title = 'Docker Selenium(3) 指定版本2.53+Firefox46';
+          this.page.url = 'http://yoursite.com/2018/06/28/12. selenium技巧 - 調用JS/';
+          this.page.identifier = '2018/06/28/12. selenium技巧 - 調用JS/';
+          this.page.title = 'selenium技巧 - 調用JS';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://maliao.disqus.com/embed.js';

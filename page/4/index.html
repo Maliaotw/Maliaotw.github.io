@@ -249,6 +249,193 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Docker 邊做邊學(2) 製作鏡像 centos + nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Maliao Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/Docker 邊做邊學(2) 製作鏡像 centos + nginx/" itemprop="url">Docker 邊做邊學 (2) 製作鏡像 centos + nginx</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:03:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/08/Docker 邊做邊學(2) 製作鏡像 centos + nginx/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/08/Docker 邊做邊學(2) 製作鏡像 centos + nginx/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>創建並命名mynginx</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name mynginx -it centos</span><br></pre></td></tr></table></figure>
+<p>容器內操作，安裝nginx</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@5de85a72b2c0 /]# rpm -ivh http://mirrors.aliyun.com/epel/</span><br><span class="line">[root@5de85a72b2c0 /]# epel-release-latest-7.noarch.rpm</span><br><span class="line">[root@5de85a72b2c0 /]# yum install -y nginx</span><br><span class="line">[root@5de85a72b2c0 /]# exit</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>查看mynginx的ID</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a</span><br><span class="line"></span><br><span class="line">輸出:</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                          PORTS               NAMES</span><br><span class="line">5de85a72b2c0        centos              &quot;/bin/bash&quot;         3 minutes ago       Exited (0) About a minute ago                       mynginx</span><br></pre></td></tr></table></figure>
+<p>看到容器ID是<code>5de85a72b2c0</code></p>
+<ol start="3">
+<li>第一次製作鏡像</li>
+</ol>
+<p>使用commit命令將容器製作為鏡像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit -m “mynginx” 5de85a72b2c0 noyung/mynginx:v1</span><br></pre></td></tr></table></figure>
+<p>運行完畢後，查看當前所有鏡像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+<p>這時候已經多出了一個新的鏡像</p>
+<p><img src="https://i.imgur.com/BEx8nYW.jpg" alt=""></p>
+<ol start="4">
+<li>第二次製作鏡像</li>
+</ol>
+<p>為剛才剛才建立好的鏡像加入一點內容</p>
+<p><strong>啟動新的容器</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name nginxv1 noyung/mynginx:v1</span><br></pre></td></tr></table></figure>
+<p><strong>在容器內，修改<code>nginx.conf</code>文件</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@00f79adf417e /]# vi /etc/nginx/nginx.conf</span><br></pre></td></tr></table></figure>
+<p>加入 <code>daemon off;</code> 後離開<code>exit</code></p>
+<p><strong>再次製作鏡像</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit -m “mynginx” dd99178fb0fb noyung/mynginx:v2</span><br></pre></td></tr></table></figure>
+<p><strong>啟動 V2 images</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 82:80 noyung/mynginx:v2 nginx</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/NKxVzOz.jpg" alt=""></p>
+<p>小總結<br>Docker可以根據自己需要的環境，慢慢打上服務配置製作鏡像，但是這樣的方式效率不太好，上面的步驟可以透過dockerfile搞定。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/瀏覽器自動化(3) Selenium 使用OCR 簡易破解驗證碼/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -456,6 +643,219 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Docker 邊做邊學(1) 搭建nginx服務器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Maliao Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/Docker 邊做邊學(1) 搭建nginx服務器/" itemprop="url">Docker 邊做邊學 (1) 搭建nginx服務器</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:02:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/08/Docker 邊做邊學(1) 搭建nginx服務器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/08/Docker 邊做邊學(1) 搭建nginx服務器/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>到倉庫下載nginx最新鏡像</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull nginx:latest</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>查看目前所有鏡像</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+<p>輸出：</p>
+<p><img src="https://i.imgur.com/ulZWxED.png" alt=""></p>
+<ol start="3">
+<li>前台運行</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run nginx</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>後台運行</li>
+</ol>
+<p>背景運行 不卡終端</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d nginx</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>網路端口映射</li>
+</ol>
+<p>指定本機80/tcp對應容器內80/tcp</p>
+<p>若不指定映射端口使用<code>-P</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 80:80 nginx</span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>本機查看80/tcp是否開啟</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">netstat -na | grep 8080</span><br><span class="line">輸出：</span><br><span class="line">tcp6       0      0 :::8080                 :::*                    LISTEN</span><br></pre></td></tr></table></figure>
+<ol start="7">
+<li>查看80端口可否訪問</li>
+</ol>
+<p><img src="https://i.imgur.com/ukwh0zB.jpg" alt=""></p>
+<ol start="7">
+<li>查看目前運行的容器</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+<p>進入目前運行的容器 <code>54dbd519a8be</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it 54 bash</span><br></pre></td></tr></table></figure>
+<p>容器內<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@54dbd519a8be:/#</span><br><span class="line">#查一下nginx</span><br><span class="line">root@54dbd519a8be:/# which nginx</span><br><span class="line">/usr/sbin/nginx</span><br></pre></td></tr></table></figure></p>
+<ol start="8">
+<li>停止運行 容器</li>
+</ol>
+<p>容器ID:<code>54dbd519a8be</code><br>停止可以直接輸入開頭的5</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop 5</span><br></pre></td></tr></table></figure>
+<ol start="9">
+<li>運行並命名容器</li>
+</ol>
+<p>運行image並進入容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 給它命名,並運行完會進入容器</span><br><span class="line">docker run --name mydocker -t -i centos /bin/bash</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 查看一些進入的信息</span><br><span class="line">[root@8b07b1e213d4 /]# ps aux</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 離開容器</span><br><span class="line">[root@8b07b1e213d4 /]# exit</span><br></pre></td></tr></table></figure>
+<p>透過 <code>docker ps -a</code> (查到剛剛那個容器顯示離開)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker ps -a</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/Ni8bHl4.png" alt=""></p>
+<ol start="10">
+<li>再次啟動容器 <code>docker start CONTAINER</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker start 8b07b1e213d4</span><br></pre></td></tr></table></figure>
+<p>進入容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker exec -it 8b07b1e213d4 bash</span><br></pre></td></tr></table></figure>
+<p>離開容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@8b07b1e213d4:/# exit</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(2) 創建監控項 - 簡單檢查/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -599,6 +999,195 @@
 <p><strong>查看圖形</strong></p>
 <p>點擊圖形查看分時圖。</p>
 <p><img src="https://i.imgur.com/r6jakWW.png" alt=""></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Maliao Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/" itemprop="url">瀏覽器自動化(2) 同時調用Selenium2與Selenium3</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:02:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Selenium/" itemprop="url" rel="index">
+                    <span itemprop="name">Selenium</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>虛擬還境可將python的模塊依賴分開管理，能使用指定版本或避免衝突問題。</p>
+<h1 id="Selenium2"><a href="#Selenium2" class="headerlink" title="Selenium2"></a>Selenium2</h1><p>使用技巧:</p>
+<ol>
+<li>firefox 不須透過webdriver。</li>
+<li>默認支持全屏幕截圖。</li>
+</ol>
+<p>如何調用</p>
+<ol>
+<li><p>建立虛擬環境 Selenium2 VEnv</p>
+<p> 安裝指定版本</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install selenium==2.53.2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>下載免安裝的firefox46.01</p>
+</li>
+</ol>
+<p><a href="https://sourceforge.net/projects/portableapps/files/Mozilla%20Firefox,%20Portable%20Ed./Mozilla%20Firefox,%20Portable%20Edition%2046.0.1/" target="_blank" rel="noopener">FirefoxPortable 46 下載地址</a></p>
+<h2 id="使用腳本"><a href="#使用腳本" class="headerlink" title="使用腳本"></a>使用腳本</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"># @Date    : 2018-05-16 08:33:47</span><br><span class="line"># @Author  : Maliao</span><br><span class="line"># @Link    : None</span><br><span class="line"></span><br><span class="line">from selenium import webdriver</span><br><span class="line">from PIL import Image</span><br><span class="line">from selenium.webdriver.firefox.firefox_binary import FirefoxBinary</span><br><span class="line">from selenium.webdriver.firefox.firefox_profile import FirefoxProfile</span><br><span class="line">from time import sleep</span><br><span class="line"></span><br><span class="line">binary = FirefoxBinary(r&quot;.\FirefoxPortable\FirefoxPortable.exe&quot;) # firefox 主程序 檔案</span><br><span class="line">profile = FirefoxProfile(r&apos;.\FirefoxPortable\Data\profile&apos;) # firefox 使用者設定檔</span><br><span class="line"></span><br><span class="line">browser = webdriver.Firefox(firefox_binary=binary, firefox_profile=profile)</span><br><span class="line">browser.set_window_size(800, 900) # 指定窗口大小</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 依照元素大小截圖</span><br><span class="line">def crop_screenshot(fullfile, cropfile, element):</span><br><span class="line">    browser.save_screenshot(fullfile)</span><br><span class="line">    if element:</span><br><span class="line">        type = element[&quot;type&quot;]</span><br><span class="line">        name = element[&quot;name&quot;]</span><br><span class="line"></span><br><span class="line">        imgelement = browser.find_element_by_xpath(&quot;.//*[@%s=%r]&quot; % (type, name))</span><br><span class="line">        location = imgelement.location</span><br><span class="line">        size = imgelement.size</span><br><span class="line">        rangle = (int(location[&apos;x&apos;]), int(location[&apos;y&apos;]), int(</span><br><span class="line">            location[&apos;x&apos;] + size[&apos;width&apos;]), int(location[&apos;y&apos;] + size[&apos;height&apos;]))</span><br><span class="line"></span><br><span class="line">        i = Image.open(fullfile)</span><br><span class="line">        fincrop = i.crop(rangle)</span><br><span class="line">        fincrop.save(cropfile)</span><br><span class="line">    else:</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line"># 滾動窗口 加載所有圖片</span><br><span class="line">def js_scroll_down(text):</span><br><span class="line">    jsdown = &apos;&apos;&apos;</span><br><span class="line">    (function () &#123;</span><br><span class="line">                var y = 0;</span><br><span class="line">                var step = 100;</span><br><span class="line">                window.scroll(0, 0);</span><br><span class="line"></span><br><span class="line">                function f() &#123;</span><br><span class="line">                    if (y &lt; document.body.scrollHeight) &#123;</span><br><span class="line">                        y += step;</span><br><span class="line">                        window.scroll(0, y);</span><br><span class="line">                        setTimeout(f, 100);</span><br><span class="line">                    &#125; else &#123;</span><br><span class="line">                        window.scroll(0, 0);</span><br><span class="line">                        document.title += &quot;%s&quot;;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                setTimeout(f, 1000);</span><br><span class="line">            &#125;)();</span><br><span class="line">    &apos;&apos;&apos; % text</span><br><span class="line"></span><br><span class="line">    browser.execute_script(jsdown)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">browser.get(&quot;https://www.ithome.com/html/android/360003.htm&quot;)</span><br><span class="line"></span><br><span class="line"># 調用JS 下拉加載所有圖片</span><br><span class="line">text = &quot;SD&quot;</span><br><span class="line">js_scroll_down(text)</span><br><span class="line">changetitle = &quot;%s%s&quot; % (browser.title, text)</span><br><span class="line">while 1:  # 死循環 等待js跑完</span><br><span class="line">    nowtitle = browser.title</span><br><span class="line">    if changetitle in nowtitle:</span><br><span class="line">        break</span><br><span class="line">    else:</span><br><span class="line">        sleep(1)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 儲存 指定元素截圖</span><br><span class="line">element = &#123;&quot;type&quot;: &quot;class&quot;, &quot;name&quot;: &quot;post_content&quot;&#125;</span><br><span class="line">cropfile = r&quot;./data/ithome%s.png&quot; % browser.current_url.split(&quot;/&quot;)[-1].split(&quot;.&quot;)[0]</span><br><span class="line">fullfile = r&quot;./data/ithomeCN.png&quot;</span><br><span class="line">crop_screenshot(fullfile=fullfile, cropfile=cropfile, element=element)</span><br><span class="line"></span><br><span class="line"># 關閉瀏覽器</span><br><span class="line">browser.quit()</span><br></pre></td></tr></table></figure>
+<p>截出一整張的長截圖。</p>
+<p><img src="https://i.imgur.com/7TpWiwI.jpg" alt=""></p>
+<h1 id="selenium3"><a href="#selenium3" class="headerlink" title="selenium3"></a>selenium3</h1><p>使用技巧:</p>
+<ol>
+<li>支持最新版瀏覽器。</li>
+<li>需使用webdriver驅動。</li>
+</ol>
+<p>如何調用</p>
+<ol>
+<li><p>建立虛擬環境 Selenium3 VEnv</p>
+<p> 安裝最新版本</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install selenium</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://www.slimjet.com/chrome/google-chrome-old-version.php" target="_blank" rel="noopener">下載Chrome</a></p>
+</li>
+<li><p><a href="http://chromedriver.chromium.org/downloads" target="_blank" rel="noopener">下載Chome Driver</a></p>
+</li>
+</ol>
+<h2 id="使用腳本-1"><a href="#使用腳本-1" class="headerlink" title="使用腳本"></a>使用腳本</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"># @Date    : 2018-05-16 08:33:47</span><br><span class="line"># @Author  : Maliao</span><br><span class="line"># @Link    : None</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">from selenium import webdriver</span><br><span class="line">from selenium.webdriver.common.keys import Keys</span><br><span class="line"></span><br><span class="line">browser = webdriver.Chrome()  # 調用webdriver</span><br><span class="line"></span><br><span class="line">browser.get(&quot;http://www.google.com&quot;)</span><br><span class="line"></span><br><span class="line">browser.find_element_by_id(&quot;lst-ib&quot;).send_keys(&quot;python&quot;)  # 搜索框輸入:&quot;python&quot;</span><br><span class="line"></span><br><span class="line">browser.find_element_by_name(&quot;btnK&quot;).send_keys(Keys.ENTER)  # 提交搜尋</span><br><span class="line"></span><br><span class="line">titles = browser.find_elements_by_xpath(&quot;.//h3[@class=&apos;r&apos;]//a&quot;) # 搜尋所有標題</span><br><span class="line"></span><br><span class="line">print([i.text for i in titles]) # 打印所有標題</span><br><span class="line"></span><br><span class="line">browser.quit()  # 離開瀏覽器</span><br><span class="line"></span><br><span class="line"># 輸出:</span><br><span class="line">[&apos;Welcome to Python.org&apos;, &apos;Python教程- 廖雪峰的官方网站&apos;, &apos;Python - 维基百科，自由的百科全书&apos;, &apos;Python 简介| 菜鸟教程&apos;, &apos;教程一览| 莫烦Python&apos;, &apos;Python For Loops - W3Schools&apos;, &apos;Python Tutorial - W3Schools&apos;, &apos;Python - Attorneys at law – Geneva Switzerland Tokyo Brussels&apos;, &apos;Python Functions | DataCamp&apos;, &apos;用Python 理財：打造小資族選股策略- Hahow 好學校&apos;]</span><br></pre></td></tr></table></figure>
+<h1 id="小結"><a href="#小結" class="headerlink" title="小結:"></a>小結:</h1><p>操作上Chrome快速很多，而firefox雖然啟動比較慢，但不用webdriver及全屏截圖，實在相當便利。</p>
 
           
         
@@ -893,408 +1482,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Docker 邊做邊學(1) 搭建nginx服務器/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Maliao Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/Docker 邊做邊學(1) 搭建nginx服務器/" itemprop="url">Docker 邊做邊學 (1) 搭建nginx服務器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:02:00+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Docker/" itemprop="url" rel="index">
-                    <span itemprop="name">Docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/06/08/Docker 邊做邊學(1) 搭建nginx服務器/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/06/08/Docker 邊做邊學(1) 搭建nginx服務器/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ol>
-<li>到倉庫下載nginx最新鏡像</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull nginx:latest</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>查看目前所有鏡像</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
-<p>輸出：</p>
-<p><img src="https://i.imgur.com/ulZWxED.png" alt=""></p>
-<ol start="3">
-<li>前台運行</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run nginx</span><br></pre></td></tr></table></figure>
-<ol start="4">
-<li>後台運行</li>
-</ol>
-<p>背景運行 不卡終端</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d nginx</span><br></pre></td></tr></table></figure>
-<ol start="5">
-<li>網路端口映射</li>
-</ol>
-<p>指定本機80/tcp對應容器內80/tcp</p>
-<p>若不指定映射端口使用<code>-P</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 80:80 nginx</span><br></pre></td></tr></table></figure>
-<ol start="6">
-<li>本機查看80/tcp是否開啟</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">netstat -na | grep 8080</span><br><span class="line">輸出：</span><br><span class="line">tcp6       0      0 :::8080                 :::*                    LISTEN</span><br></pre></td></tr></table></figure>
-<ol start="7">
-<li>查看80端口可否訪問</li>
-</ol>
-<p><img src="https://i.imgur.com/ukwh0zB.jpg" alt=""></p>
-<ol start="7">
-<li>查看目前運行的容器</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
-<p>進入目前運行的容器 <code>54dbd519a8be</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it 54 bash</span><br></pre></td></tr></table></figure>
-<p>容器內<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@54dbd519a8be:/#</span><br><span class="line">#查一下nginx</span><br><span class="line">root@54dbd519a8be:/# which nginx</span><br><span class="line">/usr/sbin/nginx</span><br></pre></td></tr></table></figure></p>
-<ol start="8">
-<li>停止運行 容器</li>
-</ol>
-<p>容器ID:<code>54dbd519a8be</code><br>停止可以直接輸入開頭的5</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop 5</span><br></pre></td></tr></table></figure>
-<ol start="9">
-<li>運行並命名容器</li>
-</ol>
-<p>運行image並進入容器</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 給它命名,並運行完會進入容器</span><br><span class="line">docker run --name mydocker -t -i centos /bin/bash</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 查看一些進入的信息</span><br><span class="line">[root@8b07b1e213d4 /]# ps aux</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 離開容器</span><br><span class="line">[root@8b07b1e213d4 /]# exit</span><br></pre></td></tr></table></figure>
-<p>透過 <code>docker ps -a</code> (查到剛剛那個容器顯示離開)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker ps -a</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.imgur.com/Ni8bHl4.png" alt=""></p>
-<ol start="10">
-<li>再次啟動容器 <code>docker start CONTAINER</code></li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker start 8b07b1e213d4</span><br></pre></td></tr></table></figure>
-<p>進入容器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker exec -it 8b07b1e213d4 bash</span><br></pre></td></tr></table></figure>
-<p>離開容器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@8b07b1e213d4:/# exit</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Maliao Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/" itemprop="url">瀏覽器自動化(2) 同時調用Selenium2與Selenium3</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:02:00+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Selenium/" itemprop="url" rel="index">
-                    <span itemprop="name">Selenium</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/06/08/瀏覽器自動化(2) 同時調用Selenium2與Selenium3/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>虛擬還境可將python的模塊依賴分開管理，能使用指定版本或避免衝突問題。</p>
-<h1 id="Selenium2"><a href="#Selenium2" class="headerlink" title="Selenium2"></a>Selenium2</h1><p>使用技巧:</p>
-<ol>
-<li>firefox 不須透過webdriver。</li>
-<li>默認支持全屏幕截圖。</li>
-</ol>
-<p>如何調用</p>
-<ol>
-<li><p>建立虛擬環境 Selenium2 VEnv</p>
-<p> 安裝指定版本</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install selenium==2.53.2</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>下載免安裝的firefox46.01</p>
-</li>
-</ol>
-<p><a href="https://sourceforge.net/projects/portableapps/files/Mozilla%20Firefox,%20Portable%20Ed./Mozilla%20Firefox,%20Portable%20Edition%2046.0.1/" target="_blank" rel="noopener">FirefoxPortable 46 下載地址</a></p>
-<h2 id="使用腳本"><a href="#使用腳本" class="headerlink" title="使用腳本"></a>使用腳本</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"># @Date    : 2018-05-16 08:33:47</span><br><span class="line"># @Author  : Maliao</span><br><span class="line"># @Link    : None</span><br><span class="line"></span><br><span class="line">from selenium import webdriver</span><br><span class="line">from PIL import Image</span><br><span class="line">from selenium.webdriver.firefox.firefox_binary import FirefoxBinary</span><br><span class="line">from selenium.webdriver.firefox.firefox_profile import FirefoxProfile</span><br><span class="line">from time import sleep</span><br><span class="line"></span><br><span class="line">binary = FirefoxBinary(r&quot;.\FirefoxPortable\FirefoxPortable.exe&quot;) # firefox 主程序 檔案</span><br><span class="line">profile = FirefoxProfile(r&apos;.\FirefoxPortable\Data\profile&apos;) # firefox 使用者設定檔</span><br><span class="line"></span><br><span class="line">browser = webdriver.Firefox(firefox_binary=binary, firefox_profile=profile)</span><br><span class="line">browser.set_window_size(800, 900) # 指定窗口大小</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 依照元素大小截圖</span><br><span class="line">def crop_screenshot(fullfile, cropfile, element):</span><br><span class="line">    browser.save_screenshot(fullfile)</span><br><span class="line">    if element:</span><br><span class="line">        type = element[&quot;type&quot;]</span><br><span class="line">        name = element[&quot;name&quot;]</span><br><span class="line"></span><br><span class="line">        imgelement = browser.find_element_by_xpath(&quot;.//*[@%s=%r]&quot; % (type, name))</span><br><span class="line">        location = imgelement.location</span><br><span class="line">        size = imgelement.size</span><br><span class="line">        rangle = (int(location[&apos;x&apos;]), int(location[&apos;y&apos;]), int(</span><br><span class="line">            location[&apos;x&apos;] + size[&apos;width&apos;]), int(location[&apos;y&apos;] + size[&apos;height&apos;]))</span><br><span class="line"></span><br><span class="line">        i = Image.open(fullfile)</span><br><span class="line">        fincrop = i.crop(rangle)</span><br><span class="line">        fincrop.save(cropfile)</span><br><span class="line">    else:</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line"># 滾動窗口 加載所有圖片</span><br><span class="line">def js_scroll_down(text):</span><br><span class="line">    jsdown = &apos;&apos;&apos;</span><br><span class="line">    (function () &#123;</span><br><span class="line">                var y = 0;</span><br><span class="line">                var step = 100;</span><br><span class="line">                window.scroll(0, 0);</span><br><span class="line"></span><br><span class="line">                function f() &#123;</span><br><span class="line">                    if (y &lt; document.body.scrollHeight) &#123;</span><br><span class="line">                        y += step;</span><br><span class="line">                        window.scroll(0, y);</span><br><span class="line">                        setTimeout(f, 100);</span><br><span class="line">                    &#125; else &#123;</span><br><span class="line">                        window.scroll(0, 0);</span><br><span class="line">                        document.title += &quot;%s&quot;;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                setTimeout(f, 1000);</span><br><span class="line">            &#125;)();</span><br><span class="line">    &apos;&apos;&apos; % text</span><br><span class="line"></span><br><span class="line">    browser.execute_script(jsdown)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">browser.get(&quot;https://www.ithome.com/html/android/360003.htm&quot;)</span><br><span class="line"></span><br><span class="line"># 調用JS 下拉加載所有圖片</span><br><span class="line">text = &quot;SD&quot;</span><br><span class="line">js_scroll_down(text)</span><br><span class="line">changetitle = &quot;%s%s&quot; % (browser.title, text)</span><br><span class="line">while 1:  # 死循環 等待js跑完</span><br><span class="line">    nowtitle = browser.title</span><br><span class="line">    if changetitle in nowtitle:</span><br><span class="line">        break</span><br><span class="line">    else:</span><br><span class="line">        sleep(1)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 儲存 指定元素截圖</span><br><span class="line">element = &#123;&quot;type&quot;: &quot;class&quot;, &quot;name&quot;: &quot;post_content&quot;&#125;</span><br><span class="line">cropfile = r&quot;./data/ithome%s.png&quot; % browser.current_url.split(&quot;/&quot;)[-1].split(&quot;.&quot;)[0]</span><br><span class="line">fullfile = r&quot;./data/ithomeCN.png&quot;</span><br><span class="line">crop_screenshot(fullfile=fullfile, cropfile=cropfile, element=element)</span><br><span class="line"></span><br><span class="line"># 關閉瀏覽器</span><br><span class="line">browser.quit()</span><br></pre></td></tr></table></figure>
-<p>截出一整張的長截圖。</p>
-<p><img src="https://i.imgur.com/7TpWiwI.jpg" alt=""></p>
-<h1 id="selenium3"><a href="#selenium3" class="headerlink" title="selenium3"></a>selenium3</h1><p>使用技巧:</p>
-<ol>
-<li>支持最新版瀏覽器。</li>
-<li>需使用webdriver驅動。</li>
-</ol>
-<p>如何調用</p>
-<ol>
-<li><p>建立虛擬環境 Selenium3 VEnv</p>
-<p> 安裝最新版本</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install selenium</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><a href="https://www.slimjet.com/chrome/google-chrome-old-version.php" target="_blank" rel="noopener">下載Chrome</a></p>
-</li>
-<li><p><a href="http://chromedriver.chromium.org/downloads" target="_blank" rel="noopener">下載Chome Driver</a></p>
-</li>
-</ol>
-<h2 id="使用腳本-1"><a href="#使用腳本-1" class="headerlink" title="使用腳本"></a>使用腳本</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"># @Date    : 2018-05-16 08:33:47</span><br><span class="line"># @Author  : Maliao</span><br><span class="line"># @Link    : None</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">from selenium import webdriver</span><br><span class="line">from selenium.webdriver.common.keys import Keys</span><br><span class="line"></span><br><span class="line">browser = webdriver.Chrome()  # 調用webdriver</span><br><span class="line"></span><br><span class="line">browser.get(&quot;http://www.google.com&quot;)</span><br><span class="line"></span><br><span class="line">browser.find_element_by_id(&quot;lst-ib&quot;).send_keys(&quot;python&quot;)  # 搜索框輸入:&quot;python&quot;</span><br><span class="line"></span><br><span class="line">browser.find_element_by_name(&quot;btnK&quot;).send_keys(Keys.ENTER)  # 提交搜尋</span><br><span class="line"></span><br><span class="line">titles = browser.find_elements_by_xpath(&quot;.//h3[@class=&apos;r&apos;]//a&quot;) # 搜尋所有標題</span><br><span class="line"></span><br><span class="line">print([i.text for i in titles]) # 打印所有標題</span><br><span class="line"></span><br><span class="line">browser.quit()  # 離開瀏覽器</span><br><span class="line"></span><br><span class="line"># 輸出:</span><br><span class="line">[&apos;Welcome to Python.org&apos;, &apos;Python教程- 廖雪峰的官方网站&apos;, &apos;Python - 维基百科，自由的百科全书&apos;, &apos;Python 简介| 菜鸟教程&apos;, &apos;教程一览| 莫烦Python&apos;, &apos;Python For Loops - W3Schools&apos;, &apos;Python Tutorial - W3Schools&apos;, &apos;Python - Attorneys at law – Geneva Switzerland Tokyo Brussels&apos;, &apos;Python Functions | DataCamp&apos;, &apos;用Python 理財：打造小資族選股策略- Hahow 好學校&apos;]</span><br></pre></td></tr></table></figure>
-<h1 id="小結"><a href="#小結" class="headerlink" title="小結:"></a>小結:</h1><p>操作上Chrome快速很多，而firefox雖然啟動比較慢，但不用webdriver及全屏截圖，實在相當便利。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Zabbix學習筆記(1) 用Docker建置Zabbix Server/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1409,6 +1596,221 @@
 <p><strong>docker-compose.yml</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">version: &apos;2&apos;</span><br><span class="line">services:</span><br><span class="line">  zabbix-db:</span><br><span class="line">    image: monitoringartist/zabbix-db-mariadb</span><br><span class="line">    volumes:</span><br><span class="line">      - ./zabbix/zabbix-db-storage:/var/lib/mysql</span><br><span class="line">      - ./zabbix/backups:/backups</span><br><span class="line">      - /etc/localtime:/etc/localtime:ro</span><br><span class="line">    environment:</span><br><span class="line">      - MARIADB_USER=zabbix</span><br><span class="line">      - MARIADB_PASS=admin</span><br><span class="line">  zabbix-server:</span><br><span class="line">    image: monitoringartist/zabbix-xxl:latest</span><br><span class="line">    depends_on:</span><br><span class="line">      - zabbix-db</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;80:80&quot;</span><br><span class="line">      - &quot;10051:10051&quot;</span><br><span class="line">    volumes:</span><br><span class="line">      - /etc/localtime:/etc/localtime:ro</span><br><span class="line">      - ./zabbix/temp:/usr/local/src/zabbix/temp</span><br><span class="line">      - ./zabbix/conf/fonts/:/usr/local/src/zabbix/frontends/php/fonts/</span><br><span class="line">      - ./zabbix/conf/defines.inc.php:/usr/local/src/zabbix/frontends/php/include/defines.inc.php</span><br><span class="line">    links:</span><br><span class="line">      - zabbix-db:zabbix.db</span><br><span class="line">    environment:</span><br><span class="line">      - ZS_DBHost=zabbix.db</span><br><span class="line">      - ZS_DBUser=zabbix</span><br><span class="line">      - ZS_DBPassword=admin</span><br><span class="line">volumes:</span><br><span class="line">  zabbix-db-storage:</span><br><span class="line">    driver: local</span><br><span class="line">  backups:</span><br><span class="line">    driver: local</span><br></pre></td></tr></table></figure>
 <p><a href="https://github.com/noyoung/DockerComposes/tree/master/zabbix" target="_blank" rel="noopener">源碼地址</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Docker 學習筆記/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Maliao Guo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="馬里奧">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/Docker 學習筆記/" itemprop="url">Docker 學習筆記</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:01:00+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/08/Docker 學習筆記/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/08/Docker 學習筆記/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Dcoekr是什麼"><a href="#Dcoekr是什麼" class="headerlink" title="Dcoekr是什麼"></a>Dcoekr是什麼</h1><p><strong>Docker 組成：</strong></p>
+<ul>
+<li>Docker client</li>
+<li>Docker server</li>
+</ul>
+<p><strong>Docker 組件</strong></p>
+<ul>
+<li><p>鏡像 (image)</p>
+<p>  普遍鏡像依賴於Linux內核在封裝服務所提供的，稱為鏡像。</p>
+</li>
+<li><p>容器 (container)</p>
+<p>  以鏡像建立成應用或服務的，稱為容器。</p>
+</li>
+<li><p>倉庫 (repository)</p>
+<p>  倉庫是存放鏡像檔案的地方，分為公開倉庫及私有倉庫。公開倉庫如<a href="https://hub.docker.com/" target="_blank" rel="noopener">https://hub.docker.com/</a>，私有倉庫則可自行搭建。</p>
+</li>
+</ul>
+<p><strong>Docker Container VS 虛擬機</strong></p>
+<p>少了客體作業系統（Guest OS）這一層，更接近原生也更輕量。</p>
+<p><img src="https://i.imgur.com/Na4KOgP.png" alt=""></p>
+<p><strong>Docker使用場景</strong></p>
+<ul>
+<li>使用Docker容器開發、測試、部署服務</li>
+<li>創建隔離的運行環境</li>
+<li>搭建測試環境</li>
+</ul>
+<h1 id="Docker-安裝"><a href="#Docker-安裝" class="headerlink" title="Docker 安裝"></a>Docker 安裝</h1><p>Ubuntu系統安裝Docker方法非常簡單，可以直接參考以下網址的教學。</p>
+<p><a href="https://zouyapeng.gitbooks.io/docker/content/DockerInstallation/ubuntu_16_04.html" target="_blank" rel="noopener">Ubuntu 16.04 安装</a></p>
+<p>(記得：注销当前用户，重新登陆)</p>
+<h1 id="Docker-基本使用"><a href="#Docker-基本使用" class="headerlink" title="Docker 基本使用"></a>Docker 基本使用</h1><p><strong>查看Docker版本</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker -v</span><br></pre></td></tr></table></figure>
+<p><strong>拉取鏡像</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull IMAGE</span><br></pre></td></tr></table></figure>
+<p><strong>啟動容器</strong></p>
+<p>如果鏡像不存在，會自動拉取鏡像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run [OPTIONS] IMAGE [COMMAND] [ARG...]</span><br></pre></td></tr></table></figure>
+<p>Options:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-d 後台運行</span><br><span class="line">-p 指定端口映射 (ex:80:80)</span><br><span class="line">-P 隨機端口映射</span><br><span class="line">-it 啟動並進入容器</span><br><span class="line">—rm 退出後自動刪除</span><br><span class="line">--name 自定義容器名</span><br></pre></td></tr></table></figure>
+<p>更多<a href="https://docs.docker.com/engine/reference/commandline/run/" target="_blank" rel="noopener">Dockcer Run</a></p>
+<p><strong>查看已建立的容器</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps [OPTIONS]</span><br></pre></td></tr></table></figure>
+<p>Options:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-a 顯示所有容器(默認只有顯示正在運行的容器)</span><br><span class="line">-l 顯示最新建立的容器</span><br></pre></td></tr></table></figure>
+<p>更多<a href="https://docs.docker.com/engine/reference/commandline/ps/" target="_blank" rel="noopener">Dockcer Ps</a></p>
+<p><strong>刪除容器</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker kill [OPTIONS] CONTAINER [CONTAINER...]</span><br></pre></td></tr></table></figure>
+<p><strong>顯示所有鏡像</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images [OPTIONS] [REPOSITORY[:TAG]]</span><br></pre></td></tr></table></figure>
+<p><strong>查看日誌</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logs [OPTIONS] CONTAINER</span><br></pre></td></tr></table></figure>
+<p>Options:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-f 實時更新</span><br><span class="line">-t 顯示時間</span><br></pre></td></tr></table></figure>
+<p>更多<a href="https://docs.docker.com/engine/reference/commandline/logs/" target="_blank" rel="noopener">docker logs</a></p>
+<p><strong>運行所有容器</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker start $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
+<p><strong>停止所有容器</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
+<p><strong>殺死所有正在運行的容器</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker kill $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
+<p><strong>刪除所有鏡像</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi $(docker images -q)</span><br></pre></td></tr></table></figure>
+<p><strong>進入容器</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker exec CONTAINER</span><br><span class="line">docker attach CONTAINER</span><br></pre></td></tr></table></figure>
 
           
         
@@ -1675,221 +2077,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Docker 學習筆記/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Maliao Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/Docker 學習筆記/" itemprop="url">Docker 學習筆記</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-08T00:01:00+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Docker/" itemprop="url" rel="index">
-                    <span itemprop="name">Docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/06/08/Docker 學習筆記/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/06/08/Docker 學習筆記/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Dcoekr是什麼"><a href="#Dcoekr是什麼" class="headerlink" title="Dcoekr是什麼"></a>Dcoekr是什麼</h1><p><strong>Docker 組成：</strong></p>
-<ul>
-<li>Docker client</li>
-<li>Docker server</li>
-</ul>
-<p><strong>Docker 組件</strong></p>
-<ul>
-<li><p>鏡像 (image)</p>
-<p>  普遍鏡像依賴於Linux內核在封裝服務所提供的，稱為鏡像。</p>
-</li>
-<li><p>容器 (container)</p>
-<p>  以鏡像建立成應用或服務的，稱為容器。</p>
-</li>
-<li><p>倉庫 (repository)</p>
-<p>  倉庫是存放鏡像檔案的地方，分為公開倉庫及私有倉庫。公開倉庫如<a href="https://hub.docker.com/" target="_blank" rel="noopener">https://hub.docker.com/</a>，私有倉庫則可自行搭建。</p>
-</li>
-</ul>
-<p><strong>Docker Container VS 虛擬機</strong></p>
-<p>少了客體作業系統（Guest OS）這一層，更接近原生也更輕量。</p>
-<p><img src="https://i.imgur.com/Na4KOgP.png" alt=""></p>
-<p><strong>Docker使用場景</strong></p>
-<ul>
-<li>使用Docker容器開發、測試、部署服務</li>
-<li>創建隔離的運行環境</li>
-<li>搭建測試環境</li>
-</ul>
-<h1 id="Docker-安裝"><a href="#Docker-安裝" class="headerlink" title="Docker 安裝"></a>Docker 安裝</h1><p>Ubuntu系統安裝Docker方法非常簡單，可以直接參考以下網址的教學。</p>
-<p><a href="https://zouyapeng.gitbooks.io/docker/content/DockerInstallation/ubuntu_16_04.html" target="_blank" rel="noopener">Ubuntu 16.04 安装</a></p>
-<p>(記得：注销当前用户，重新登陆)</p>
-<h1 id="Docker-基本使用"><a href="#Docker-基本使用" class="headerlink" title="Docker 基本使用"></a>Docker 基本使用</h1><p><strong>查看Docker版本</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker -v</span><br></pre></td></tr></table></figure>
-<p><strong>拉取鏡像</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull IMAGE</span><br></pre></td></tr></table></figure>
-<p><strong>啟動容器</strong></p>
-<p>如果鏡像不存在，會自動拉取鏡像</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run [OPTIONS] IMAGE [COMMAND] [ARG...]</span><br></pre></td></tr></table></figure>
-<p>Options:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-d 後台運行</span><br><span class="line">-p 指定端口映射 (ex:80:80)</span><br><span class="line">-P 隨機端口映射</span><br><span class="line">-it 啟動並進入容器</span><br><span class="line">—rm 退出後自動刪除</span><br><span class="line">--name 自定義容器名</span><br></pre></td></tr></table></figure>
-<p>更多<a href="https://docs.docker.com/engine/reference/commandline/run/" target="_blank" rel="noopener">Dockcer Run</a></p>
-<p><strong>查看已建立的容器</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps [OPTIONS]</span><br></pre></td></tr></table></figure>
-<p>Options:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-a 顯示所有容器(默認只有顯示正在運行的容器)</span><br><span class="line">-l 顯示最新建立的容器</span><br></pre></td></tr></table></figure>
-<p>更多<a href="https://docs.docker.com/engine/reference/commandline/ps/" target="_blank" rel="noopener">Dockcer Ps</a></p>
-<p><strong>刪除容器</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker kill [OPTIONS] CONTAINER [CONTAINER...]</span><br></pre></td></tr></table></figure>
-<p><strong>顯示所有鏡像</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images [OPTIONS] [REPOSITORY[:TAG]]</span><br></pre></td></tr></table></figure>
-<p><strong>查看日誌</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logs [OPTIONS] CONTAINER</span><br></pre></td></tr></table></figure>
-<p>Options:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-f 實時更新</span><br><span class="line">-t 顯示時間</span><br></pre></td></tr></table></figure>
-<p>更多<a href="https://docs.docker.com/engine/reference/commandline/logs/" target="_blank" rel="noopener">docker logs</a></p>
-<p><strong>運行所有容器</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker start $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
-<p><strong>停止所有容器</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
-<p><strong>殺死所有正在運行的容器</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker kill $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
-<p><strong>刪除所有鏡像</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi $(docker images -q)</span><br></pre></td></tr></table></figure>
-<p><strong>進入容器</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker exec CONTAINER</span><br><span class="line">docker attach CONTAINER</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/04. Pocket API體驗筆記/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2086,205 +2273,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/02/02. Gitlab Ranner/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Maliao Guo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="馬里奧">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/02/02. Gitlab Ranner/" itemprop="url">未命名</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2018-06-02T19:40:01+08:00">
-                2018-06-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/06/02/02. Gitlab Ranner/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/06/02/02. Gitlab Ranner/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Gitlab-Runner"><a href="#Gitlab-Runner" class="headerlink" title="Gitlab Runner"></a>Gitlab Runner</h1><p><a href="https://docs.gitlab.com.cn/runner/" target="_blank" rel="noopener">中文文檔</a></p>
-<h1 id="安裝-runner"><a href="#安裝-runner" class="headerlink" title="安裝 runner"></a>安裝 runner</h1><ol>
-<li><p>建立一個目錄 例如:<code>C:\GitLab-Runner</code></p>
-</li>
-<li><p>下載對應的gitlab-runner版本，將下載的檔案更改名稱為<code>gitlab-runner.exe</code>。</p>
-</li>
-</ol>
-<p><a href="https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-windows-386.exe" target="_blank" rel="noopener">x86</a><br><a href="https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-windows-amd64.exe" target="_blank" rel="noopener">x64</a></p>
-<ol start="3">
-<li>Registering Runners</li>
-</ol>
-<p><a href="https://docs.gitlab.com.cn/runner/register/index.html" target="_blank" rel="noopener">官方註冊教學</a></p>
-<p>3.1 打開cmd(管理員執行)</p>
-<p>3.2 输入 GitLab 实例 URL:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gitlab-runner.exe register</span><br></pre></td></tr></table></figure></p>
-<p>3.3 输入 GitLab 实例 URL:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Please enter the gitlab-ci coordinator URL</span><br><span class="line">http://192.168.1.112/</span><br></pre></td></tr></table></figure></p>
-<p>3.4 输入获取到的用于注册 Runner 的 token:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Please enter the gitlab-ci token for this runner</span><br><span class="line">1Y6skuaKaYDyNucjYS9_</span><br></pre></td></tr></table></figure></p>
-<p>3.5 输入该 Runner 的描述，稍后也可通过 GitLab’s UI 修改:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Please enter the gitlab-ci description for this runner</span><br><span class="line">[hostame] my-runner test</span><br></pre></td></tr></table></figure></p>
-<p>3.6 给该 Runner 指派 tags, 稍后也可以在 GitLab’s UI 修改:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Please enter the gitlab-ci tags for this runner (comma separated):</span><br><span class="line">my-tag,another-tag</span><br></pre></td></tr></table></figure></p>
-<p>3.7 选择 Runner 是否接收未指定 tags 的任务（默认值：false）， 稍后可以在 GitLab’s UI 修改：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Whether to run untagged jobs [true/false]:</span><br><span class="line">[false]: true</span><br></pre></td></tr></table></figure></p>
-<p>3.8 选择是否为当前项目锁定该 Runner， 之后可以在 GitLab’s UI 修改。 该功能通常用于被指定为某个项目的 Runner （默认值：true）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Whether to lock Runner to current project [true/false]:</span><br><span class="line">[true]: true</span><br></pre></td></tr></table></figure></p>
-<p>3.9 选择 Runner executor:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Please enter the executor: ssh, docker+machine, docker-ssh+machine, kubernetes, docker, parallels, virtualbox, docker-ssh, shell:</span><br><span class="line">shell</span><br></pre></td></tr></table></figure></p>
-<p>3.10 如果你选择 Docker 作为你的 executor，注册程序会让你设置一个默认的镜像， 作用于 .gitlab-ci.yml 中未指定镜像的项目：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Please enter the Docker image (eg. ruby:2.1):</span><br><span class="line">alpine:latest</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://i.imgur.com/dHvhicX.jpg" alt=""></p>
-<p><img src="https://i.imgur.com/j2G6Sa3.jpg" alt=""></p>
-<p>如果你想在同一台机器上注册多个 Runner，可以重复运行 ./gitlab-runner.exe register 这个命令进行配置。</p>
-<ol start="4">
-<li>將Runner作為服務安裝並啟動它。您可以使用內置系統帳戶（推薦）或使用用戶帳戶運行服務。</li>
-</ol>
-<ul>
-<li><strong>使用內置系統帳戶運行服務</strong></li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gitlab-runner install</span><br><span class="line">gitlab-runner start</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.imgur.com/iEZaga5.jpg" alt=""></p>
-<p><img src="https://i.imgur.com/wUx7TmJ.jpg" alt=""></p>
-<ul>
-<li><strong>使用用戶帳戶運行服務</strong></li>
-</ul>
-<p>您必須輸入當前用戶帳戶的有效密碼，因為它需要Windows啟動服務：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gitlab-runner install --user ENTER-YOUR-USERNAME --password ENTER-YOUR-PASSWORD</span><br><span class="line">gitlab-runner start</span><br></pre></td></tr></table></figure>
-<p>如果您在Runner安裝過程中遇到任何錯誤，請參閱故障排除部分。</p>
-<ol start="6">
-<li>（可選）更新運行程序的concurrent值C:\GitLab-Runner\config.toml 以允許多個並發作業，如高級配置詳細信息中所述。另外，您可以使用高級配置詳細信息來更新您的shell執行程序以使用Bash或PowerShell而不是批處理。</li>
-</ol>
-<p>瞧！Runner已安裝，正在運行，並且將在每次系統重新啟動後重新啟動。日誌存儲在Windows事件日誌中。</p>
-<h1 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h1><ol>
-<li><p>停止服務（您需要像以前那樣提升命令提示符）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd C:\GitLab-Runner</span><br><span class="line">gitlab-runner stop</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>下載x86或amd64的二進製文件並替換runner的可執行文件。您可以下載Bleeding Edge中所述的每個可用版本的二進製文件 - 下載任何其他帶標籤的版本。</p>
-</li>
-<li><p>開始服務：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab-runner start</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h1 id="卸載"><a href="#卸載" class="headerlink" title="卸載"></a>卸載</h1><ol>
-<li>從提升的命令提示符：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd C:\GitLab-Runner</span><br><span class="line">gitlab-runner stop</span><br><span class="line">gitlab-runner uninstall</span><br><span class="line">cd ..</span><br><span class="line">rmdir /s GitLab-Runner</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h1 id="故障排除"><a href="#故障排除" class="headerlink" title="故障排除"></a>故障排除</h1><p>確保您閱讀了常見問題部分，其中介紹了GitLab Runner最常見的一些問題。</p>
-<p>如果您遇到類似帳戶名稱的錯誤，請嘗試.\在用戶名之前添加：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab-runner install --user &quot;.\ENTER-YOUR-USERNAME&quot; --password &quot;ENTER-YOUR-PASSWORD&quot;</span><br></pre></td></tr></table></figure>
-<p>如果您遇到a 服務在啟動服務時由於登錄失敗錯誤而無法啟動，請查看常見問題解答以檢查如何解決問題。</p>
-<p>如果您沒有Windows密碼，Runner的服務將無法啟動，但您可以使用內置系統帳戶。</p>
-<p>如果您對內置系統帳戶有問題，請閱讀 如何 使用Microsoft支持網站上的內置系統帳戶啟動服務。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2330,7 +2323,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-count">41</span>
                   <span class="site-state-item-name">文章</span>
                 </a>
               </div>
